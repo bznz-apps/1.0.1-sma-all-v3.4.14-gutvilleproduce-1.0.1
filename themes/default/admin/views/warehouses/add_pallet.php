@@ -1,0 +1,1 @@
+add pallet - warehouse

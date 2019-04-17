@@ -1,0 +1,3 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+ERROR - 2019-01-01 14:45:22 --> Query error: Duplicate entry '3.70008E+12' for key 'code' - Invalid query: INSERT INTO `sma_products` (`name`, `code`, `barcode_symbology`, `brand`, `unit`, `sale_unit`, `purchase_unit`, `cost`, `price`, `alert_quantity`, `tax_rate`, `tax_method`, `image`, `cf1`, `cf2`, `cf3`, `cf4`, `cf5`, `cf6`, `hsn_code`, `second_name`, `slug`, `category_id`, `subcategory_id`) VALUES ('Spray shalies Mens small 60 ml', '3.70008E+12', 'code128', NULL, '4', '4', '4', '27.3', '35', '3', NULL, 0, '', '', '', '', '', '', '', '', 'شاليس رجالي صغير 60مل', 'spray-shalies-mens-small-60-ml', '19', NULL)
