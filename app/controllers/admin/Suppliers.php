@@ -526,8 +526,14 @@ class Suppliers extends MY_Controller
       // FORM VALIDATION RULES
       // ***********************************************************************
 
-      $this->form_validation->set_rules('supplier_id', 'supplier', 'required');
-      $this->form_validation->set_rules('product_id', 'items', 'required');
+      // DOCUMENTATION
+      // $this->form_validation->set_rules( arg1, arg2, arg3 );
+      // arg1: form input name
+      // arg2: word to replace at: 'The "arg2" key is required.'
+      // arg3: form validation requirements...
+
+      // $this->form_validation->set_message('is_natural_no_zero', lang("no_zero_required"));
+      $this->form_validation->set_rules('supplier', 'supplier', 'required');
 
       // ***********************************************************************
       // RUN FORM VALIDATION
@@ -542,6 +548,33 @@ class Suppliers extends MY_Controller
 
       // IF VALIDATION ERROR, SET ERROR FLASH MESSAGE AND REDIRECT TO FORM VIEW
       // IF VALIDATION SUCCESS, PROCEED TO WORK WITH THE DATABASE MODEL
+
+      // ***********************************************************************
+      // CUSTOM FORM INPUTS VALIDATION
+      // ***********************************************************************
+
+      // if (empty($_POST['supplier'])) {
+      //   $this->session->set_flashdata('error', 'Please add a Supplier');
+      //   admin_redirect('suppliers/addSupplyOrder');
+      // }
+
+      // ADD LATER
+      // Use this to create an if statement that checks if 'product_id' is not empty
+      // and if it is not empty check that size is > 0
+      // isset($_POST['product_id']) ? sizeof($_POST['product_id']) : 0
+
+      if (empty($_POST['product_id'])) {
+        $this->session->set_flashdata('error', 'Please add at least 1 item to the order.');
+        admin_redirect('suppliers/addSupplyOrder');
+      }
+
+      // ADD LATER
+      // CUSTOM ARRAY FILLED WITH CUSTOM ERROR MESSAGES
+      // ADD OR PUSH ERROR MESSAGES TO THE ARRAY
+      // IN THE END, IF THIS ARRAY LENGTH > 0, SET FLASH DATA AND REDIRECT
+      // $error_messages = array('error1' => 'Some error 1', 'error2' => 'Some error 2');
+      // $this->session->set_flashdata('error', $error_messages);
+      // admin_redirect('suppliers/addSupplyOrder');
 
           // *******************************************************************
           // IF FORM VALIDATION SUCCESS, CONNECT WITH MODEL AND INSERT DATA
@@ -563,8 +596,9 @@ class Suppliers extends MY_Controller
           // - PDF
           // - UPLOAD IMAGE, UPLOAD IMAGE GALLERY, UPLOAD ATTACHMENT
 
+
       // ***********************************************************************
-      // MODEL DATABASE OPERATION RESULTS
+      // TEST FORM INPUT VALUES
       // ***********************************************************************
 
       echo "Hi from addSupplyOrderLogic()";
@@ -622,6 +656,10 @@ class Suppliers extends MY_Controller
         }
       }
 
+      // ***********************************************************************
+      // MODEL DATABASE OPERATION RESULTS
+      // ***********************************************************************
+
       // test insert
 
       // echo $this->suppliers_model->addSupplyOrder($dataToInsert);
@@ -633,31 +671,25 @@ class Suppliers extends MY_Controller
       // NOT EMPTY, OTHERWSIE THE MODEL WONT INSERT THE NEW DATA TO THE DB TABLE
       // OK this wasnt the case, i had msgToSupplier instead of msg_to_supplier
 
+      // DOCUMENTATION
+      //  $dataToInsert = array(
+      //      'supplier_id' => $this->input->post('supplier'),
+      //  );
+      //
+      // Look at:
+      // 'supplier_id' => $this->input->post('supplier'),
+      //
+      // 'supplier_id' is the database table field name
+      // 'supplier' is the input name at $this->input->post('supplier')
+
       $dataToInsert = array(
           'supplier_id' => $this->input->post('supplier'),
           'msg_to_supplier' => $this->input->post('msgToSupplier'),
           'msg_to_receiving' => $this->input->post('msgToReceiving'),
-
-          // 'group_id' => '4',
-          // 'group_name' => 'supplier',
-          // 'company' => $this->input->post('company'),
-          // 'address' => $this->input->post('address'),
-          // 'vat_no' => $this->input->post('vat_no'),
-          // 'city' => $this->input->post('city'),
-          // 'state' => $this->input->post('state'),
-          // 'postal_code' => $this->input->post('postal_code'),
-          // 'country' => $this->input->post('country'),
-          // 'phone' => $this->input->post('phone'),
-          // 'cf1' => $this->input->post('cf1'),
-          // 'cf2' => $this->input->post('cf2'),
-          // 'cf3' => $this->input->post('cf3'),
-          // 'cf4' => $this->input->post('cf4'),
-          // 'cf5' => $this->input->post('cf5'),
-          // 'cf6' => $this->input->post('cf6'),
-          // 'gst_no' => $this->input->post('gst_no'),
       );
+
       if ($this->suppliers_model->addSupplyOrder($dataToInsert) == true) {
-        $this->session->set_flashdata('message', 'Supply Order Sent Successfully');
+        $this->session->set_flashdata('message', 'New Supply Order Added Successfully');
         admin_redirect('suppliers/getSupplyOrders');
       } else {
         echo $this->suppliers_model->addSupplyOrder($dataToInsert);

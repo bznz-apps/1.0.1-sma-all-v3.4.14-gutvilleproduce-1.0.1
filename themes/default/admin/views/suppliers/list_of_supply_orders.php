@@ -40,7 +40,8 @@
             'fnRowCallback': function (nRow, aData, iDisplayIndex) {
                 var oSettings = oTable.fnSettings();
                 nRow.id = aData[0];
-                nRow.className = "product_link";
+                nRow.className = "supply_order_link";
+                // nRow.className = "product_link";
                 //if(aData[7] > aData[9]){ nRow.className = "product_link warning"; } else { nRow.className = "product_link"; }
                 return nRow;
             },
@@ -331,3 +332,53 @@
     </div>
     <?= form_close() ?>
 <?php } ?>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        // *********************************************************************
+        // RESET ORDER
+        // *********************************************************************
+
+        $(document).on('click', '.supply_order_link', function(e) {
+
+          console.log("clicked");
+
+          // var table = $('#SupplyOrdersDataTable').DataTable( {
+          //     "ajax": "data/arrays.txt",
+          //     "columnDefs": [ {
+          //         "targets": -1,
+          //         "data": null,
+          //         "defaultContent": "<button>Click!</button>"
+          //     } ]
+          // } );
+
+          console.log("Clicked Row ID: " + $(this).parent(".supply_order_link").attr("*"));
+          // console.log("Clicked Row ID: " + table.row( $(this).parents('tr') ).data());
+
+          // event.preventDefault();
+          // localStorage.clear();
+          // location.reload();
+
+          // $("#myModal").modal({
+          //   // remote:
+          //   //   site.base_url +
+          //   //   "suppliers/add_supply_order/" +
+          //   //   $(this)
+          //   //     .parent(".supply_order_link")
+          //   //     .attr("id")
+          //   remote:
+          //     site.base_url +
+          //     "suppliers/addSupplyOrder/"
+          // });
+          // $("#myModal").modal("show");
+          // //window.location.href = site.base_url + 'products/view/' + $(this).parent('.product_link').attr('id');
+
+        });
+
+        // *********************************************************************
+        // *********************************************************************
+        // *********************************************************************
+
+    });
+</script>
