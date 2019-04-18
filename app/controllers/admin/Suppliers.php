@@ -608,60 +608,60 @@ class Suppliers extends MY_Controller
       // TEST FORM INPUT VALUES
       // ***********************************************************************
 
-      echo "Hi from addSupplyOrderLogic()";
-
-      if ($this->input->post('supplier')) {
-          $supplier = $this->input->post('supplier');
-          echo '<br>';
-          echo 'Supplier ID is: ' . $supplier;
-      }
-
-      if ($this->input->post('msgToSupplier')) {
-          $msgToSupplier = $this->input->post('msgToSupplier');
-          echo '<br>';
-          echo 'Message to Supplier is: ' . $msgToSupplier;
-      }
-
-      if ($this->input->post('msgToReceiving')) {
-          $msgToReceiving = $this->input->post('msgToReceiving');
-          echo '<br>';
-          echo 'Message to Receiving is: ' . $msgToReceiving;
-      }
-
-      // $supplyOrderItems = $this->input->post('supplyOrderItem');
-      // if (is_array($supplyOrderItems)) {
-      //   foreach ($supplyOrderItems as $supplyOrderItem => $k) {
-      //     echo "supplyOrderItem is : " . $k . "<br/>";
+      // echo "Hi from addSupplyOrderLogic()";
+      //
+      // if ($this->input->post('supplier')) {
+      //     $supplier = $this->input->post('supplier');
+      //     echo '<br>';
+      //     echo 'Supplier ID is: ' . $supplier;
+      // }
+      //
+      // if ($this->input->post('msgToSupplier')) {
+      //     $msgToSupplier = $this->input->post('msgToSupplier');
+      //     echo '<br>';
+      //     echo 'Message to Supplier is: ' . $msgToSupplier;
+      // }
+      //
+      // if ($this->input->post('msgToReceiving')) {
+      //     $msgToReceiving = $this->input->post('msgToReceiving');
+      //     echo '<br>';
+      //     echo 'Message to Receiving is: ' . $msgToReceiving;
+      // }
+      //
+      // // $supplyOrderItems = $this->input->post('supplyOrderItem');
+      // // if (is_array($supplyOrderItems)) {
+      // //   foreach ($supplyOrderItems as $supplyOrderItem => $k) {
+      // //     echo "supplyOrderItem is : " . $k . "<br/>";
+      // //   }
+      // // }
+      //
+      // // if ($this->input->post('supplyOrderItem')) {
+      // //     $supplyOrderItem = $this->input->post('supplyOrderItem');
+      // //     echo '<br>';
+      // //     echo '• ' . $supplyOrderItem;
+      // // }
+      //
+      // $i = isset($_POST['product_id']) ? sizeof($_POST['product_id']) : 0;
+      // echo '<br>';
+      // echo 'Size of product_id: ' . $i;
+      // if (sizeof($_POST['product_id']) > 0) {
+      //   echo '<br>';
+      //   echo 'List of Supply Order Items:';
+      //   echo '<br>';
+      //
+      //   for ($r = 0; $r < $i; $r++) {
+      //       $product_id = $_POST['product_id'][$r];
+      //       $product_name = $_POST['product_name'][$r];
+      //       $product_quantity = $_POST['product_quantity'][$r];
+      //       echo '<br>';
+      //       echo '• ' . $product_id;
+      //       echo '<br>';
+      //       echo '• ' . $product_name;
+      //       echo '<br>';
+      //       echo '• ' . $product_quantity;
+      //       echo '<br>';
       //   }
       // }
-
-      // if ($this->input->post('supplyOrderItem')) {
-      //     $supplyOrderItem = $this->input->post('supplyOrderItem');
-      //     echo '<br>';
-      //     echo '• ' . $supplyOrderItem;
-      // }
-
-      $i = isset($_POST['product_id']) ? sizeof($_POST['product_id']) : 0;
-      echo '<br>';
-      echo 'Size of product_id: ' . $i;
-      if (sizeof($_POST['product_id']) > 0) {
-        echo '<br>';
-        echo 'List of Supply Order Items:';
-        echo '<br>';
-
-        for ($r = 0; $r < $i; $r++) {
-            $product_id = $_POST['product_id'][$r];
-            $product_name = $_POST['product_name'][$r];
-            $product_quantity = $_POST['product_quantity'][$r];
-            echo '<br>';
-            echo '• ' . $product_id;
-            echo '<br>';
-            echo '• ' . $product_name;
-            echo '<br>';
-            echo '• ' . $product_quantity;
-            echo '<br>';
-        }
-      }
 
       // ***********************************************************************
       // MODEL DATABASE OPERATION RESULTS
@@ -691,17 +691,24 @@ class Suppliers extends MY_Controller
 
       $dataToInsert = array(
           'supplier_id' => $this->input->post('supplier'),
-          'msg_to_supplier' => $this->input->post('msgToSupplier'),
-          'msg_to_receiving' => $this->input->post('msgToReceiving'),
+          'message_to_supplier' => $this->input->post('msgToSupplier'),
+          'message_to_receiving' => $this->input->post('msgToReceiving'),
       );
+
+      // $solution = $this->suppliers_model->addSupplyOrder($dataToInsert);
+      //
+      // echo $solution;
+      // // $this->session->set_flashdata('message', 'New Supply Order Added Successfully');
+      // admin_redirect('suppliers/getSupplyOrders');
 
       if ($this->suppliers_model->addSupplyOrder($dataToInsert) == true) {
         $this->session->set_flashdata('message', 'New Supply Order Added Successfully');
         admin_redirect('suppliers/getSupplyOrders');
       } else {
-        echo $this->suppliers_model->addSupplyOrder($dataToInsert);
+        // echo $this->suppliers_model->addSupplyOrder($dataToInsert);
+        $this->session->set_flashdata('error', 'Something went wrong, please try again later.');
+        admin_redirect('suppliers/addSupplyOrder');
       }
-
 
       // ***********************************************************************
       // Image

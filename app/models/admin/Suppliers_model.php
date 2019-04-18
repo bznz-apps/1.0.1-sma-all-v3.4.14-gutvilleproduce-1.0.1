@@ -1091,6 +1091,16 @@ class Suppliers_model extends CI_Model
         // echo '<br>';
         // $this->db->insert('NEW_supply_orders', $data);
 
+        // $op = $this->db->insert('NEW_supply_orders', $data);
+        // if( !$op )
+        // {
+        //    $errNo   = $this->db->_error_number();
+        //    $errMess = $this->db->_error_message();
+        //    echo $errNo;
+        //    echo $errMess;
+        //    // Do something with the error message or just show_404();
+        // }
+
         if ($this->db->insert('NEW_supply_orders', $data)) {
             return true;
         }

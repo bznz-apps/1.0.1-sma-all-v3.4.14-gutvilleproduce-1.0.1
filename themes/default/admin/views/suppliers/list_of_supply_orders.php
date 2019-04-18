@@ -340,35 +340,43 @@
         // TABLE ROW ACTIONS
         // *********************************************************************
 
+        // GET TABLE COLUMNS AND ROWS INFORMATION
+
         var clickedColumn = null;
         var clickedRow = null;
         var totalColumns = $("#SupplyOrdersDataTable").find('tr')[0].cells.length;
 
+        // GET COLUMN AND ROW CLICKED
+
         $('#SupplyOrdersDataTable tbody').on('click', 'td', function() {
-            // Verify We Did Not Clicked in the Last COlumn of this Table
-            // If we did not, then allow going to other location href
             clickedColumn = $(this).parent().children().index($(this));
             clickedRow = $(this).parent().parent().children().index($(this).parent());
             // alert('Row: ' + clickedRow + ', Column: ' + clickedColumn);
         });
 
+        // GET RECORD ID FOUND ON ROW CLICKED
+
         $('#SupplyOrdersDataTable tbody').on('click', 'tr', function() {
-          console.log('Clicked table row with item id: ');
-          console.log($(this));
+          // console.log('Clicked Row Info:');
+          // console.log($(this));
+
+          // console.log("Row Number is: " + clickedRow);
 
           var itemID = $(this)[0].id;
 
-          // If we did not clicked in the last column (actions), navigate
-
+          // NAVIGATE ONLY IF CLICKED COLUMN WAS NOT THE LAST COLUMN
           if (clickedColumn !== totalColumns-1) {
-            // // Preview Item ID
+            // PREVIEW ITEMID
             window.location.href = site.base_url + 'suppliers/previewSupplyOrder/' + itemID;
-
-            // // Edit Item ID
+            // EDIT ITEMID
             // window.location.href = site.base_url + 'suppliers/editSupplyOrder/' + itemID;
           }
 
         });
+
+        // *********************************************************************
+        // DISPLAY HAND CURSOR OR POINTER WHEN HOVERING ON TABLE
+        // *********************************************************************
 
         $('#SupplyOrdersDataTable tbody').css( 'cursor', 'pointer' );
 

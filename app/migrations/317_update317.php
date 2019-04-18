@@ -67,7 +67,6 @@ class Migration_Update317 extends CI_Migration {
           'null' => TRUE,
         ),
 
-
         // MOST COMMON
 
         'id' => array(
@@ -283,6 +282,20 @@ class Migration_Update317 extends CI_Migration {
       // -----------------------------------------------------------------------
       // SUPPLY ORDERS
 
+      /*
+          'sample_field' => array(
+              'type' => 'INT',
+              'constraint' => 11,
+              'unsigned' => TRUE,
+              'auto_increment' => TRUE,
+              'null' => TRUE,
+              'unique' => FALSE,
+              'default' => 'Default Value Here',
+              'first' => TRUE,
+              'after' => 'another_field'
+          ),
+      */
+
       $this->dbforge->add_field(array(
           'id' => array(
             'type' => 'INT',
@@ -309,14 +322,81 @@ class Migration_Update317 extends CI_Migration {
             'null' => TRUE,
           ),
           'created_at' => array(
-            'type' => 'varchar',
+            'type' => 'varchar', // timestam?
             'constraint' => 250,
             'null' => true,
             'on update' => 'NOW()'
+            // default 'CURRENT_TIMESTAMP'
           ),
+
+          'supplier_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => TRUE,
+          ),
+
+          'message_to_supplier' => array(
+            'type' => 'VARCHAR(1000)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            'default' => null
+          ),
+          'message_to_receiving' => array(
+            'type' => 'VARCHAR(1000)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            'default' => null
+          ),
+
+          'image' => array(
+            'type' => 'VARCHAR(255)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            'default' => 'no_image.png'
+          ),
+          'attachment' => array(
+            'type' => 'VARCHAR(55)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            'default' => null
+          ),
+
+          // 'file' => array(
+          //   'type' => 'VARCHAR(100)',
+          //   'collation' => 'utf8_general_ci',
+          //   'null' => TRUE,
+          //   'default' => null
+          // ),
+
       ));
       $this->dbforge->add_key('id', TRUE);
       $this->dbforge->create_table('NEW_supply_orders');
+
+      // -----------------------------------------------------------------------
+      // SUPPLY ORDER PHOTOS
+
+      $this->dbforge->add_field(array(
+          'id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'unsigned' => TRUE,
+            'auto_increment' => TRUE,
+            'null' => FALSE,
+          ),
+          'supply_order_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+          'photo' => array(
+            'type' => 'VARCHAR(100)',
+            // 'constraint' => 11,
+            'collation' => 'utf8_general_ci',
+            'null' => FALSE
+          ),
+      ));
+      $this->dbforge->add_key('id', TRUE);
+      $this->dbforge->create_table('NEW_supply_order_photos');
 
       // -----------------------------------------------------------------------
       // SUPPLY ORDER ITEMS
@@ -1085,6 +1165,7 @@ class Migration_Update317 extends CI_Migration {
       // $this->dbforge->drop_table('sample5');
 
       $this->dbforge->create_table('NEW_supply_orders');
+      $this->dbforge->create_table('NEW_supply_order_photos');
       $this->dbforge->create_table('NEW_supply_order_items');
       $this->dbforge->create_table('NEW_supply_order_manifests');
       $this->dbforge->create_table('NEW_pallets');
