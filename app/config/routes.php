@@ -70,3 +70,4 @@ $route['admin/warehouses/(:num)'] = 'admin/warehouses/index/$1';
 $route['admin/shipping/(:num)'] = 'admin/shipping/index/$1';
 
 $route['admin/suppliers/'] = 'admin/suppliers/getSupplyOrders';
+$route['admin/suppliers/'] = 'admin/suppliers/addSupplyOrder';

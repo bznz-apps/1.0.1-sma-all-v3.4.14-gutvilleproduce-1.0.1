@@ -361,13 +361,6 @@ class Migration_Update317 extends CI_Migration {
             'default' => null
           ),
 
-          // 'file' => array(
-          //   'type' => 'VARCHAR(100)',
-          //   'collation' => 'utf8_general_ci',
-          //   'null' => TRUE,
-          //   'default' => null
-          // ),
-
       ));
       $this->dbforge->add_key('id', TRUE);
       $this->dbforge->create_table('NEW_supply_orders');
