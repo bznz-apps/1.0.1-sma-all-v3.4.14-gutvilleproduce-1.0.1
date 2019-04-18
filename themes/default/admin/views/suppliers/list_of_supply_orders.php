@@ -337,44 +337,43 @@
     $(document).ready(function () {
 
         // *********************************************************************
-        // RESET ORDER
+        // TABLE ROW ACTIONS
         // *********************************************************************
 
-        $(document).on('click', '.supply_order_link', function(e) {
+        var clickedColumn = null;
+        var clickedRow = null;
+        var totalColumns = $("#SupplyOrdersDataTable").find('tr')[0].cells.length;
 
-          console.log("clicked");
+        $('#SupplyOrdersDataTable tbody').on('click', 'td', function() {
+            // Verify We Did Not Clicked in the Last COlumn of this Table
+            // If we did not, then allow going to other location href
+            clickedColumn = $(this).parent().children().index($(this));
+            clickedRow = $(this).parent().parent().children().index($(this).parent());
+            // alert('Row: ' + clickedRow + ', Column: ' + clickedColumn);
+        });
 
-          // var table = $('#SupplyOrdersDataTable').DataTable( {
-          //     "ajax": "data/arrays.txt",
-          //     "columnDefs": [ {
-          //         "targets": -1,
-          //         "data": null,
-          //         "defaultContent": "<button>Click!</button>"
-          //     } ]
-          // } );
+        $('#SupplyOrdersDataTable tbody').on('click', 'tr', function() {
+          console.log('Clicked table row with item id: ');
+          console.log($(this));
 
-          console.log("Clicked Row ID: " + $(this).parent(".supply_order_link").attr("*"));
-          // console.log("Clicked Row ID: " + table.row( $(this).parents('tr') ).data());
+          var itemID = $(this)[0].id;
 
-          // event.preventDefault();
-          // localStorage.clear();
-          // location.reload();
+          // If we did not clicked in the last column (actions), navigate
 
-          // $("#myModal").modal({
-          //   // remote:
-          //   //   site.base_url +
-          //   //   "suppliers/add_supply_order/" +
-          //   //   $(this)
-          //   //     .parent(".supply_order_link")
-          //   //     .attr("id")
-          //   remote:
-          //     site.base_url +
-          //     "suppliers/addSupplyOrder/"
-          // });
-          // $("#myModal").modal("show");
-          // //window.location.href = site.base_url + 'products/view/' + $(this).parent('.product_link').attr('id');
+          if (clickedColumn !== totalColumns-1) {
+            // // Preview Item ID
+            window.location.href = site.base_url + 'suppliers/previewSupplyOrder/' + itemID;
+
+            // // Edit Item ID
+            // window.location.href = site.base_url + 'suppliers/editSupplyOrder/' + itemID;
+          }
 
         });
+
+        $('#SupplyOrdersDataTable tbody').css( 'cursor', 'pointer' );
+
+        // for old IE browsers
+        $('#SupplyOrdersDataTable tbody').css( 'cursor', 'hand' );
 
         // *********************************************************************
         // *********************************************************************

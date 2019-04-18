@@ -128,6 +128,13 @@ class Suppliers extends MY_Controller
         echo $this->datatables->generate();
     }
 
+    function previewSupplyOrder($id) {
+      echo "Preview Supply Order ID: " . $id;
+    }
+    function editSupplyOrder($id) {
+      echo "Edit Supply Order ID: " . $id;
+    }
+
 
     function addSupplyOrder()
     {
