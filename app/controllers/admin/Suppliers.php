@@ -737,10 +737,13 @@ class Suppliers extends MY_Controller
       // get supply orders table row or records length
       // add ++
 
-      $default_starter_supply_order_number = 1000;
+      $default_starter_supply_order_number = 2000;
       $supply_orders_count_total_rows = $this->db->count_all_results('NEW_supply_orders_count');
       // $new_supply_order_number = $starter_supply_order_number + $supply_orders_total_rows + 1;
       $new_supply_order_number = 1;
+      $last_supply_order_number = 0;
+
+      // get
 
       if ($supply_orders_count_total_rows == 0) {
           $supply_orders_count_data = array(
@@ -756,8 +759,27 @@ class Suppliers extends MY_Controller
 
           // $last_row = $this->db->last_row('NEW_supply_orders_count');
           // $last_supply_order_number = $last_row->last_supply_order_number;
-          $last_supply_order_number = $this->db->select('last_supply_order_number')->from('NEW_supply_orders_count')->limit(1)->order_by('last_supply_order_number','DESC')->get()->row();
-          $new_supply_order_number = $last_supply_order_number + 1;
+
+          // $q_supply_orders_count = $this->db->get_where('NEW_supply_orders_count', array('last_supply_order_number' => $default_starter_supply_order_number));
+          // $last_supply_order_number = $q_supply_orders_count->row();
+          //
+          // // $last_supply_order_number = $this->db->select('last_supply_order_number')->from('NEW_supply_orders_count')->limit(1)->order_by('last_supply_order_number','DESC')->get()->row();
+          // $new_supply_order_number = $last_supply_order_number;
+          //
+
+
+
+              // if ($this->db->update('deliveries', $data, array('id' => $id))) {
+              //     return true;
+              // }
+              //
+              // $q = $this->db->get_where('deliveries', array('id' => $id), 1);
+              // if ($q->num_rows() > 0) {
+              //     return $q->row();
+              // }
+
+
+
       }
 
       // get table '$new_supply_orders_count'
@@ -784,7 +806,8 @@ class Suppliers extends MY_Controller
       // admin_redirect('suppliers/getSupplyOrders');
 
       if ($this->suppliers_model->addSupplyOrder($dataToInsert) == true) {
-        $this->session->set_flashdata('message', 'New Supply Order Added Successfully');
+        // $this->session->set_flashdata('message', 'New Supply Order Added Successfully');
+        $this->session->set_flashdata('message', 'New Supply Order Added Successfully, last order is: ' . $last_supply_order_number);
         admin_redirect('suppliers/getSupplyOrders');
       } else {
         // echo $this->suppliers_model->addSupplyOrder($dataToInsert);
