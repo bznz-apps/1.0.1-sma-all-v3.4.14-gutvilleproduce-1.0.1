@@ -732,8 +732,46 @@ class Suppliers extends MY_Controller
       // 'supplier_id' is the database table field name
       // 'supplier' is the input name at $this->input->post('supplier')
 
+      // INCREMENTING: SUPPLY ORDER NUMBER
+      // get supply_orders-starter_number
+      // get supply orders table row or records length
+      // add ++
+
+      $default_starter_supply_order_number = 1000;
+      $supply_orders_count_total_rows = $this->db->count_all_results('NEW_supply_orders_count');
+      // $new_supply_order_number = $starter_supply_order_number + $supply_orders_total_rows + 1;
+      $new_supply_order_number = 1;
+
+      if ($supply_orders_count_total_rows == 0) {
+          $supply_orders_count_data = array(
+              'starter_supply_order_number' => $default_starter_supply_order_number,
+              'last_supply_order_number' => $default_starter_supply_order_number,
+          );
+          $this->db->insert('NEW_supply_orders_count', $supply_orders_count_data);
+          $new_supply_order_number = $default_starter_supply_order_number;
+      } else {
+          // get last row on 'NEW_supply_orders_count'
+          // pull off the 'last_supply_order_number'
+          // set $new_supply_order_number = 'last_supply_order_number' + 1
+
+          // $last_row = $this->db->last_row('NEW_supply_orders_count');
+          // $last_supply_order_number = $last_row->last_supply_order_number;
+          $last_supply_order_number = $this->db->select('last_supply_order_number')->from('NEW_supply_orders_count')->limit(1)->order_by('last_supply_order_number','DESC')->get()->row();
+          $new_supply_order_number = $last_supply_order_number + 1;
+      }
+
+      // get table '$new_supply_orders_count'
+      // if total rows === 0
+      //    set initial number to the one on field 'starter_supply_order_number'
+      //        if no rows or no 'starter_supply_order_number', then set 'starter_supply_order_number' to 1000
+      //    set initial number 'starter_supply_order_number' + 1
+      //    save this number in 'last_supply_order_number'
+      // else
+      // set initial number to the one on field 'last_supply_order_number' + 1
+
       $dataToInsert = array(
           'supplier_id' => $this->input->post('supplier'),
+          'supply_order_number' => $new_supply_order_number,
           'message_to_supplier' => $this->input->post('msgToSupplier'),
           'message_to_receiving' => $this->input->post('msgToReceiving'),
           'created_at' => date('Y-m-d H:i:s'),

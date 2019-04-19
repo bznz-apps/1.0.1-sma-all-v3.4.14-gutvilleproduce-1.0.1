@@ -306,6 +306,11 @@ class Migration_Update317 extends CI_Migration {
           'supply_order_number' => array(
             'type' => 'INT',
             'constraint' => 11,
+            // 'unsigned' => TRUE,
+            // 'default' => 1,
+            // 'auto_increment' => TRUE,
+            // 'null' => FALSE,
+            // 'unique' => TRUE,
           ),
           'description' => array(
             'type' => 'TEXT',
@@ -364,6 +369,24 @@ class Migration_Update317 extends CI_Migration {
       ));
       $this->dbforge->add_key('id', TRUE);
       $this->dbforge->create_table('NEW_supply_orders');
+
+      // -----------------------------------------------------------------------
+      // SUPPLY ORDER COUNT
+
+      $this->dbforge->add_field(array(
+          'starter_supply_order_number' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+          'last_supply_order_number' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+      ));
+      $this->dbforge->add_key('id', TRUE);
+      $this->dbforge->create_table('NEW_supply_orders_count');
 
       // -----------------------------------------------------------------------
       // SUPPLY ORDER PHOTOS
@@ -1158,6 +1181,7 @@ class Migration_Update317 extends CI_Migration {
       // $this->dbforge->drop_table('sample5');
 
       $this->dbforge->create_table('NEW_supply_orders');
+      $this->dbforge->create_table('NEW_supply_orders_count');
       $this->dbforge->create_table('NEW_supply_order_photos');
       $this->dbforge->create_table('NEW_supply_order_items');
       $this->dbforge->create_table('NEW_supply_order_manifests');
