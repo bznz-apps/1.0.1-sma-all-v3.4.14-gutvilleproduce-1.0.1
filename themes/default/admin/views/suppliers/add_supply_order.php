@@ -36,21 +36,56 @@
                 <?php
                 $attrib = array('data-toggle' => 'validator', 'role' => 'form');
                 // echo admin_form_open_multipart("products/add", $attrib)
-                echo admin_form_open_multipart("suppliers/addSupplyOrderLogic", $attrib)
+                echo admin_form_open_multipart("suppliers/handleAddSupplyOrder_logic", $attrib)
                 ?>
 
                 <div class="col-md-12">
+
+
+                  <!-- *******************************************************
+                    SELECT SUPPLIER - USE THIS INPUT WHEN MANY RECORDS DISPLAYED IN dropdown
+                  ******************************************************** -->
+
+                  <?php /*
+                  <div class="form-group all">
+                  */ ?>
+                      <?php /*
+                          <?= lang("product_image", "product_image") ?>
+                      */ ?>
+                      <?php /*
+                          // Uncomment this one
+                          <label><?= "Select Supplier *" ?></label>
+                      */ ?>
+                      <?php /*
+                          // Ucomment just this line below
+                          echo form_input('supplier', (isset($_POST['supplier']) ? $_POST['supplier'] : ''), 'class="form-control ' . ($product ? '' : 'suppliers') . '" id="' . ($product && ! empty($product->supplier1) ? 'supplier1' : 'supplier') . '" placeholder="' . lang("select") . ' ' . lang("supplier") . '" style="width:100%;"');
+                          // echo form_input('supplier', (isset($_POST['supplier']) ? $_POST['supplier'] : ''), 'class="form-control ' . ($product ? '' : 'suppliers') . '" id="' . "form-add_supply_order-supplier" . '" placeholder="' . lang("select") . ' ' . lang("supplier") . '" style="width:100%;"');
+                          // id="form-add_supply_order-supplier"
+                      */ ?>
+                  <?php /*
+                  </div>
+                  */ ?>
 
                     <!-- *******************************************************
                       SELECT SUPPLIER
                     ******************************************************** -->
 
                     <div class="form-group all">
-                        <?php /* <?= lang("product_image", "product_image") ?> */ ?>
+                        <?php /* <label for="mcode" class="col-sm-4 control-label"><?= lang('product_code') ?> *</label> */ ?>
+
                         <label><?= "Select Supplier *" ?></label>
-                        <?php
-                        echo form_input('supplier', (isset($_POST['supplier']) ? $_POST['supplier'] : ''), 'class="form-control ' . ($product ? '' : 'suppliers') . '" id="' . ($product && ! empty($product->supplier1) ? 'supplier1' : 'supplier') . '" placeholder="' . lang("select") . ' ' . lang("supplier") . '" style="width:100%;"');
-                        ?>
+                        <?php /* <label for="mcode" class="col-sm-4 control-label"><?= "Product" ?> *</label> */ ?>
+
+                          <div class="form-group">
+                              <?php
+                              $supp[''] = "";
+                              foreach ($suppliers as $supplier) {
+                                  $supp[$supplier->id] = $supplier->company;
+                              }
+                              echo form_dropdown('supplier', $supp, (isset($_POST['supplier']) ? $_POST['supplier'] : ($supplier ? $supplier->supplier_id : '')), 'class="form-control select" id="supply_order_supplier_id" placeholder="' . lang("select") . " " . lang("supplier") . '" required="required" style="width:100%"')
+                              ?>
+                          </div>
+
                     </div>
 
                     <!-- *******************************************************
@@ -61,7 +96,7 @@
                         <?php /* <?= lang("product_details", "product_details") ?> */ ?>
                         <label><?= "Add Message To Supplier" ?></label>
                         <br>
-                        <?= "\nRequirements description here asdasd asdasd asdas asd." ?>
+                        <?= "\n(Optional) Requirements description here asdasd asdasd asdas asd." ?>
                         <?php /* <?= form_textarea('product_details', (isset($_POST['product_details']) ? $_POST['product_details'] : ($product ? $product->product_details : '')), 'class="form-control" id="details"'); ?> */ ?>
                         <?= form_textarea('msgToSupplier', (isset($_POST['msgToSupplier']) ? $_POST['msgToSupplier'] : ($product ? $product->msgToSupplier : '')), 'class="form-control" id="msgToSupplier"'); ?>
                     </div>
@@ -74,7 +109,7 @@
                         <?php /* <?= lang("product_details", "product_details") ?> */ ?>
                         <label><?= "Add Message to Receiving" ?></label>
                         <br>
-                        <?= "Requirements description here asdasd asdasd asdas asd." ?>
+                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
                         <?php /* <?= form_textarea('product_details', (isset($_POST['product_details']) ? $_POST['product_details'] : ($product ? $product->product_details : '')), 'class="form-control" id="details"'); ?> */ ?>
                         <?= form_textarea('msgToReceiving', (isset($_POST['msgToReceiving']) ? $_POST['msgToReceiving'] : ($product ? $product->msgToReceiving : '')), 'class="form-control" id="msgToReceiving"'); ?>
                     </div>
@@ -85,10 +120,10 @@
 
                     <div class="form-group all">
                         <?php /* <?= lang("product_image", "product_image") ?> */ ?>
-                        <label><?= "Add Image (optional)" ?></label>
+                        <label><?= "Add Image" ?></label>
                         <br>
-                        <?= "Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="product_image" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
+                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <input id="supply_order_image" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
                                data-show-preview="false" accept="image/*" class="form-control file">
                     </div>
 
@@ -98,10 +133,10 @@
 
                     <div class="form-group all">
                         <?php /* <?= lang("product_gallery_images", "images") ?> */ ?>
-                        <label><?= "Add Image Gallery (optional)" ?></label>
+                        <label><?= "Add Image Gallery" ?></label>
                         <br>
-                        <?= "Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="images" type="file" data-browse-label="<?= lang('browse'); ?>" name="userfile[]" multiple="true" data-show-upload="false"
+                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <input id="supply_order_images" type="file" data-browse-label="<?= lang('browse'); ?>" name="userfile[]" multiple="true" data-show-upload="false"
                                data-show-preview="false" class="form-control file" accept="image/*">
                     </div>
                     <div id="img-details"></div>
@@ -113,8 +148,8 @@
                     <div class="form-group all">
                         <?= lang("document", "document") ?>
                         <br>
-                        <?= "Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="document" type="file" data-browse-label="<?= lang('browse'); ?>" name="document" data-show-upload="false"
+                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <input id="supply_order_document" type="file" data-browse-label="<?= lang('browse'); ?>" name="document" data-show-upload="false"
                                data-show-preview="false" class="form-control file">
                     </div>
 
@@ -304,19 +339,60 @@
 
         // localStorage.clear();
 
-        function clearSupplyOrderItemsFromLocalStorage() {
+        function clearLocalStorage() {
           localStorage.clear();
         }
-        window.clearSupplyOrderItemsFromLocalStorage =  clearSupplyOrderItemsFromLocalStorage;
+        window.clearLocalStorage =  clearLocalStorage;
 
         // *********************************************************************
-        // INIT localStorage ITEM 'supplyOrderItems'
+        // CLEAR THIS FORM VALUES FROM localStorage
         // *********************************************************************
 
-        var initSupplyOrderItems = localStorage.getItem('supplyOrderItems');
+        function clearThisFormFronLocalStorage() {
+          localStorage.removeItem('form-add_supply_order-supplier');
+          localStorage.removeItem('form-add_supply_order-message_to_supplier');
+          localStorage.removeItem('form-add_supply_order-message_to_receiving');
+          localStorage.removeItem('form-add_supply_order-image');
+          localStorage.removeItem('form-add_supply_order-image_gallery');
+          localStorage.removeItem('form-add_supply_order-attachment');
+          localStorage.removeItem('form-add_supply_order-items');
+          localStorage.removeItem('form-add_supply_order-items_rows_count');
+        }
+        window.clearThisFormFronLocalStorage =  clearThisFormFronLocalStorage;
+
+        // *********************************************************************
+        // CHECK IF localStorage VALUES FOR INPUTS EXIST
+        // *********************************************************************
+
+        if (localStorage.getItem('form-add_supply_order-supplier')) {
+            // // localStorage.removeItem('slwarehouse');
+            // // SET INPUT VALUE TO THE ONE ON localStorage
+            // console.log("Found value for supplier is: " + localStorage.getItem('form-add_supply_order-supplier'));
+            // $('#supplier').val(localStorage.getItem('form-add_supply_order-supplier'));
+            // $('#supplier').text(localStorage.getItem('form-add_supply_order-supplier')).change();
+            // $('#supplier').select(localStorage.getItem('form-add_supply_order-supplier'));
+            // $('#supplier').filter(localStorage.getItem('form-add_supply_order-supplier'));
+            // // $('#supplier').selected(localStorage.getItem('form-add_supply_order-supplier'));
+        }
+
+        if (localStorage.getItem('form-add_supply_order-message_to_supplier')) {
+            // // localStorage.removeItem('slwarehouse');
+            // // SET INPUT VALUE TO THE ONE ON localStorage
+            // let val = $('#form-add_supply_order-message_to_supplier').val(localStorage.getItem('form-add_supply_order-message_to_supplier'));
+        }
+
+        if (localStorage.getItem('supply_order_document')) {
+            let val = $('#supply_order_document').val(localStorage.getItem('form-add_supply_order-attachment'));
+        }
+
+        // *********************************************************************
+        // INIT localStorage ITEM 'form-add_supply_order-items'
+        // *********************************************************************
+
+        var initSupplyOrderItems = localStorage.getItem('form-add_supply_order-items');
         if (initSupplyOrderItems === null || initSupplyOrderItems === undefined || initSupplyOrderItems.constructor.toString().indexOf("Array") != -1) {
           initSupplyOrderItems = [];
-          localStorage.setItem('supplyOrderItems', JSON.stringify(initSupplyOrderItems));
+          localStorage.setItem('form-add_supply_order-items', JSON.stringify(initSupplyOrderItems));
         }
 
         // *********************************************************************
@@ -327,13 +403,13 @@
 
         function loadSupplyOrderItems() {
 
-            var currentOrderItems = localStorage.getItem('supplyOrderItems');
+            var currentOrderItems = localStorage.getItem('form-add_supply_order-items');
 
             if (currentOrderItems && currentOrderItems.length > 0) {
 
               $('#supplyOrderTable tbody').empty();
 
-              currentOrderItems = JSON.parse(localStorage.getItem('supplyOrderItems'));
+              currentOrderItems = JSON.parse(localStorage.getItem('form-add_supply_order-items'));
 
               currentOrderItems.map(item => {
 
@@ -404,15 +480,15 @@
 
             if (supply_order_product_id && supply_order_product_qty) {
 
-                var currentOrderItems2 = JSON.parse(localStorage.getItem('supplyOrderItems'));
+                var currentOrderItems2 = JSON.parse(localStorage.getItem('form-add_supply_order-items'));
 
-                var rowCount = localStorage.getItem('supplyOrderItemRowCount');
+                var rowCount = localStorage.getItem('form-add_supply_order-items_rows_count');
                 if (rowCount === null || rowCount === undefined) {
                   rowCount = 1;
                 } else {
                   rowCount++;
                 }
-                localStorage.setItem('supplyOrderItemRowCount', rowCount);
+                localStorage.setItem('form-add_supply_order-items_rows_count', rowCount);
 
                 var productsList = <?php echo json_encode($products); ?>;
 
@@ -439,7 +515,7 @@
                 updatedOrderItems.push(...currentOrderItems2);
                 updatedOrderItems.push(orderItem);
 
-                localStorage.setItem('supplyOrderItems', JSON.stringify(updatedOrderItems));
+                localStorage.setItem('form-add_supply_order-items', JSON.stringify(updatedOrderItems));
                 loadSupplyOrderItems();
             }
 
@@ -455,7 +531,7 @@
 
         function removeSupplyOrderItem(rowNo) {
           // console.log("REMOVING ROW: " + rowNo);
-          var orderItems = JSON.parse(localStorage.getItem('supplyOrderItems'));
+          var orderItems = JSON.parse(localStorage.getItem('form-add_supply_order-items'));
           orderItems.map(item => {
             if (rowNo.toString() === item.row.row_no.toString()) {
                 // HELPER FUNCTION TO REMOVE OBJECT FROM ARRAY BY OBJECT ATTRIBUTE
@@ -474,7 +550,7 @@
                 }
                 // HELPER FUNCTION CALL
                 removeByAttr(orderItems, 'item_id', rowNo);
-                localStorage.setItem('supplyOrderItems', JSON.stringify(orderItems));
+                localStorage.setItem('form-add_supply_order-items', JSON.stringify(orderItems));
                 let trID = `#row_${rowNo}`;
                 $(trID).remove();
             }
@@ -491,6 +567,86 @@
           localStorage.clear();
           location.reload();
         });
+
+        //
+
+        $(document).on('change', '#supplier', function(e) {
+
+          let val = $('#form-add_supply_order-supplier').val();
+
+          console.log($(this).val());
+          console.log("chaing");
+
+          // localStorage.setItem('form-add_supply_order-supplier', JSON.stringify(val));
+          localStorage.setItem('form-add_supply_order-supplier', val);
+
+        });
+
+        // // $(document).on('change', '#form-add_supply_order-message_to_supplier', function(e) {
+        // $(document).on('change', '#supplier', function(e) {
+        //   // console.log($(this).val());
+        //   // console.log("chaing");
+        //
+        //   // let val = $('#supplier').val();
+        //   let val = $(this).val();
+        //
+        //   // // localStorage.setItem('form-add_supply_order-supplier', JSON.stringify(val));
+        //   localStorage.setItem('form-add_supply_order-supplier', val);
+        //
+        // });
+
+        // $(document).on('change', '#form-add_supply_order-message_to_supplier', function(e) {
+        $(document).on('input', '#msgToSupplier', function(e) {
+          // console.log($(this).val());
+          console.log("chaing");
+          // let val = $('#form-add_supply_order-message_to_supplier').val();
+          //
+          // // localStorage.setItem('form-add_supply_order-message_to_supplier', JSON.stringify(val));
+          // localStorage.setItem('form-add_supply_order-message_to_supplier', val);
+        });
+
+        $(document).on('change', '#supplier', function(e) {
+          console.log("supplier");
+        });
+        $(document).on('hover', '#msg_to_supplier', function(e) {
+          console.log("msg_to_supplier");
+        });
+        $(document).on('hover', '#msg_to_receiving', function(e) {
+          console.log("msg_to_receiving");
+        });
+        $(document).on('change', '#supply_order_image', function(e) {
+          console.log("supply_order_image");
+          // localStorage.setItem('supply_order_image', JSON.stringify(val));
+          localStorage.setItem('supply_order_image', val);
+        });
+        $(document).on('change', '#supply_order_images', function(e) {
+          console.log("supply_order_images");
+          // localStorage.setItem('supply_order_images', JSON.stringify(val));
+          localStorage.setItem('supply_order_images', val);
+        });
+        $(document).on('change', '#supply_order_document', function(e) {
+          console.log("supply_order_document");
+          // localStorage.setItem('supply_order_document', JSON.stringify(val));
+          localStorage.setItem('form-add_supply_order-attachment', val);
+        });
+
+        // $('#form-add_supply_order-supplier').on('change', function(e) {
+        //   // alert($(this).val());
+        //   console.log($(this).val());
+        //   let val = $('#form-add_supply_order-supplier').val();
+        //   // localStorage.setItem('form-add_supply_order-supplier', JSON.stringify(val));
+        //   localStorage.setItem('form-add_supply_order-supplier', val);
+        // });
+        //
+        // // $('#form-add_supply_order-message_to_supplier').on('change', function(e) {
+        // $('#msgToSupplier').on('change', function(e) {
+        //   // alert($(this).val());
+        //   console.log($(this).val());
+        //   console.log("chaing");
+        //   let val = $('#form-add_supply_order-message_to_supplier').val();
+        //   // localStorage.setItem('form-add_supply_order-message_to_supplier', JSON.stringify(val));
+        //   localStorage.setItem('form-add_supply_order-message_to_supplier', val);
+        // });
 
         // *********************************************************************
         // *********************************************************************

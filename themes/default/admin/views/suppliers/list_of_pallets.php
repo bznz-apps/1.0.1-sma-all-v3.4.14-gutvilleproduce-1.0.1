@@ -1,1 +1,0 @@
-list of pallets - supplier

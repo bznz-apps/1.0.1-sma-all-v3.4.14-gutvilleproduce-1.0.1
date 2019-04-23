@@ -1,27 +1,50 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <style type="text/css" media="screen">
     <?php /*
-    #ReceivingDataTable td:nth-child(7) {
+    #ViewSupplyOrderItemsTable td:nth-child(7) {
         text-align: right;
     }
     <?php if($Owner || $Admin || $this->session->userdata('show_cost')) { ?>
-    #ReceivingDataTable td:nth-child(9) {
+    #ViewSupplyOrderItemsTable td:nth-child(9) {
         text-align: right;
     }
     <?php } if($Owner || $Admin || $this->session->userdata('show_price')) { ?>
-    #ReceivingDataTable td:nth-child(8) {
+    #ViewSupplyOrderItemsTable td:nth-child(8) {
         text-align: right;
     }
     <?php } ?>
     */ ?>
 </style>
+
+<?php /*
+<!-- TIP
+Use this code below, to access php values in jquery, assign php value to an html element:
+<input type="hidden" id ="x_supply_order_id" value="<?php echo $supply_order_id; ?>">
+Then access value inside jquery as:
+console.log($('#x_supply_order_id').val());
+-->
+*/ ?>
+
 <script>
 
     // Default DataTables Code, Leave as is... Starts here --->
 
     var oTable;
     $(document).ready(function () {
-        oTable = $('#ReceivingDataTable').dataTable({
+
+        console.log("Data Passed to this View");
+        console.log('<?php echo $supply_order; ?>');
+        console.log('<?php echo $supply_order_id; ?>');
+        console.log('<?php echo $supply_order_number; ?>');
+        console.log('<?php echo $created_at; ?>');
+        console.log('<?php echo $supplier_id; ?>');
+        console.log('<?php echo $supplier_company; ?>');
+        console.log('<?php echo $message_to_supplier; ?>');
+        console.log('<?php echo $message_to_receiver; ?>');
+        console.log('<?php echo $image; ?>');
+        console.log('<?php echo $attachment; ?>');
+
+        oTable = $('#ViewSupplyOrderItemsTable').dataTable({
             "aaSorting": [[2, "asc"], [3, "asc"]],
             "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "<?= lang('all') ?>"]],
             "iDisplayLength": <?= $Settings->rows_per_page ?>,
@@ -29,7 +52,7 @@
             <?php /*
             'sAjaxSource': '<?= admin_url('suppliers/getSupplyOrdersLogic'.($warehouse_id ? '/'.$warehouse_id : '').($supplier ? '?supplier='.$supplier->id : '')) ?>',
             */ ?>
-            'sAjaxSource': '<?= admin_url('suppliers/getSupplyOrdersLogic')?>',
+            'sAjaxSource': '<?= admin_url('suppliers/handleGetSupplyOrderItems_logic' . ($supply_order_id ? '/' . $supply_order_id : ''))?>',
             'fnServerData': function (sSource, aoData, fnCallback) {
                 aoData.push({
                     "name": "<?= $this->security->get_csrf_token_name() ?>",
@@ -40,7 +63,9 @@
             'fnRowCallback': function (nRow, aData, iDisplayIndex) {
                 var oSettings = oTable.fnSettings();
                 nRow.id = aData[0];
-                nRow.className = "product_link";
+                nRow.className = "supply_order_link";
+                nRow.style = "text-align: center;";
+                // nRow.className = "product_link";
                 //if(aData[7] > aData[9]){ nRow.className = "product_link warning"; } else { nRow.className = "product_link"; }
                 return nRow;
             },
@@ -52,12 +77,15 @@
 
             "aoColumns": [
                 {"bSortable": false, "mRender": checkbox},
-                null, null, null, null, null, null
+                null, // product column
+                null, // quantity column
+                // UNHIDE ACTIONS COLUMN
+                // null  // actions column
 
                 <?php /*
 
                 {"bSortable": false,"mRender": img_hl},
-                null, null, null, null,
+                null, null, null,
                 <?php
                   if($Owner || $Admin) {
                     echo '{"mRender": currencyFormat}, {"mRender": currencyFormat},';
@@ -96,11 +124,8 @@
               // Line below is just an example of using the var lang for localization:
               {column_number: 2, filter_default_label: "[<?=lang('code');?>]", filter_type: "text", data: []},
             */ ?>
-            {column_number: 1, filter_default_label: ".Supply Order No", filter_type: "text", data: []},
-            {column_number: 2, filter_default_label: ".Description", filter_type: "text", data: []},
-            {column_number: 3, filter_default_label: ".SentStatus", filter_type: "text", data: []},
-            {column_number: 4, filter_default_label: ".ReceivedStatus", filter_type: "text", data: []},
-            {column_number: 5, filter_default_label: ".Issued", filter_type: "text", data: []},
+            {column_number: 1, filter_default_label: "[Product]", filter_type: "text", data: []},
+            {column_number: 2, filter_default_label: "[Quantity]", filter_type: "text", data: []},
             <?php /*
             // Description:
             // Check if user is of type Owner or Admin... then based on that choose if we want to show columns Cost and Price
@@ -124,11 +149,20 @@
 
         ], "footer");
 
+        // console.log("oTable is:");
+        // console.log(oTable);
+
     });
 </script>
-<?php if ($Owner || $GP['bulk_actions']) {
+
+<?php
+  // UNHIDE ACTIONS COLUMN
+  /*
+  if ($Owner || $GP['bulk_actions']) {
     echo admin_form_open('products/product_actions'.($warehouse_id ? '/'.$warehouse_id : ''), 'id="action-form"');
-} ?>
+  }
+  */
+?>
 <div class="box">
     <div class="box-header">
 
@@ -138,7 +172,7 @@
           <?php /*
           <i class="fa-fw fa fa-barcode"></i><?= lang('products') . ' (' . ($warehouse_id ? $warehouse->name : lang('all_warehouses')) . ')'.($supplier ? ' ('.lang('supplier').': '.($supplier->company && $supplier->company != '-' ? $supplier->company : $supplier->name).')' : ''); ?>
           */ ?>
-          <i class="fa-fw fa fa-barcode"></i> Supply Orders
+          <i class="fa-fw fa fa-barcode"></i> Supply Order <?php echo $supply_order_number; ?>
         </h2>
 
         <!-- View - Header - Right Side Menu Items -->
@@ -150,11 +184,16 @@
                         <i class="icon fa fa-tasks tip" data-placement="left" title="<?= lang("actions") ?>"></i>
                     </a>
                     <ul class="dropdown-menu pull-right tasks-menus" role="menu" aria-labelledby="dLabel">
+
                         <li>
-                            <a href="<?= admin_url('products/add') ?>">
-                                <i class="fa fa-plus-circle"></i> <?= lang('add_product') ?>
+                            <a href="<?= admin_url('suppliers/addSupplyOrder_view') ?>">
+                              <?php /*  <i class="fa fa-plus-circle"></i> <?= lang('add_product') ?> */ ?>
+                                <i class="fa fa-plus-circle"></i> <?= "Add Supply Order" ?>
                             </a>
                         </li>
+
+                        <?php /*
+
                         <?php if(!$warehouse_id) { ?>
                         <li>
                             <a href="<?= admin_url('products/update_price') ?>" data-toggle="modal" data-target="#myModal">
@@ -185,6 +224,9 @@
                             <i class="fa fa-trash-o"></i> <?= lang('delete_products') ?>
                              </a>
                          </li>
+
+                         */ ?>
+
                     </ul>
                 </li>
                 <?php if (!empty($warehouses)) { ?>
@@ -206,15 +248,54 @@
 
     </div>
 
-    <!-- Table Content -->
+    <!-- TABLE CONTENT - INFO -->
 
     <div class="box-content">
         <div class="row">
             <div class="col-lg-12">
-                <p class="introtext"><?= lang('list_results'); ?></p>
+                <?php /* <p class="introtext"><?= lang('list_results'); ?></p> */ ?>
 
                 <div class="table-responsive">
-                    <table id="ReceivingDataTable" class="table table-bordered table-condensed table-hover table-striped">
+                    <table id="SupplyOrderTable" class="table table-bordered table-condensed table-hover table-striped">
+
+                      <!-- Table Header Row -->
+
+                        <thead>
+                        <tr class="primary">
+
+                          <th style="width:30%; text-align: center;">Supply Order No</th>
+                          <th style="width:30%; text-align: center;">Supplier</th>
+                          <th style="width:30%; text-align: center;">Date</th>
+                          <th style="width:30%; text-align: center;">Image</th>
+                          <th style="width:30%; text-align: center;">Attachment</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td style="width:30%; text-align: center;" class="dataTables_empty"><?php echo $supply_order_number; ?></td>
+                            <td style="width:30%; text-align: center;" class="dataTables_empty"><?php echo $supplier_company; ?></td>
+                            <td style="width:30%; text-align: center;" class="dataTables_empty"><?php echo $created_at; ?></td>
+                            <td style="width:30%; text-align: center;" class="dataTables_empty"><?php echo $image; ?></td>
+                            <td style="width:30%; text-align: center;" class="dataTables_empty"><?php echo $attachment; ?></td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLE CONTENT - ITEMS LIST -->
+
+    <div class="box-content">
+        <div class="row">
+            <div class="col-lg-12">
+                <?php /* <p class="introtext"><?= lang('list_results'); ?></p> */ ?>
+
+                <div class="table-responsive">
+                    <table id="ViewSupplyOrderItemsTable" class="table table-bordered table-condensed table-hover table-striped">
 
                       <!-- Table Header Row -->
 
@@ -252,15 +333,16 @@
 
                           */ ?>
 
-                          <th style="min-width:30px; width: 30px; text-align: center;">
+                          <th style="min-width:30px; max-width:30px; width: 30px; text-align: center;">
                               <input class="checkbox checkth" type="checkbox" name="check"/>
                           </th>
-                          <th>Supply Order No</th>
-                          <th>Description</th>
-                          <th>Sent Status</th>
-                          <th>Received Status</th>
-                          <th>Issued</th>
-                          <th style="min-width:65px; text-align:center;"><?= lang("actions") ?></th>
+                          <th style="width:50%; text-align: center;">Product</th>
+                          <th style="width:50%; text-align: center;">Quantity</th>
+
+                          <?php /*
+                          // UNHIDE ACTIONS COLUMN
+                          <th style="width:20px; text-align:center;"><?= lang("actions") ?></th>
+                          */ ?>
 
                         </tr>
                         </thead>
@@ -273,7 +355,19 @@
                         <!-- Table Footer Row - Filter -->
 
                         <tfoot class="dtFilter">
+
                         <tr class="active">
+
+                          <th style="min-width:30px; max-width:30px; width: 30px; text-align: center;">
+                              <input class="checkbox checkft" type="checkbox" name="check"/>
+                          </th>
+                          <th style="text-align: center;"></th>
+                          <th style="text-align: center;"></th>
+
+                          <?php /*
+                          // UNHIDE ACTIONS COLUMN
+                          <th style="width:20px; text-align:center;"><?= lang("actions") ?></th>
+                          */ ?>
 
                           <?php /*
 
@@ -306,18 +400,9 @@
 
                           */ ?>
 
-                          <th style="min-width:30px; width: 30px; text-align: center;">
-                              <input class="checkbox checkft" type="checkbox" name="check"/>
-                          </th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          <th style="width:65px; text-align:center;"><?= lang("actions") ?></th>
-
                         </tr>
                         </tfoot>
+
                     </table>
                 </div>
             </div>
@@ -331,3 +416,68 @@
     </div>
     <?= form_close() ?>
 <?php } ?>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        // // *********************************************************************
+        // //
+        // // TABLE ROW ACTIONS
+        // //
+        // // *********************************************************************
+        //
+        // // GET TABLE COLUMNS AND ROWS INFORMATION
+        //
+        // var clickedColumn = null;
+        // var clickedRow = null;
+        // var totalColumns = $("#ViewSupplyOrderItemsTable").find('tr')[0].cells.length;
+        // var totalRows = $('#ViewSupplyOrderItemsTable tr').length;
+        //
+        // // GET COLUMN AND ROW CLICKED
+        //
+        // $('#ViewSupplyOrderItemsTable tbody').on('click', 'td', function() {
+        //     clickedColumn = $(this).parent().children().index($(this));
+        //     clickedRow = $(this).parent().parent().children().index($(this).parent());
+        //     // alert('Row: ' + clickedRow + ', Column: ' + clickedColumn);
+        // });
+        //
+        // // GET RECORD ID FOUND ON ROW CLICKED
+        //
+        // $('#ViewSupplyOrderItemsTable tbody').on('click', 'tr', function() {
+        //   // console.log('Clicked Row Info:');
+        //   // console.log($(this));
+        //
+        //   // console.log(totalRows);
+        //
+        //   // console.log("Row Number is: " + clickedRow);
+        //
+        //   var itemID = $(this)[0].id;
+        //
+        //   // NAVIGATE ONLY IF CLICKED COLUMN WAS NOT THE LAST COLUMN
+        //   if (clickedColumn !== totalColumns-1) {
+        //     // ROW MUST HAVE A RECORD ID VALUE IN ITS CONTENT
+        //     if (itemID !== "") {
+        //       // PREVIEW ITEMID
+        //       window.location.href = site.base_url + 'suppliers/previewSupplyOrder/' + itemID;
+        //       // EDIT ITEMID
+        //       // window.location.href = site.base_url + 'suppliers/editSupplyOrder/' + itemID;
+        //     }
+        //   }
+        //
+        // });
+        //
+        // // *********************************************************************
+        // // DISPLAY HAND CURSOR OR POINTER WHEN HOVERING ON TABLE
+        // // *********************************************************************
+        //
+        // $('#ViewSupplyOrderItemsTable tbody').css( 'cursor', 'pointer' );
+        //
+        // // for old IE browsers
+        // $('#ViewSupplyOrderItemsTable tbody').css( 'cursor', 'hand' );
+        //
+        // // *********************************************************************
+        // // *********************************************************************
+        // // *********************************************************************
+
+    });
+</script>

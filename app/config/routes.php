@@ -63,11 +63,13 @@ $route['admin/sample3/(:num)'] = 'admin/sample3/index/$1';
 $route['admin/sample4/(:num)'] = 'admin/sample4/index/$1';
 $route['admin/sample5/(:num)'] = 'admin/sample5/index/$1';
 // New Admin Modules
-$route['admin/suppliers/(:num)'] = 'admin/suppliers/index/$1';
-$route['admin/receiving/(:num)'] = 'admin/receiving/index/$1';
-$route['admin/quality/(:num)'] = 'admin/quality/index/$1';
-$route['admin/warehouses/(:num)'] = 'admin/warehouses/index/$1';
-$route['admin/shipping/(:num)'] = 'admin/shipping/index/$1';
+// $route['admin/suppliers/(:num)'] = 'admin/suppliers/index/$1';
+// $route['admin/receiving/(:num)'] = 'admin/receiving/index/$1';
+// $route['admin/quality/(:num)'] = 'admin/quality/index/$1';
+// $route['admin/warehouses/(:num)'] = 'admin/warehouses/index/$1';
+// $route['admin/shipping/(:num)'] = 'admin/shipping/index/$1';
 
-$route['admin/suppliers/'] = 'admin/suppliers/getSupplyOrders';
-$route['admin/suppliers/'] = 'admin/suppliers/addSupplyOrder';
+// $route['admin/supplyorders/'] = 'admin/suppliers/getSupplyOrders';
+// $route['admin/suppliers/'] = 'admin/suppliers/addSupplyOrder';
+// $route['admin/suppliers/'] = 'admin/suppliers/getSupplyOrder';
+// $route['admin/suppliers/(:num)'] = 'admin/suppliers/getSupplyOrder/$1';

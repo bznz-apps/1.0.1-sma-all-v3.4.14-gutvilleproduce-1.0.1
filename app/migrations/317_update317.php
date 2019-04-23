@@ -451,6 +451,10 @@ class Migration_Update317 extends CI_Migration {
             'unsigned' => TRUE,
             'auto_increment' => TRUE
           ),
+          'manifest_ref_no' => array(
+            'type' => 'TEXT',
+            'null' => TRUE
+          ),
           'supply_order_id' => array(
             'type' => 'INT',
             'constraint' => 11,
@@ -466,6 +470,18 @@ class Migration_Update317 extends CI_Migration {
             'null' => true,
             'on update' => 'NOW()'
           ),
+          'image' => array(
+            'type' => 'VARCHAR(255)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            'default' => 'no_image.png'
+          ),
+          'attachment' => array(
+            'type' => 'VARCHAR(55)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            'default' => null
+          ),
       ));
       $this->dbforge->add_key('id', TRUE);
       $this->dbforge->create_table('NEW_supply_order_manifests');
@@ -480,12 +496,35 @@ class Migration_Update317 extends CI_Migration {
             'unsigned' => TRUE,
             'auto_increment' => TRUE
           ),
+          'code' => array(
+            'type' => 'VARCHAR',
+            'constraint' => 50,
+            'collation' => 'utf8_general_ci',
+            'null' => FALSE,
+          ),
+          'barcode_symbology' => array(
+            'type' => 'VARCHAR',
+            'constraint' => 55,
+            'collation' => 'utf8_general_ci',
+            'null' => FALSE,
+            'default' => 'code128'
+          ),
           'supply_order_id' => array(
             'type' => 'INT',
             'constraint' => 11,
             'null' => TRUE,
           ),
           'manifest_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => TRUE,
+          ),
+          'receiving_report_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => TRUE,
+          ),
+          'warehouse_id' => array(
             'type' => 'INT',
             'constraint' => 11,
             'null' => TRUE,
@@ -504,6 +543,18 @@ class Migration_Update317 extends CI_Migration {
             'type' => 'INT',
             'constraint' => 11,
             'null' => TRUE,
+          ),
+          'image' => array(
+            'type' => 'VARCHAR(255)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            'default' => 'no_image.png'
+          ),
+          'attachment' => array(
+            'type' => 'VARCHAR(55)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            'default' => null
           ),
       ));
       $this->dbforge->add_key('id', TRUE);
@@ -532,6 +583,10 @@ class Migration_Update317 extends CI_Migration {
           'description' => array(
             'type' => 'TEXT',
             'null' => TRUE
+          ),
+          'quantity' => array(
+            'type' => 'INT',
+            'constraint' => 11,
           ),
           // 'quantity' => array(
           //   'name' => 'quantity',
@@ -563,6 +618,15 @@ class Migration_Update317 extends CI_Migration {
             'unsigned' => TRUE,
             'auto_increment' => TRUE
           ),
+          'receiving_report_number' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+          ),
+          'warehouse_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => TRUE,
+          ),
           'supply_order_id' => array(
             'type' => 'INT',
             'constraint' => 11,
@@ -572,6 +636,10 @@ class Migration_Update317 extends CI_Migration {
             'type' => 'INT',
             'constraint' => 11,
             'null' => TRUE,
+          ),
+          'manifest_ref_no' => array(
+            'type' => 'TEXT',
+            'null' => TRUE
           ),
           'created_at' => array(
             'type' => 'varchar',
@@ -588,9 +656,65 @@ class Migration_Update317 extends CI_Migration {
             'type' => 'TEXT',
             'null' => TRUE
           ),
+          'image' => array(
+            'type' => 'VARCHAR(255)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            'default' => 'no_image.png'
+          ),
+          'attachment' => array(
+            'type' => 'VARCHAR(55)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            'default' => null
+          ),
       ));
       $this->dbforge->add_key('id', TRUE);
       $this->dbforge->create_table('NEW_receiving_reports');
+
+      // -----------------------------------------------------------------------
+      // RECEIVINGS COUNT
+
+      $this->dbforge->add_field(array(
+          'starter_receiving_report_number' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+          'last_receiving_report_number' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+      ));
+      $this->dbforge->add_key('id', TRUE);
+      $this->dbforge->create_table('NEW_receiving_reports_count');
+
+      // -----------------------------------------------------------------------
+      // RECEIVING REPORT PHOTOS
+
+      $this->dbforge->add_field(array(
+          'id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'unsigned' => TRUE,
+            'auto_increment' => TRUE,
+            'null' => FALSE,
+          ),
+          'receiving_report_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+          'photo' => array(
+            'type' => 'VARCHAR(100)',
+            // 'constraint' => 11,
+            'collation' => 'utf8_general_ci',
+            'null' => FALSE
+          ),
+      ));
+      $this->dbforge->add_key('id', TRUE);
+      $this->dbforge->create_table('NEW_receiving_reports_photos');
 
       // -----------------------------------------------------------------------
       // Quality Control - Inspection Report
@@ -1188,6 +1312,8 @@ class Migration_Update317 extends CI_Migration {
       $this->dbforge->create_table('NEW_pallets');
       $this->dbforge->create_table('NEW_pallet_items');
       $this->dbforge->create_table('NEW_receiving_reports');
+      $this->dbforge->create_table('NEW_receiving_reports_count');
+      $this->dbforge->create_table('NEW_receiving_reports_photos');
       $this->dbforge->create_table('NEW_quality_control_reports');
       $this->dbforge->create_table('NEW_quality_control_report_item');
       $this->dbforge->create_table('NEW_pickup_orders');

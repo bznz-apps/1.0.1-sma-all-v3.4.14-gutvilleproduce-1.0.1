@@ -1,4 +1,3 @@
-add rack - warehouse
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
 <div class="box">
@@ -13,7 +12,7 @@ add rack - warehouse
         <?php /*
           <h2 class="blue"><i class="fa-fw fa fa-plus"></i><?= lang('add_product'); ?></h2>
         */ ?>
-        <h2 class="blue"><i class="fa-fw fa fa-plus"></i>Add Supply Order</h2>
+        <h2 class="blue"><i class="fa-fw fa fa-plus"></i>Add Manifest</h2>
     </div>
 
     <div class="box-content">
@@ -37,83 +36,50 @@ add rack - warehouse
                 <?php
                 $attrib = array('data-toggle' => 'validator', 'role' => 'form');
                 // echo admin_form_open_multipart("products/add", $attrib)
-                echo admin_form_open_multipart("suppliers/handleAddSupplyOrder_logic", $attrib)
+                echo admin_form_open_multipart("receiving/handleAddManifest_logic", $attrib)
                 ?>
 
                 <div class="col-md-12">
 
-
-                  <!-- *******************************************************
-                    SELECT SUPPLIER - USE THIS INPUT WHEN MANY RECORDS DISPLAYED IN dropdown
-                  ******************************************************** -->
-
-                  <?php /*
-                  <div class="form-group all">
-                  */ ?>
-                      <?php /*
-                          <?= lang("product_image", "product_image") ?>
-                      */ ?>
-                      <?php /*
-                          // Uncomment this one
-                          <label><?= "Select Supplier *" ?></label>
-                      */ ?>
-                      <?php /*
-                          // Ucomment just this line below
-                          echo form_input('supplier', (isset($_POST['supplier']) ? $_POST['supplier'] : ''), 'class="form-control ' . ($product ? '' : 'suppliers') . '" id="' . ($product && ! empty($product->supplier1) ? 'supplier1' : 'supplier') . '" placeholder="' . lang("select") . ' ' . lang("supplier") . '" style="width:100%;"');
-                          // echo form_input('supplier', (isset($_POST['supplier']) ? $_POST['supplier'] : ''), 'class="form-control ' . ($product ? '' : 'suppliers') . '" id="' . "form-add_supply_order-supplier" . '" placeholder="' . lang("select") . ' ' . lang("supplier") . '" style="width:100%;"');
-                          // id="form-add_supply_order-supplier"
-                      */ ?>
-                  <?php /*
-                  </div>
-                  */ ?>
-
                     <!-- *******************************************************
-                      SELECT SUPPLIER
+                      SELECT SUPPLY ORDER
                     ******************************************************** -->
 
                     <div class="form-group all">
                         <?php /* <label for="mcode" class="col-sm-4 control-label"><?= lang('product_code') ?> *</label> */ ?>
 
-                        <label><?= "Select Supplier *" ?></label>
+                        <label><?= "Select Supply Order Number *" ?></label>
                         <?php /* <label for="mcode" class="col-sm-4 control-label"><?= "Product" ?> *</label> */ ?>
 
                           <div class="form-group">
                               <?php
-                              $supp[''] = "";
-                              foreach ($suppliers as $supplier) {
-                                  $supp[$supplier->id] = $supplier->company;
+                              $supp_ord[''] = "";
+                              foreach ($supply_orders as $supply_order) {
+                                  $supp_ord[$supply_order->id] = $supply_order->supply_order_number;
                               }
-                              echo form_dropdown('supplier', $supp, (isset($_POST['supplier']) ? $_POST['supplier'] : ($supplier ? $supplier->supplier_id : '')), 'class="form-control select" id="supply_order_supplier_id" placeholder="' . lang("select") . " " . lang("supplier") . '" required="required" style="width:100%"')
+                              // echo form_dropdown('supply_order', $supp_ord, (isset($_POST['supply_order']) ? $_POST['supply_order'] : ($supply_order ? $supply_order->supplier_id : '')), 'class="form-control select" id="supply_order_number" placeholder="' . lang("select") . " " . lang("supplier") . '" required="required" style="width:100%"')
+                              echo form_dropdown('supply_order', $supp_ord, (isset($_POST['supply_order']) ? $_POST['supply_order'] : ($supply_order ? $supply_order->supplier_id : '')), 'class="form-control select" id="supply_order_number" placeholder="' . lang("select") . " " . "Select Supply Order Number" . '" required="required" style="width:100%"')
                               ?>
                           </div>
 
                     </div>
 
+                    <br>
+
                     <!-- *******************************************************
-                      SUPPLY ORDER MESSAGE TO SUPPLIER
+                      MANIFEST DESCRIPTION/COMMENT
                     ******************************************************** -->
 
                     <div class="form-group all">
                         <?php /* <?= lang("product_details", "product_details") ?> */ ?>
-                        <label><?= "Add Message To Supplier" ?></label>
+                        <label><?= "Add Description *" ?></label>
                         <br>
-                        <?= "\n(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <?= "\n(Required) Requirements description here asdasd asdasd asdas asd." ?>
                         <?php /* <?= form_textarea('product_details', (isset($_POST['product_details']) ? $_POST['product_details'] : ($product ? $product->product_details : '')), 'class="form-control" id="details"'); ?> */ ?>
-                        <?= form_textarea('msgToSupplier', (isset($_POST['msgToSupplier']) ? $_POST['msgToSupplier'] : ($product ? $product->msgToSupplier : '')), 'class="form-control" id="msgToSupplier"'); ?>
+                        <?= form_textarea('supp_ord_description', (isset($_POST['supp_ord_description']) ? $_POST['supp_ord_description'] : ($product ? $product->supp_ord_description : '')), 'class="form-control" id="supp_ord_description"'); ?>
                     </div>
 
-                    <!-- *******************************************************
-                      SUPPLY ORDER MESSAGE TO RECEIVING
-                    ******************************************************** -->
-
-                    <div class="form-group all">
-                        <?php /* <?= lang("product_details", "product_details") ?> */ ?>
-                        <label><?= "Add Message to Receiving" ?></label>
-                        <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <?php /* <?= form_textarea('product_details', (isset($_POST['product_details']) ? $_POST['product_details'] : ($product ? $product->product_details : '')), 'class="form-control" id="details"'); ?> */ ?>
-                        <?= form_textarea('msgToReceiving', (isset($_POST['msgToReceiving']) ? $_POST['msgToReceiving'] : ($product ? $product->msgToReceiving : '')), 'class="form-control" id="msgToReceiving"'); ?>
-                    </div>
+                    <br>
 
                     <!-- *******************************************************
                       IMAGE
@@ -157,88 +123,6 @@ add rack - warehouse
                     <br>
 
                     <!-- *******************************************************
-                      + BUTTON - ADD SUPPLY ORDER ITEM
-                    ******************************************************** -->
-
-                    <div class="form-group all">
-                        <div class="input-group wide-tip">
-                            <div class="input-group-addon" style="padding-left: 10px; padding-right: 10px;">
-                                <i class="fa fa-2x fa-barcode addIcon"></i></a></div>
-                            <?php echo form_input('add_item', '', 'readonly="true" class="form-control input-lg" id="add_item" placeholder="' . lang("add_product_to_order") . '"'); ?>
-                            <?php if ($Owner || $Admin || $GP['products-add']) { ?>
-                            <div class="input-group-addon" style="padding-left: 10px; padding-right: 10px;">
-                                <?php /*
-                                <a href="#" id="addManually" class="tip" title="<?= lang('add_product_manually') ?>">
-                                */ ?>
-                                <a data-toggle="modal" data-target="#addSupplyOrderProductModal" href="#" id="" class="tip" title="<?= lang('add_product_manually') ?>">
-                                    <i class="fa fa-2x fa-plus-circle addIcon" id="addIcon"></i>
-                                </a>
-                            </div>
-                            <?php } if ($Owner || $Admin || $GP['sales-add_gift_card']) { ?>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-
-                    <br>
-
-                    <!-- *******************************************************
-                      TABLE - SUPPLY ORDER ITEMS
-                    ******************************************************** -->
-
-                    <div class="col-md-12">
-                        <div class="control-group table-group">
-                            <label class="table-label"><?= lang("order_items"); ?> *</label>
-
-                            <div class="controls table-controls">
-                                <table id="supplyOrderTable" class="table items table-striped table-bordered table-condensed table-hover sortable_table">
-                                    <thead>
-                                    <tr>
-
-                                        <!-- ***********************************
-                                          TABLE - COLUMN - ID
-                                        ************************************ -->
-
-                                        <th class="col-md-4" style="width: 1% !important;"></th>
-
-                                        <!-- ***********************************
-                                          TABLE - COLUMN - PRODUCT
-                                        ************************************ -->
-
-                                        <th class="col-md-4" style="width: 70% !important;">Product</th>
-
-                                        <!-- ***********************************
-                                          TABLE - COLUMN - QUANTITY
-                                        ************************************ -->
-
-                                        <th class="col-md-4" style="width: 20% !important;">Quantity</th>
-
-                                        <!-- ***********************************
-                                          TABLE - COLUMN - DELETE BUTTON
-                                        ************************************ -->
-
-                                        <th style="width: 8% !important; text-align: center;">
-                                            <i class="fa fa-trash-o" style="opacity:0.5; filter:alpha(opacity=50);"></i>
-                                        </th>
-
-                                        <!-- ***********************************
-                                          TABLE - COLUMN - JUST FOR PATTERN
-                                        ************************************ -->
-
-                                        <th class="col-md-4" style="width: 1% !important;"></th>
-
-                                    </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                    <tfoot></tfoot>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <br>
-
-                    <!-- *******************************************************
                       BUTTON - FORM SUBMIT
                     ******************************************************** -->
 
@@ -246,7 +130,7 @@ add rack - warehouse
                         <!-- SEND SUPPLY ORDER - BUTTON -->
                         <?php /* echo form_submit('add_product', $this->lang->line("add_product"), 'class="btn btn-primary"'); */ ?>
                         <?php echo form_submit('add_product', "Reset", 'class="btn btn-danger" id="supply_order_items-reset_button"'); ?>
-                        <?php echo form_submit('add_product', "Send Order to Supplier", 'class="btn btn-primary"'); ?>
+                        <?php echo form_submit('add_product', "Save Manifest", 'class="btn btn-primary"'); ?>
                     </div>
 
                 </div>
@@ -265,7 +149,7 @@ add rack - warehouse
 
 **************************************************************************** -->
 
-<div class="modal" id="addSupplyOrderProductModal" tabindex="-1" role="dialog" aria-labelledby="mModalLabel" aria-hidden="true">
+<div class="modal" id="addManifestItemModal" tabindex="-1" role="dialog" aria-labelledby="mModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -520,7 +404,7 @@ add rack - warehouse
                 loadSupplyOrderItems();
             }
 
-            $('#addSupplyOrderProductModal').modal('hide');
+            $('#addManifestItemModal').modal('hide');
 
             $('#supply_order_product_qty').val('');
             return false;

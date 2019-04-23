@@ -292,7 +292,7 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <?= lang("reference_no", "slref"); ?>
+                                <?= /* lang("reference_no", "slref"); */ "PO Ref No" ?>
                                 <?php echo form_input('reference_no', (isset($_POST['reference_no']) ? $_POST['reference_no'] : $slnumber), 'class="form-control input-tip" id="slref"'); ?>
                             </div>
                         </div>

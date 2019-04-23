@@ -29,7 +29,7 @@
             <?php /*
             'sAjaxSource': '<?= admin_url('suppliers/getSupplyOrdersLogic'.($warehouse_id ? '/'.$warehouse_id : '').($supplier ? '?supplier='.$supplier->id : '')) ?>',
             */ ?>
-            'sAjaxSource': '<?= admin_url('suppliers/getSupplyOrdersLogic')?>',
+            'sAjaxSource': '<?= admin_url('suppliers/handleGetSupplyOrders_logic')?>',
             'fnServerData': function (sSource, aoData, fnCallback) {
                 aoData.push({
                     "name": "<?= $this->security->get_csrf_token_name() ?>",
@@ -38,12 +38,10 @@
                 $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
             },
             'fnRowCallback': function (nRow, aData, iDisplayIndex) {
-                console.log("aData");
-                console.log(aData);
-
                 var oSettings = oTable.fnSettings();
                 nRow.id = aData[0];
                 nRow.className = "supply_order_link";
+                nRow.style = "text-align: center;";
                 // nRow.className = "product_link";
                 //if(aData[7] > aData[9]){ nRow.className = "product_link warning"; } else { nRow.className = "product_link"; }
                 return nRow;
@@ -100,9 +98,9 @@
               // Line below is just an example of using the var lang for localization:
               {column_number: 2, filter_default_label: "[<?=lang('code');?>]", filter_type: "text", data: []},
             */ ?>
-            {column_number: 1, filter_default_label: "[Supply Order No]", filter_type: "text", data: []},
-            {column_number: 2, filter_default_label: "[Supplier]", filter_type: "text", data: []},
-            {column_number: 3, filter_default_label: "[Date]", filter_type: "text", data: []},
+            {column_number: 1, filter_default_label: "[Date]", filter_type: "text", data: []},
+            {column_number: 2, filter_default_label: "[Supply Order No]", filter_type: "text", data: []},
+            {column_number: 3, filter_default_label: "[Supplier]", filter_type: "text", data: []},
             <?php /*
             // Description:
             // Check if user is of type Owner or Admin... then based on that choose if we want to show columns Cost and Price
@@ -157,7 +155,7 @@
                     <ul class="dropdown-menu pull-right tasks-menus" role="menu" aria-labelledby="dLabel">
 
                         <li>
-                            <a href="<?= admin_url('suppliers/addSupplyOrder') ?>">
+                            <a href="<?= admin_url('suppliers/addSupplyOrder_view') ?>">
                               <?php /*  <i class="fa fa-plus-circle"></i> <?= lang('add_product') ?> */ ?>
                                 <i class="fa fa-plus-circle"></i> <?= "Add Supply Order" ?>
                             </a>
@@ -268,9 +266,9 @@
                           <th style="min-width:30px; max-width:30px; width: 30px; text-align: center;">
                               <input class="checkbox checkth" type="checkbox" name="check"/>
                           </th>
+                          <th style="width:30%; text-align: center;">Date</th>
                           <th style="width:30%; text-align: center;">Supply Order No</th>
                           <th style="width:30%; text-align: center;">Supplier</th>
-                          <th style="width:30%; text-align: center;">Date</th>
                           <th style="width:fit-content; text-align:center;"><?= lang("actions") ?></th>
 
                         </tr>
@@ -383,7 +381,7 @@
             // ROW MUST HAVE A RECORD ID VALUE IN ITS CONTENT
             if (itemID !== "") {
               // PREVIEW ITEMID
-              window.location.href = site.base_url + 'suppliers/previewSupplyOrder/' + itemID;
+              window.location.href = site.base_url + 'suppliers/viewSupplyOrder_view/' + itemID;
               // EDIT ITEMID
               // window.location.href = site.base_url + 'suppliers/editSupplyOrder/' + itemID;
             }

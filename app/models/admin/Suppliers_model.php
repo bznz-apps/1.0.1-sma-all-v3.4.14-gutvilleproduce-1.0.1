@@ -1074,6 +1074,18 @@ class Suppliers_model extends CI_Model
     // SUPPLY ORDERS
     // *************************************************************************
 
+    public function getAllSupplyOrders()
+    {
+        $q = $this->db->get('NEW_supply_orders');
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return FALSE;
+    }
+
     public function addSupplyOrder($data)
     {
         // if ($this->db->insert('companies', $data)) {
@@ -1102,7 +1114,31 @@ class Suppliers_model extends CI_Model
         // }
 
         if ($this->db->insert('NEW_supply_orders', $data)) {
-            return true;
+            // return true;
+
+            // if (!empty($items)) {
+            //     foreach ($items as $item) {
+            //       $this->db->insert('NEW_supply_order_items', $item)
+            //         // $variants = explode('|', $item['variants']);
+            //         // unset($item['variants']);
+            //         // if ($this->db->insert('products', $item)) {
+            //         //     $item_id = $this->db->insert_id();
+            //         //     foreach ($variants as $variant) {
+            //         //         if ($variant && trim($variant) != '') {
+            //         //             $vat = array('product_id' => $item_id, 'name' => trim($variant));
+            //         //             $this->db->insert('product_variants', $vat);
+            //         //         }
+            //         //     }
+            //         // }
+            //     }
+            //     return true;
+            // }
+
+            // return true;
+
+            // RETURN ID OF THE INSERTED RECORD
+            $insert_id = $this->db->insert_id();
+            return  $insert_id;
         }
         return false;
 
@@ -1121,24 +1157,32 @@ class Suppliers_model extends CI_Model
         // return false;
     }
 
-    public function addSupplyOrderItems($products = array())
+    public function addSupplyOrderItems($items)
     {
-        if (!empty($products)) {
-            foreach ($products as $product) {
-                $variants = explode('|', $product['variants']);
-                unset($product['variants']);
-                if ($this->db->insert('products', $product)) {
-                    $product_id = $this->db->insert_id();
-                    foreach ($variants as $variant) {
-                        if ($variant && trim($variant) != '') {
-                            $vat = array('product_id' => $product_id, 'name' => trim($variant));
-                            $this->db->insert('product_variants', $vat);
-                        }
-                    }
-                }
+        if (!empty($items)) {
+            foreach ($items as $item) {
+              $this->db->insert('NEW_supply_order_items', $item);
             }
             return true;
         }
+
+        // if (!empty($products)) {
+        //     foreach ($products as $product) {
+        //         $variants = explode('|', $product['variants']);
+        //         unset($product['variants']);
+        //         if ($this->db->insert('products', $product)) {
+        //             $product_id = $this->db->insert_id();
+        //             foreach ($variants as $variant) {
+        //                 if ($variant && trim($variant) != '') {
+        //                     $vat = array('product_id' => $product_id, 'name' => trim($variant));
+        //                     $this->db->insert('product_variants', $vat);
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     return true;
+        // }
+
         return false;
     }
 
@@ -1154,5 +1198,28 @@ class Suppliers_model extends CI_Model
         }
         return FALSE;
     }
+
+    public function getSupplyOrderByID($id)
+    {
+        $q = $this->db->get_where('NEW_supply_orders', array('id' => $id), 1);
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+        return FALSE;
+    }
+
+
+    // get photos or multiple items with same ID
+    // public function getProductPhotos($id)
+    // {
+    //     $q = $this->db->get_where("product_photos", array('product_id' => $id));
+    //     if ($q->num_rows() > 0) {
+    //         foreach (($q->result()) as $row) {
+    //             $data[] = $row;
+    //         }
+    //         return $data;
+    //     }
+    // }
+
 
 }

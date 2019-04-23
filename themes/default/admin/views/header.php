@@ -517,14 +517,14 @@
                             <ul>
 
                                 <li id="products_index">
-                                    <a class="submenu" href="<?= admin_url('suppliers/getSupplyOrders'); ?>">
+                                    <a class="submenu" href="<?= admin_url('suppliers/getSupplyOrders_view'); ?>">
                                         <i class="fa fa-barcode"></i>
                                         <span class="text"> List of Supply Orders </span>
                                     </a>
                                 </li>
 
                                 <li id="products_index">
-                                    <a class="submenu" href="<?= admin_url('suppliers/addSupplyOrder'); ?>">
+                                    <a class="submenu" href="<?= admin_url('suppliers/addSupplyOrder_view'); ?>">
                                         <i class="fa fa-barcode"></i>
                                         <span class="text"> Add Supply Order </span>
                                     </a>
@@ -559,49 +559,53 @@
                             <ul>
 
                                 <li id="products_index">
-                                    <a class="submenu" href="<?= admin_url('receiving/getReceivings'); ?>">
+                                    <a class="submenu" href="<?= admin_url('receiving/getReceivings_view'); ?>">
                                         <i class="fa fa-barcode"></i>
                                         <span class="text"> Lista de Recibos </span>
                                     </a>
                                 </li>
 
                                 <li id="products_index">
-                                    <a class="submenu" href="<?= admin_url('receiving/addReceiving'); ?>">
+                                    <a class="submenu" href="<?= admin_url('receiving/addReceiving_view'); ?>">
                                         <i class="fa fa-barcode"></i>
                                         <span class="text"> Agregar Recibo </span>
                                     </a>
                                 </li>
 
+                                <?php /*
+
                                 <li id="products_index">
-                                    <a class="submenu" href="<?= admin_url('suppliers/getManifests'); ?>">
+                                    <a class="submenu" href="<?= admin_url('receiving/getManifests_view'); ?>">
                                         <i class="fa fa-barcode"></i>
                                         <span class="text"> List of Manifests </span>
                                     </a>
                                 </li>
 
                                 <li id="products_index">
-                                    <a class="submenu" href="<?= admin_url('suppliers/addManifest'); ?>">
+                                    <a class="submenu" href="<?= admin_url('receiving/addManifest_view'); ?>">
                                         <i class="fa fa-barcode"></i>
                                         <span class="text"> Add Manifest </span>
                                     </a>
                                 </li>
+                                
+                                */ ?>
 
                                 <li id="products_index">
-                                    <a class="submenu" href="<?= admin_url('suppliers/getPallets'); ?>">
+                                    <a class="submenu" href="<?= admin_url('warehouses/getPallets_view'); ?>">
                                         <i class="fa fa-barcode"></i>
                                         <span class="text"> List of Pallets </span>
                                     </a>
                                 </li>
 
                                 <li id="products_index">
-                                    <a class="submenu" href="<?= admin_url('suppliers/addPallet'); ?>">
+                                    <a class="submenu" href="<?= admin_url('warehouses/addPallet_view'); ?>">
                                         <i class="fa fa-barcode"></i>
                                         <span class="text"> Add Pallet </span>
                                     </a>
                                 </li>
 
                                 <li id="products_index">
-                                    <a class="submenu" href="<?= admin_url('suppliers/printPalletBarcodeLabel'); ?>">
+                                    <a class="submenu" href="<?= admin_url('warehouses/printPalletBarcodeLabel'); ?>">
                                         <i class="fa fa-barcode"></i>
                                         <span class="text"> Print Pallet Barcode/Label </span>
                                     </a>
@@ -622,14 +626,14 @@
                             <ul>
 
                                 <li id="products_index">
-                                    <a class="submenu" href="<?= admin_url('quality/getInspections'); ?>">
+                                    <a class="submenu" href="<?= admin_url('quality/getInspections_view'); ?>">
                                         <i class="fa fa-barcode"></i>
                                         <span class="text"> List of Inspections </span>
                                     </a>
                                 </li>
 
                                 <li id="products_index">
-                                    <a class="submenu" href="<?= admin_url('quality/addInspection'); ?>">
+                                    <a class="submenu" href="<?= admin_url('quality/addInspection_view'); ?>">
                                         <i class="fa fa-barcode"></i>
                                         <span class="text"> Add Inspection </span>
                                     </a>
@@ -668,6 +672,14 @@
                             <ul>
 
                                 <li id="system_settings_warehouses">
+                                    <a href="<?= admin_url('system_settings/warehouses') ?>">
+                                        <i class="fa fa-building-o"></i><span class="text"> <?= /* lang('warehouses'); */ "List of Warehouses" ?></span>
+                                    </a>
+                                </li>
+
+                                <?php /*
+
+                                <li id="system_settings_warehouses">
                                     <a href="<?= admin_url('warehouses/getWarehouses') ?>">
                                         <i class="fa fa-building-o"></i><span class="text"> List of Warehouses </span>
                                     </a>
@@ -679,15 +691,17 @@
                                     </a>
                                 </li>
 
+                                */ ?>
+
                                 <li id="products_index">
-                                    <a class="submenu" href="<?= admin_url('warehouses/getPallets'); ?>">
+                                    <a class="submenu" href="<?= admin_url('warehouses/getPallets_view'); ?>">
                                         <i class="fa fa-barcode"></i>
                                         <span class="text"> List Pallets </span>
                                     </a>
                                 </li>
 
                                 <li id="products_index">
-                                    <a class="submenu" href="<?= admin_url('warehouses/addPallet'); ?>">
+                                    <a class="submenu" href="<?= admin_url('warehouses/addPallet_view'); ?>">
                                         <i class="fa fa-barcode"></i>
                                         <span class="text"> Add Pallet </span>
                                     </a>
@@ -701,14 +715,14 @@
                                 </li>
 
                                 <li id="products_index">
-                                    <a class="submenu" href="<?= admin_url('warehouses/getRacks'); ?>">
+                                    <a class="submenu" href="<?= admin_url('warehouses/getRacks_view'); ?>">
                                         <i class="fa fa-barcode"></i>
                                         <span class="text"> List Racks </span>
                                     </a>
                                 </li>
 
                                 <li id="products_index">
-                                    <a class="submenu" href="<?= admin_url('warehouses/addRack'); ?>">
+                                    <a class="submenu" href="<?= admin_url('warehouses/addRack_view'); ?>">
                                         <i class="fa fa-barcode"></i>
                                         <span class="text"> Add Rack </span>
                                     </a>
@@ -999,28 +1013,28 @@
                                                     <ul>
 
                                                         <li id="products_index">
-                                                            <a class="submenu" href="<?= admin_url('shipping/getPickupOrders'); ?>">
+                                                            <a class="submenu" href="<?= admin_url('shipping/getPickUpOrders_view'); ?>">
                                                                 <i class="fa fa-barcode"></i>
                                                                 <span class="text"> Pick Up Orders </span>
                                                             </a>
                                                         </li>
 
                                                         <li id="products_index">
-                                                            <a class="submenu" href="<?= admin_url('shipping/addPickupOrder'); ?>">
+                                                            <a class="submenu" href="<?= admin_url('shipping/addPickUpOrder_view'); ?>">
                                                                 <i class="fa fa-barcode"></i>
                                                                 <span class="text"> Add Pick Up Order </span>
                                                             </a>
                                                         </li>
 
                                                         <li id="products_index">
-                                                            <a class="submenu" href="<?= admin_url('shipping/getBOL'); ?>">
+                                                            <a class="submenu" href="<?= admin_url('shipping/getBillsOfLading_view'); ?>">
                                                                 <i class="fa fa-barcode"></i>
                                                                 <span class="text"> Bills of Lading </span>
                                                             </a>
                                                         </li>
 
                                                         <li id="products_index">
-                                                            <a class="submenu" href="<?= admin_url('shipping/addBOL'); ?>">
+                                                            <a class="submenu" href="<?= admin_url('shipping/addBillOfLading_view'); ?>">
                                                                 <i class="fa fa-barcode"></i>
                                                                 <span class="text"> Add Bill of Lading </span>
                                                             </a>

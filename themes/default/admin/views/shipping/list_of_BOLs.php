@@ -1,4 +1,4 @@
-list of pallets - warehouse
+list of bol
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <style type="text/css" media="screen"></style>
 <script>
