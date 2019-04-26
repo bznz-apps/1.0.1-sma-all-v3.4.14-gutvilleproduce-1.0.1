@@ -63,6 +63,15 @@ class Warehouses_model extends CI_Model
     // WAREHOUSES
     // *************************************************************************
 
+    public function getWarehouseByID($id)
+    {
+        $q = $this->db->get_where('warehouses', array('id' => $id), 1);
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+        return FALSE;
+    }
+
     public function getAllWarehouses()
     {
         $q = $this->db->get('warehouses');

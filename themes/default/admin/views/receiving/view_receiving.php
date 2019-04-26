@@ -227,6 +227,17 @@ console.log($('#x_supply_order_id').val());
         </div>
     </div>
 
+    <div class="box-header" style="background-color: white"></div>
+    <div class="box-header">
+        <h2 class="blue">
+            <?php /*
+            <i class="fa-fw fa fa-barcode"></i><?= lang('products') . ' (' . ($warehouse_id ? $warehouse->name : lang('all_warehouses')) . ')'.($supplier ? ' ('.lang('supplier').': '.($supplier->company && $supplier->company != '-' ? $supplier->company : $supplier->name).')' : ''); ?>
+            */ ?>
+            Receiving Report <?php echo $receiving_report->receiving_report_number; ?> - List of Pallets
+        </h2>
+    </div>
+
+
     <!-- TABLE CONTENT - ITEMS LIST -->
 
     <div class="box-content">
@@ -247,7 +258,7 @@ console.log($('#x_supply_order_id').val());
                           </th>
 
                               <th style="width:20%; text-align: center;">Date</th>
-                              <th style="width:30%; text-align: center;">Code</th>
+                              <th style="width:30%; text-align: center;">Pallet Code</th>
                               <th style="width:30%; text-align: center;">Rack</th>
                               <th style="width:10%; text-align: center;">Image</th>
                               <th style="width:10%; text-align: center;">Attachment</th>
@@ -295,8 +306,6 @@ console.log($('#x_supply_order_id').val());
         </div>
     </div>
 
-
-
     <!-- PALLET DETAILS -->
 
     <!-- TABLE CONTENT - INFO -->
@@ -307,6 +316,16 @@ console.log($('#x_supply_order_id').val());
 
         foreach ($palletsWithItems as $onePalletWithItem) {
     ?>
+
+            <div class="box-header" style="background-color: white"></div>
+            <div class="box-header">
+                <h2 class="blue">
+                    <?php /*
+                    <i class="fa-fw fa fa-barcode"></i><?= lang('products') . ' (' . ($warehouse_id ? $warehouse->name : lang('all_warehouses')) . ')'.($supplier ? ' ('.lang('supplier').': '.($supplier->company && $supplier->company != '-' ? $supplier->company : $supplier->name).')' : ''); ?>
+                    */ ?>
+                    Pallet Code <?php echo $onePalletWithItem['code']; ?>
+                </h2>
+            </div>
 
             <div class="box-content">
                 <div class="row">
@@ -321,7 +340,7 @@ console.log($('#x_supply_order_id').val());
                                 <tr class="primary">
 
                                     <th style="width:20%; text-align: center;">Date</th>
-                                    <th style="width:30%; text-align: center;">Code</th>
+                                    <th style="width:30%; text-align: center;">Pallet Code</th>
                                     <th style="width:30%; text-align: center;">Rack</th>
                                     <th style="width:10%; text-align: center;">Image</th>
                                     <th style="width:10%; text-align: center;">Attachment</th>
@@ -346,56 +365,56 @@ console.log($('#x_supply_order_id').val());
                 </div>
             </div>
 
+            <div class="box-content">
+                <div class="row">
+                    <div class="col-lg-12">
 
-            <?php
-                $palletItems = $onePalletWithItem['items'];
-                // echo '<pre>'; print_r($palletItems); echo '</pre>';
-                // echo "<br>";
+                        <div class="table-responsive">
+                            <table id="" class="table table-bordered table-condensed table-hover table-striped">
 
-                foreach ($palletItems as $item => $value) {
+                                <!-- Table Header Row -->
 
-                  // echo "palletItems[item]->product_id: " . $palletItems[$item]->product_id;
-                  // echo "<br>";
-                  // echo "palletItems[item]->quantity: " . $palletItems[$item]->quantity;
-                  // echo "<br>";
+                                <thead>
+                                <tr class="primary">
 
-            ?>
+                                    <th style="width:50%; text-align: center;">Product</th>
+                                    <th style="width:50%; text-align: center;">Quantity</th>
 
-                    <div class="box-content">
-                        <div class="row">
-                            <div class="col-lg-12">
+                                </tr>
+                                </thead>
 
-                                <div class="table-responsive">
-                                    <table id="" class="table table-bordered table-condensed table-hover table-striped">
+                                <?php
+                                    $palletItems = $onePalletWithItem['items'];
+                                    // echo '<pre>'; print_r($palletItems); echo '</pre>';
+                                    // echo "<br>";
 
-                                        <!-- Table Header Row -->
+                                    foreach ($palletItems as $item => $value) {
 
-                                        <thead>
-                                        <tr class="primary">
+                                      // echo "palletItems[item]->product_id: " . $palletItems[$item]->product_id;
+                                      // echo "<br>";
+                                      // echo "palletItems[item]->quantity: " . $palletItems[$item]->quantity;
+                                      // echo "<br>";
 
-                                            <th style="width:50%; text-align: center;">Product</th>
-                                            <th style="width:50%; text-align: center;">Quantity</th>
+                                ?>
 
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
+                                    <tbody>
+                                    <tr>
 
-                                            <td style="width:50%; text-align: center;" class="dataTables_empty"><?php echo $palletItems[$item]->product_id; ?></td>
-                                            <td style="width:50%; text-align: center;" class="dataTables_empty"><?php echo $palletItems[$item]->quantity; ?></td>
+                                        <td style="width:50%; text-align: center;" class="dataTables_empty"><?php echo $palletItems[$item]->product_id; ?></td>
+                                        <td style="width:50%; text-align: center;" class="dataTables_empty"><?php echo $palletItems[$item]->quantity; ?></td>
 
-                                        </tr>
-                                        </tbody>
+                                    </tr>
+                                    </tbody>
 
-                                    </table>
-                                </div>
-                            </div>
+                                <?php
+                                    }
+                                ?>
+
+                            </table>
                         </div>
                     </div>
-
-            <?php
-                }
-            ?>
+                </div>
+            </div>
 
     <?php
         }

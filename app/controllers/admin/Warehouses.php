@@ -188,15 +188,130 @@ class Warehouses extends MY_Controller
     $this->page_construct('warehouses/list_of_pallets', $meta, $this->data);
   }
 
-  function handleGetPallet_logic()
+  function handleGetPallets_logic()
   {
+      $this->sma->checkPermissions('index');
+
+      // Using the datatables library instead of using models
+      $this->load->library('datatables');
+
+      // ID, Date (created_at) , code, supply_order_id, receiving_report_id, manifest_id, warehouse_id, rack_id, image, attachment
+
+      // Query
+      $this->datatables
+        ->select($this->db->dbprefix('NEW_pallets') . ".id as id, created_at, code, supply_order_id, receiving_report_id, manifest_id, warehouse_id, rack_id, image, attachment")
+        // ->select($this->db->dbprefix('NEW_pallets') . ".id as id, " . $this->db->dbprefix('NEW_supply_orders') . ".supply_order as supply_order_id, " . "created_at")
+        // ->join('NEW_supply_orders', 'NEW_supply_orders.id=NEW_pallets.supply_order_id', 'left')
+        ->from("NEW_pallets")
+          ->add_column(
+              "Actions",
+              "<div class=\"text-center\">
+
+                  <a href='#' class='tip po' title='<b>"
+                    // . $this->lang->line("delete_supplier")
+                    . "Delete Pallet"
+                    . "</b>' data-content=\"<p>"
+                    . lang('r_u_sure')
+                    . "</p><a class='btn btn-danger po-delete' href='"
+                    . admin_url('warehouses/handleDeletePallet_logic/$1')
+                    . "'>" . lang('i_m_sure')
+                    . "</a> <button class='btn po-close'>"
+                    . lang('no')
+                    . "</button>\"  rel='popover'>
+                    <i class=\"fa fa-trash-o\"></i>
+                  </a>
+
+              </div>",
+              "id"
+            );
+
+      echo $this->datatables->generate();
   }
 
   function viewPallet_view($id) {
+
+    $pallet = $this->warehouses_model->getPalletByID($id);
+
+    // -------------------------------------------------------------------------
+
+    $supply_order_id = $pallet->$supply_order_id;
+    $manifest_id = $pallet->$manifest_id;
+    $receiving_report_id = $pallet->$receiving_report_id;
+    $warehouse_id = $pallet->$warehouse_id;
+    $rack_id = $pallet->$rack_id;
+
+    // -------------------------------------------------------------------------
+
+    $supply_order_data = $this->suppliers_model->getSupplyOrderByID($supply_order_id);
+    // $supply_order_data = $this->receiving_model->getCompanyByID($manifest_id);
+    $receiving_data = $this->receiving_model->getReceivingReportByID($receiving_report_id);
+    $warehouse_data = $this->warehouses_model->getWarehouseByID($warehouse_id);
+    $rack_data = $this->warehouses_model->getRackByID($rack_id);
+
+    // -------------------------------------------------------------------------
+
+    $supply_order_number = $supply_order_data->supply_order_number;
+    $receiving_ref_no = $receiving_data->receiving_report_number;
+    $manifest_ref_no = $receiving_data->manifest_ref_no;
+    $warehouse = $warehouse_data->name;
+
+    $rack_column = $rack_data->column;
+    $rack_row = $rack_data->row;
+    $rack_z_index = $rack_data->z_index;
+    $rack_floor_level = $rack_data->floor_level;
+
+    // -------------------------------------------------------------------------
+
+    $this->data['pallet'] = $pallet;
+    $this->data['pallet_id'] = $id;
+    $this->data['created_at'] = $pallet->created_at;
+    $this->data['code'] = $pallet->code;
+    $this->data['supply_order_number'] = $supply_order_number;
+    $this->data['receiving_ref_no'] = $receiving_ref_no;
+    $this->data['manifest_ref_no'] = $manifest_ref_no;
+    $this->data['warehouse'] = $warehouse;
+    $this->data['rack'] = $rack_column . "-" . $rack_row . "-" . $rack_z_index . "-" . $rack_floor_level;
+    $this->data['image'] = $pallet->image;
+    $this->data['attachment'] = $pallet->attachment;
+
+    // -------------------------------------------------------------------------
+
+    $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('warehouses/getPallets_view'), 'page' => "Pallets"), array('link' => '#', 'page' => "Pallet " . $pallet->code));
+    $meta = array('page_title' => "Pallet " . $pallet->code, 'bc' => $bc);
+
+    // -------------------------------------------------------------------------
+
     $this->page_construct('warehouses/view_pallet', $meta, $this->data);
   }
 
   function handleGetPalletItems_logic($pallet_id = null) {
+      $this->sma->checkPermissions('index');
+      $this->load->library('datatables');
+      // Query
+      $this->datatables
+      ->select($this->db->dbprefix('NEW_pallet_items') . ".id as id, product_id, quantity")
+      ->from("NEW_pallet_items")
+      ->where('pallet_id', $pallet_id)
+      ->add_column(
+          "Actions",
+          "<div class=\"text-center\">
+              <a href='#' class='tip po' title='<b>"
+                . $this->lang->line("delete_supplier")
+                . "</b>' data-content=\"<p>"
+                . lang('r_u_sure')
+                . "</p><a class='btn btn-danger po-delete' href='"
+                . admin_url('warehouses/handleDeletePalletItem_logic/$1')
+                . "'>" . lang('i_m_sure')
+                . "</a> <button class='btn po-close'>"
+                . lang('no')
+                . "</button>\"  rel='popover'>
+                <i class=\"fa fa-trash-o\"></i>
+              </a>
+          </div>",
+          "id"
+      );
+
+        echo $this->datatables->generate();
   }
 
   // ---------------------------------------------------------------------------
@@ -215,6 +330,20 @@ class Warehouses extends MY_Controller
   // ---------------------------------------------------------------------------
 
   function handleDeletePallet_logic($id) {
+
+      $this->sma->checkPermissions(NULL, TRUE);
+
+      if ($this->input->get('id')) {
+          $id = $this->input->get('id');
+      }
+
+      if ($this->warehouses_model->deletePallet($id)) {
+          if($this->input->is_ajax_request()) {
+              $this->sma->send_json(array('error' => 0, 'msg' => "Pallet Deleted"));
+          }
+          $this->session->set_flashdata('message', "Pallet Deleted");
+      }
+
   }
 
   // ---------------------------------------------------------------------------
@@ -281,6 +410,19 @@ class Warehouses extends MY_Controller
   // ---------------------------------------------------------------------------
 
   function handleDeleteRack_logic($id) {
+
+      $this->sma->checkPermissions(NULL, TRUE);
+
+      if ($this->input->get('id')) {
+          $id = $this->input->get('id');
+      }
+
+      if ($this->warehouses_model->deleteRack($id)) {
+          if($this->input->is_ajax_request()) {
+              $this->sma->send_json(array('error' => 0, 'msg' => "Rack Deleted"));
+          }
+          $this->session->set_flashdata('message', "Rack Deleted");
+      }
   }
 
 }

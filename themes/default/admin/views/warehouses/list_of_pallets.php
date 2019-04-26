@@ -1,4 +1,3 @@
-list of pallets - warehouse
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <style type="text/css" media="screen"></style>
 <script>
@@ -7,15 +6,16 @@ list of pallets - warehouse
 
     var oTable;
     $(document).ready(function () {
-        oTable = $('#ManifestsDataTable').dataTable({
-            "aaSorting": [[2, "asc"], [3, "asc"]],
+        oTable = $('#PalletsDataTable').dataTable({
+            // "aaSorting": [[2, "asc"], [3, "asc"]],
+            "aaSorting": [[1, "desc"]], // array of [row_number, sorting_asc_or_desc]
             "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "<?= lang('all') ?>"]],
             "iDisplayLength": <?= $Settings->rows_per_page ?>,
             'bProcessing': true, 'bServerSide': true,
             <?php /*
             'sAjaxSource': '<?= admin_url('receiving/getSupplyOrdersLogic'.($warehouse_id ? '/'.$warehouse_id : '').($supplier ? '?supplier='.$supplier->id : '')) ?>',
             */ ?>
-            'sAjaxSource': '<?= admin_url('receiving/handleGetManifests_logic')?>',
+            'sAjaxSource': '<?= admin_url('warehouses/handleGetPallets_logic')?>',
             'fnServerData': function (sSource, aoData, fnCallback) {
                 aoData.push({
                     "name": "<?= $this->security->get_csrf_token_name() ?>",
@@ -26,7 +26,7 @@ list of pallets - warehouse
             'fnRowCallback': function (nRow, aData, iDisplayIndex) {
                 var oSettings = oTable.fnSettings();
                 nRow.id = aData[0];
-                nRow.className = "supply_order_link";
+                nRow.className = "pallet_link";
                 nRow.style = "text-align: center;";
                 // nRow.className = "product_link";
                 //if(aData[7] > aData[9]){ nRow.className = "product_link warning"; } else { nRow.className = "product_link"; }
@@ -37,13 +37,20 @@ list of pallets - warehouse
 
             "aoColumns": [
                 {"bSortable": false, "mRender": checkbox},
-                null, null, null
+                null, null, null, null, null, null, null, null, null, null
             ]
 
         })
         .fnSetFilteringDelay().dtFilter([
-            {column_number: 1, filter_default_label: "[Search Supply Order No]", filter_type: "text", data: []},
-            {column_number: 2, filter_default_label: "[Search Date]", filter_type: "text", data: []},
+            {column_number: 1, filter_default_label: "[Date]", filter_type: "text", data: []},
+            {column_number: 2, filter_default_label: "[Code]", filter_type: "text", data: []},
+            {column_number: 3, filter_default_label: "[Supply Order No]", filter_type: "text", data: []},
+            {column_number: 4, filter_default_label: "[Receiving Ref No]", filter_type: "text", data: []},
+            {column_number: 5, filter_default_label: "[Manifest Ref No]", filter_type: "text", data: []},
+            {column_number: 6, filter_default_label: "[Warehouse]", filter_type: "text", data: []},
+            {column_number: 7, filter_default_label: "[Rack]", filter_type: "text", data: []},
+            {column_number: 8, filter_default_label: "[Image]", filter_type: "text", data: []},
+            {column_number: 9, filter_default_label: "[Attachment]", filter_type: "text", data: []},
         ], "footer");
     });
 </script>
@@ -61,7 +68,7 @@ list of pallets - warehouse
           <?php /*
           <i class="fa-fw fa fa-barcode"></i><?= lang('products') . ' (' . ($warehouse_id ? $warehouse->name : lang('all_warehouses')) . ')'.($supplier ? ' ('.lang('supplier').': '.($supplier->company && $supplier->company != '-' ? $supplier->company : $supplier->name).')' : ''); ?>
           */ ?>
-          <i class="fa-fw fa fa-barcode"></i> Manifests
+          <i class="fa-fw fa fa-barcode"></i> Pallets
         </h2>
 
         <!-- View - Header - Right Side Menu Items -->
@@ -75,9 +82,9 @@ list of pallets - warehouse
                     <ul class="dropdown-menu pull-right tasks-menus" role="menu" aria-labelledby="dLabel">
 
                         <li>
-                            <a href="<?= admin_url('receiving/addManifest_view') ?>">
+                            <a href="<?= admin_url('warehouses/addPallet_view') ?>">
                               <?php /*  <i class="fa fa-plus-circle"></i> <?= lang('add_product') ?> */ ?>
-                                <i class="fa fa-plus-circle"></i> <?= "Add Manifest" ?>
+                                <i class="fa fa-plus-circle"></i> <?= "Add Pallet" ?>
                             </a>
                         </li>
 
@@ -110,7 +117,7 @@ list of pallets - warehouse
                 <p class="introtext"><?= lang('list_results'); ?></p>
 
                 <div class="table-responsive">
-                    <table id="ManifestsDataTable" class="table table-bordered table-condensed table-hover table-striped">
+                    <table id="PalletsDataTable" class="table table-bordered table-condensed table-hover table-striped">
 
                       <!-- Table Header Row -->
 
@@ -120,8 +127,15 @@ list of pallets - warehouse
                           <th style="min-width:30px; max-width:30px; width: 30px; text-align: center;">
                               <input class="checkbox checkth" type="checkbox" name="check"/>
                           </th>
-                          <th style="width:50%; text-align: center;">Supply Order No</th>
-                          <th style="width:50%; text-align: center;">Date</th>
+                          <th style="width:10%; text-align: center;">Date</th>
+                          <th style="width:10%; text-align: center;">Code</th>
+                          <th style="width:10%; text-align: center;">Supply<br>Order No</th>
+                          <th style="width:10%; text-align: center;">Receiving<br>Ref No</th>
+                          <th style="width:10%; text-align: center;">Manifest<br>Ref No</th>
+                          <th style="width:10%; text-align: center;">Warehouse</th>
+                          <th style="width:10%; text-align: center;">Rack</th>
+                          <th style="width:10%; text-align: center;">Image</th>
+                          <th style="width:10%; text-align: center;">Attachment</th>
                           <th style="width:fit-content; text-align:center;"><?= lang("actions") ?></th>
 
                         </tr>
@@ -141,6 +155,13 @@ list of pallets - warehouse
                           <th style="min-width:30px; max-width:30px; width: 30px; text-align: center;">
                               <input class="checkbox checkft" type="checkbox" name="check"/>
                           </th>
+                          <th style="text-align: center;"></th>
+                          <th style="text-align: center;"></th>
+                          <th style="text-align: center;"></th>
+                          <th style="text-align: center;"></th>
+                          <th style="text-align: center;"></th>
+                          <th style="text-align: center;"></th>
+                          <th style="text-align: center;"></th>
                           <th style="text-align: center;"></th>
                           <th style="text-align: center;"></th>
                           <th style="width:fit-content; text-align:center;"><?= lang("actions") ?></th>
@@ -174,12 +195,12 @@ list of pallets - warehouse
 
         var clickedColumn = null;
         var clickedRow = null;
-        var totalColumns = $("#ManifestsDataTable").find('tr')[0].cells.length;
-        var totalRows = $('#ManifestsDataTable tr').length;
+        var totalColumns = $("#PalletsDataTable").find('tr')[0].cells.length;
+        var totalRows = $('#PalletsDataTable tr').length;
 
         // GET COLUMN AND ROW CLICKED
 
-        $('#ManifestsDataTable tbody').on('click', 'td', function() {
+        $('#PalletsDataTable tbody').on('click', 'td', function() {
             clickedColumn = $(this).parent().children().index($(this));
             clickedRow = $(this).parent().parent().children().index($(this).parent());
             // alert('Row: ' + clickedRow + ', Column: ' + clickedColumn);
@@ -187,7 +208,7 @@ list of pallets - warehouse
 
         // GET RECORD ID FOUND ON ROW CLICKED
 
-        $('#ManifestsDataTable tbody').on('click', 'tr', function() {
+        $('#PalletsDataTable tbody').on('click', 'tr', function() {
           // console.log('Clicked Row Info:');
           // console.log($(this));
 
@@ -202,7 +223,7 @@ list of pallets - warehouse
             // ROW MUST HAVE A RECORD ID VALUE IN ITS CONTENT
             if (itemID !== "") {
               // PREVIEW ITEMID
-              window.location.href = site.base_url + 'receiving/viewManifest_view/' + itemID;
+              window.location.href = site.base_url + 'warehouses/viewPallet_view/' + itemID;
               // EDIT ITEMID
               // window.location.href = site.base_url + 'receiving/editSupplyOrder/' + itemID;
             }
@@ -214,10 +235,10 @@ list of pallets - warehouse
         // DISPLAY HAND CURSOR OR POINTER WHEN HOVERING ON TABLE
         // *********************************************************************
 
-        $('#ManifestsDataTable tbody').css( 'cursor', 'pointer' );
+        $('#PalletsDataTable tbody').css( 'cursor', 'pointer' );
 
         // for old IE browsers
-        $('#ManifestsDataTable tbody').css( 'cursor', 'hand' );
+        $('#PalletsDataTable tbody').css( 'cursor', 'hand' );
 
         // *********************************************************************
         // *********************************************************************

@@ -754,7 +754,6 @@ class Suppliers extends MY_Controller
       echo "Edit Supply Order ID: " . $id;
     }
 
-
     function addSupplyOrder_view()
     {
       // $this->sma->checkPermissions();

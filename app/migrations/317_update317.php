@@ -727,6 +727,28 @@ class Migration_Update317 extends CI_Migration {
             'auto_increment' => TRUE
           ),
 
+          'inspection_no' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            // 'unsigned' => TRUE,
+            // 'default' => 1,
+            // 'auto_increment' => TRUE,
+            // 'null' => FALSE,
+            // 'unique' => TRUE,
+          ),
+          'receiving_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => TRUE,
+          ),
+          'created_at' => array(
+            'type' => 'varchar', // timestam?
+            'constraint' => 250,
+            'null' => true,
+            'on update' => 'NOW()'
+            // default 'CURRENT_TIMESTAMP'
+          ),
+
           // Fields according to Gutville's Report
 
           'lot_n' => array(
@@ -820,6 +842,50 @@ class Migration_Update317 extends CI_Migration {
       $this->dbforge->create_table('NEW_quality_control_reports');
 
       // -----------------------------------------------------------------------
+      // INSPECTION REPORT COUNT
+
+      $this->dbforge->add_field(array(
+          'starter_no' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+          'last_no' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+      ));
+      $this->dbforge->add_key('id', TRUE);
+      $this->dbforge->create_table('NEW_quality_control_reports_count');
+
+      // -----------------------------------------------------------------------
+      // INSPECTION REPORT PHOTOS
+
+      $this->dbforge->add_field(array(
+          'id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'unsigned' => TRUE,
+            'auto_increment' => TRUE,
+            'null' => FALSE,
+          ),
+          'inspection_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+          'photo' => array(
+            'type' => 'VARCHAR(100)',
+            // 'constraint' => 11,
+            'collation' => 'utf8_general_ci',
+            'null' => FALSE
+          ),
+      ));
+      $this->dbforge->add_key('id', TRUE);
+      $this->dbforge->create_table('NEW_quality_control_report_photos');
+
+      // -----------------------------------------------------------------------
       // Quality Control - Inspection Item
 
       $this->dbforge->add_field(array(
@@ -830,6 +896,11 @@ class Migration_Update317 extends CI_Migration {
             'auto_increment' => TRUE
           ),
 
+          'inspection_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => TRUE,
+          ),
           'pallet_id' => array(
             'type' => 'INT',
             'constraint' => 11,
@@ -883,6 +954,10 @@ class Migration_Update317 extends CI_Migration {
             'type' => 'TEXT',
             'null' => TRUE
           ),
+          'weight' => array(
+            'type' => 'TEXT',
+            'null' => TRUE
+          ),
           'scars_russet_bruset' => array(
             'type' => 'TEXT',
             'null' => TRUE
@@ -909,6 +984,24 @@ class Migration_Update317 extends CI_Migration {
             'unsigned' => TRUE,
             'auto_increment' => TRUE
           ),
+
+          'pickup_order_no' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            // 'unsigned' => TRUE,
+            // 'default' => 1,
+            // 'auto_increment' => TRUE,
+            // 'null' => FALSE,
+            // 'unique' => TRUE,
+          ),
+          'created_at' => array(
+            'type' => 'varchar', // timestam?
+            'constraint' => 250,
+            'null' => true,
+            'on update' => 'NOW()'
+            // default 'CURRENT_TIMESTAMP'
+          ),
+
           'sale_id' => array(
             'type' => 'INT',
             'constraint' => 11,
@@ -1011,6 +1104,50 @@ class Migration_Update317 extends CI_Migration {
       $this->dbforge->create_table('NEW_pickup_orders');
 
       // -----------------------------------------------------------------------
+      // PICK UP ORDER COUNT
+
+      $this->dbforge->add_field(array(
+          'starter_no' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+          'last_no' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+      ));
+      $this->dbforge->add_key('id', TRUE);
+      $this->dbforge->create_table('NEW_pickup_orders_count');
+
+      // -----------------------------------------------------------------------
+      // PICK UP ORDER PHOTOS
+
+      $this->dbforge->add_field(array(
+          'id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'unsigned' => TRUE,
+            'auto_increment' => TRUE,
+            'null' => FALSE,
+          ),
+          'pickup_order_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+          'photo' => array(
+            'type' => 'VARCHAR(100)',
+            // 'constraint' => 11,
+            'collation' => 'utf8_general_ci',
+            'null' => FALSE
+          ),
+      ));
+      $this->dbforge->add_key('id', TRUE);
+      $this->dbforge->create_table('NEW_pickup_order_photos');
+
+      // -----------------------------------------------------------------------
       // PICK UP ORDER ITEM
 
       $this->dbforge->add_field(array(
@@ -1065,6 +1202,11 @@ class Migration_Update317 extends CI_Migration {
             'constraint' => 11,
             'unsigned' => TRUE,
             'auto_increment' => TRUE
+          ),
+
+          'bol_no' => array(
+            'type' => 'INT',
+            'constraint' => 11,
           ),
           'created_at' => array(
             'type' => 'varchar',
@@ -1227,6 +1369,50 @@ class Migration_Update317 extends CI_Migration {
       $this->dbforge->create_table('NEW_bills_of_lading');
 
       // -----------------------------------------------------------------------
+      // BILLS OF LADING COUNT
+
+      $this->dbforge->add_field(array(
+          'starter_no' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+          'last_no' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+      ));
+      $this->dbforge->add_key('id', TRUE);
+      $this->dbforge->create_table('NEW_bills_of_lading_count');
+
+      // -----------------------------------------------------------------------
+      // BILL OF LADING PHOTOS
+
+      $this->dbforge->add_field(array(
+          'id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'unsigned' => TRUE,
+            'auto_increment' => TRUE,
+            'null' => FALSE,
+          ),
+          'bol_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+          'photo' => array(
+            'type' => 'VARCHAR(100)',
+            // 'constraint' => 11,
+            'collation' => 'utf8_general_ci',
+            'null' => FALSE
+          ),
+      ));
+      $this->dbforge->add_key('id', TRUE);
+      $this->dbforge->create_table('NEW_bill_of_lading_photos');
+
+      // -----------------------------------------------------------------------
       // RACKS
 
       $this->dbforge->add_field(array(
@@ -1315,10 +1501,16 @@ class Migration_Update317 extends CI_Migration {
       $this->dbforge->create_table('NEW_receiving_reports_count');
       $this->dbforge->create_table('NEW_receiving_reports_photos');
       $this->dbforge->create_table('NEW_quality_control_reports');
+      $this->dbforge->create_table('NEW_quality_control_reports_count');
+      $this->dbforge->create_table('NEW_quality_control_report_photos');
       $this->dbforge->create_table('NEW_quality_control_report_item');
       $this->dbforge->create_table('NEW_pickup_orders');
+      $this->dbforge->create_table('NEW_pickup_orders_count');
+      $this->dbforge->create_table('NEW_pickup_order_photos');
       $this->dbforge->create_table('NEW_pickup_order_item');
       $this->dbforge->create_table('NEW_bills_of_lading');
+      $this->dbforge->create_table('NEW_bills_of_lading_count');
+      $this->dbforge->create_table('NEW_bill_of_lading_photos');
       $this->dbforge->create_table('NEW_racks');
     }
 
