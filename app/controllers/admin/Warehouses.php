@@ -383,7 +383,7 @@ class Warehouses extends MY_Controller
     $this->page_construct('warehouses/list_of_racks', $meta, $this->data);
   }
 
-  function handleGetRack_logic()
+  function handleGetRacks_logic()
   {
   }
 

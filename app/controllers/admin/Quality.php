@@ -198,15 +198,94 @@ class Quality extends MY_Controller
     $this->page_construct('quality/list_of_inspections', $meta, $this->data);
   }
 
-  function handleGetInspection_logic()
+  function handleGetInspections_logic()
   {
+    // $this->sma->checkPermissions('index');
+
+    // Using the datatables library instead of using models
+    $this->load->library('datatables');
+
+    // Query
+    $this->datatables
+      ->select($this->db->dbprefix('NEW_quality_control_reports') . ".id as id, created_at, inspection_date, inspection_no, receiving_id, lot_n, grower_shipper, inspection_name")
+      // THIS BELOW IS FAILING AGAIN... JUST IN SUPPLIER ORDERS
+      // ->select($this->db->dbprefix('NEW_receiving_reports') . ".id as id, " . $this->db->dbprefix('NEW_supply_orders') . ".supply_order as supply_order_id, " . "created_at")
+      // ->join('NEW_supply_orders', 'NEW_supply_orders.id=NEW_receiving_reports.supply_order_id', 'left')
+      ->from("NEW_quality_control_reports")
+          ->add_column(
+              "Actions",
+              "<div class=\"text-center\">
+
+                  <a href='#' class='tip po' title='<b>"
+                    // . $this->lang->line("delete_supplier")
+                    . "Delete Inspection"
+                    . "</b>' data-content=\"<p>"
+                    . lang('r_u_sure')
+                    . "</p><a class='btn btn-danger po-delete' href='"
+                    . admin_url('quality/handleDeleteInspection_logic/$1')
+                    . "'>" . lang('i_m_sure')
+                    . "</a> <button class='btn po-close'>"
+                    . lang('no')
+                    . "</button>\"  rel='popover'>
+                    <i class=\"fa fa-trash-o\"></i>
+                  </a>
+
+              </div>",
+              "id"
+          );
+
+    echo $this->datatables->generate();
   }
 
   function viewInspection_view($id) {
+
+    $inspection_report = $this->quality_model->getQualityReportByID($id);
+
+    // echo '<pre>'; print_r($palletsWithItems); echo '</pre>';
+
+    $this->data['inspection_id'] = $id;
+    $this->data['inspection_created_at'] = $inspection_report->created_at;
+    $this->data['inspection_date'] = $inspection_report->inspection_date;
+    $this->data['inspection_no'] = $inspection_report->inspection_no;
+    $this->data['inspection_receiving_id'] = $inspection_report->receiving_id;
+    $this->data['inspection_lot_n'] = $inspection_report->lot_n;
+    $this->data['inspection_grower_shipper'] = $inspection_report->grower_shipper;
+    $this->data['inspection_name'] = $inspection_report->inspection_name;
+
+    $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('quality/getInspections_view'), 'page' => "Inspections"), array('link' => '#', 'page' => "Inspection No " . $inspection_report->inspection_no));
+    $meta = array('page_title' => "Inspection No " . $inspection_report->inspection_no, 'bc' => $bc);
+
     $this->page_construct('quality/view_inspection', $meta, $this->data);
   }
 
   function handleGetInspectionItems_logic($inspection_id = null) {
+      $this->sma->checkPermissions('index');
+      $this->load->library('datatables');
+      // Query
+      $this->datatables
+      ->select($this->db->dbprefix('NEW_quality_control_report_item') . ".id as id, sise, sample, temp, presion, ripe, mold, cleam, color, firm, mechanical_damage, weight, scars_russet_bruset, over_ripe, total")
+      ->from("NEW_quality_control_report_item")
+      ->where('inspection_id', $inspection_id)
+      ->add_column(
+          "Actions",
+          "<div class=\"text-center\">
+              <a href='#' class='tip po' title='<b>"
+                . $this->lang->line("delete_supplier")
+                . "</b>' data-content=\"<p>"
+                . lang('r_u_sure')
+                . "</p><a class='btn btn-danger po-delete' href='"
+                . admin_url('warehouses/handleDeleteInspectionItem_logic/$1')
+                . "'>" . lang('i_m_sure')
+                . "</a> <button class='btn po-close'>"
+                . lang('no')
+                . "</button>\"  rel='popover'>
+                <i class=\"fa fa-trash-o\"></i>
+              </a>
+          </div>",
+          "id"
+      );
+
+      echo $this->datatables->generate();
   }
 
   // ---------------------------------------------------------------------------
@@ -225,6 +304,20 @@ class Quality extends MY_Controller
   // ---------------------------------------------------------------------------
 
   function handleDeleteInspection_logic($id) {
+
+      $this->sma->checkPermissions(NULL, TRUE);
+
+      if ($this->input->get('id')) {
+          $id = $this->input->get('id');
+      }
+
+      if ($this->quality_model->deleteQualityReport($id)) {
+          if($this->input->is_ajax_request()) {
+              $this->sma->send_json(array('error' => 0, 'msg' => "Inspection Deleted"));
+          }
+          $this->session->set_flashdata('message', "Inspection Deleted");
+      }
+
   }
 
 
