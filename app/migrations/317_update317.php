@@ -1428,6 +1428,10 @@ class Migration_Update317 extends CI_Migration {
             'null' => TRUE,
           ),
 
+          'name' => array(
+            'type' => 'TEXT',
+            'null' => TRUE
+          ),
           'column' => array(
             'type' => 'TEXT',
             'null' => TRUE
@@ -1458,14 +1462,53 @@ class Migration_Update317 extends CI_Migration {
             'null' => TRUE,
           ),
           'rack_usage' => array(
-            'type' => 'ENUM("regular_storage","newest_items","clearance_items","damaged_items","returned_items","refurbished_items","expired_items","layaway_items")',
-            'default' => 'regular_storage',
+            'type' => 'ENUM("default","newest_items","clearance_items","damaged_items","returned_items","refurbished_items","expired_items","layaway_items")',
+            'default' => 'default',
             'null' => TRUE,
+          ),
+
+          'image' => array(
+            'type' => 'VARCHAR(255)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            // 'default' => null
+          ),
+          'attachment' => array(
+            'type' => 'VARCHAR(55)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            // 'default' => null
           ),
 
       ));
       $this->dbforge->add_key('id', TRUE);
       $this->dbforge->create_table('NEW_racks');
+
+      // -----------------------------------------------------------------------
+      // RACK PHOTOS
+
+      $this->dbforge->add_field(array(
+          'id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'unsigned' => TRUE,
+            'auto_increment' => TRUE,
+            'null' => FALSE,
+          ),
+          'rack_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+          'photo' => array(
+            'type' => 'VARCHAR(100)',
+            // 'constraint' => 11,
+            'collation' => 'utf8_general_ci',
+            'null' => FALSE
+          ),
+      ));
+      $this->dbforge->add_key('id', TRUE);
+      $this->dbforge->create_table('NEW_rack_photos');
 
       // -----------------------------------------------------------------------
       // XXXXXXX
@@ -1480,6 +1523,15 @@ class Migration_Update317 extends CI_Migration {
       //////////////////////////////////////////////////////////////////////////
 
       // -----------------------------------------------------------------------
+      // UDPATE SALES - SALE NO
+
+      $fields = array(
+          'sale_no' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+          ),
+      );
+      $this->dbforge->add_column('sales', $fields);
 
     }
 
@@ -1512,6 +1564,7 @@ class Migration_Update317 extends CI_Migration {
       $this->dbforge->create_table('NEW_bills_of_lading_count');
       $this->dbforge->create_table('NEW_bill_of_lading_photos');
       $this->dbforge->create_table('NEW_racks');
+      $this->dbforge->create_table('NEW_rack_photos');
     }
 
 }

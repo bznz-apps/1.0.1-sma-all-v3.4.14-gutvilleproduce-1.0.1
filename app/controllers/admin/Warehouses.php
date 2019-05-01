@@ -56,6 +56,7 @@ class Warehouses extends MY_Controller
   function addPallet_view()
   {
     $this->data['warehouses'] = $this->warehouses_model->getAllWarehouses();
+    $this->data['racks'] = $this->warehouses_model->getAllRacks();
     $this->data['receiving_reports'] = $this->receiving_model->getAllReceivingReports();
     $this->data['products'] = $this->site->getAllProducts();
     $this->page_construct('warehouses/add_pallet', $meta, $this->data);
@@ -73,7 +74,8 @@ class Warehouses extends MY_Controller
 
       // $this->form_validation->set_message('is_natural_no_zero', lang("no_zero_required"));
       $this->form_validation->set_rules('warehouse_id', 'warehouse_id', 'required');
-      $this->form_validation->set_rules('receiving_id', 'receiving_id', 'required');
+      // $this->form_validation->set_rules('rack_id', 'rack_id', 'required');
+      // $this->form_validation->set_rules('receiving_id', 'receiving_id', 'required');
 
       // ***********************************************************************
       // RUN FORM VALIDATION
@@ -113,6 +115,7 @@ class Warehouses extends MY_Controller
 
       $dataToInsert = array(
           'warehouse_id' => $this->input->post('warehouse_id'),
+          'rack_id' => $this->input->post('rack_id'),
           'receiving_report_id' => $this->input->post('receiving_id'),
           'description' => $this->input->post('pallet_note'),
           'image' => $this->input->post('pallet_image'),
@@ -185,6 +188,9 @@ class Warehouses extends MY_Controller
 
   function getPallets_view()
   {
+    $bc = array(array('link' => base_url() . "admin", 'page' => lang('home')), array('link' => '#', 'page' => /* lang('products') */ "Pallets" ));
+    $meta = array('page_title' => /* lang('products') */ "Pallets", 'bc' => $bc);
+
     $this->page_construct('warehouses/list_of_pallets', $meta, $this->data);
   }
 
@@ -284,14 +290,14 @@ class Warehouses extends MY_Controller
     $this->page_construct('warehouses/view_pallet', $meta, $this->data);
   }
 
-  function handleGetPalletItems_logic($pallet_id = null) {
+  function handleGetPalletItems_logic($rack_id = null) {
       $this->sma->checkPermissions('index');
       $this->load->library('datatables');
       // Query
       $this->datatables
       ->select($this->db->dbprefix('NEW_pallet_items') . ".id as id, product_id, quantity")
       ->from("NEW_pallet_items")
-      ->where('pallet_id', $pallet_id)
+      ->where('rack_id', $rack_id)
       ->add_column(
           "Actions",
           "<div class=\"text-center\">
@@ -311,7 +317,7 @@ class Warehouses extends MY_Controller
           "id"
       );
 
-        echo $this->datatables->generate();
+      echo $this->datatables->generate();
   }
 
   // ---------------------------------------------------------------------------
@@ -367,11 +373,57 @@ class Warehouses extends MY_Controller
 
   function addRack_view()
   {
+    $warehouses = $this->warehouses_model->getAllWarehouses();
+    $this->data['warehouses'] = $warehouses;
     $this->page_construct('warehouses/add_rack', $meta, $this->data);
   }
 
   function handleAddRack_logic()
   {
+      $this->form_validation->set_rules('rack_warehouse', 'rack_warehouse', 'required');
+      $this->form_validation->set_rules('rack_column', 'rack_column', 'required');
+      $this->form_validation->set_rules('rack_row', 'rack_row', 'required');
+      $this->form_validation->set_rules('rack_z_index', 'rack_z_index', 'required');
+      $this->form_validation->set_rules('rack_floor_level', 'rack_floor_level', 'required');
+      $this->form_validation->set_rules('rack_usage', 'rack_usage', 'required');
+
+      if ($this->form_validation->run() == true) {
+      } else {
+          $this->session->set_flashdata('error', validation_errors());
+          admin_redirect('warehouses/addRack_view');
+      }
+
+      $rack_name =
+          $this->input->post('rack_column')
+        . $this->input->post('rack_row')
+        . " "
+        . "Z"
+        . $this->input->post('rack_z_index')
+        . " "
+        . $this->input->post('rack_floor_level');
+
+      $dataToInsert = array(
+          'warehouse_id' => $this->input->post('rack_warehouse'),
+          'name' => $rack_name,
+          'column' => $this->input->post('rack_column'),
+          'row' => $this->input->post('rack_row'),
+          'z_index' => $this->input->post('rack_z_index'),
+          'floor_level' => $this->input->post('rack_floor_level'),
+          'rack_usage' => $this->input->post('rack_usage'),
+          'comments' => $this->input->post('rack_comments'),
+          // 'created_at' => date('Y-m-d H:i:s'),
+      );
+
+      $rack_id = $this->warehouses_model->addRack($dataToInsert);
+
+      if ($rack_id == true) {
+        $this->session->set_flashdata('message', 'New Rack Added Successfully');
+        admin_redirect('warehouses/getRacks_view');
+      } else {
+        $this->session->set_flashdata('error', 'Something went wrong, please try again later.');
+        admin_redirect('warehouses/addRack_view');
+      }
+
   }
 
   // ---------------------------------------------------------------------------
@@ -385,13 +437,90 @@ class Warehouses extends MY_Controller
 
   function handleGetRacks_logic()
   {
+      $this->sma->checkPermissions('index');
+
+      // Using the datatables library instead of using models
+      $this->load->library('datatables');
+
+      // ID, Date (created_at) , code, supply_order_id, receiving_report_id, manifest_id, warehouse_id, rack_id, image, attachment
+
+      // Query
+      $this->datatables
+        ->select($this->db->dbprefix('NEW_racks') . ".id as id, warehouse_id, name, column, row, z_index, floor_level, rack_usage, status")
+        // ->select($this->db->dbprefix('NEW_racks') . ".id as id, " . $this->db->dbprefix('NEW_supply_orders') . ".supply_order as supply_order_id, " . "created_at")
+        // ->join('NEW_supply_orders', 'NEW_supply_orders.id=NEW_racks.supply_order_id', 'left')
+        ->from("NEW_racks")
+          ->add_column(
+              "Actions",
+              "<div class=\"text-center\">
+
+                  <a href='#' class='tip po' title='<b>"
+                    // . $this->lang->line("delete_supplier")
+                    . "Delete Rack"
+                    . "</b>' data-content=\"<p>"
+                    . lang('r_u_sure')
+                    . "</p><a class='btn btn-danger po-delete' href='"
+                    . admin_url('warehouses/handleDeleteRack_logic/$1')
+                    . "'>" . lang('i_m_sure')
+                    . "</a> <button class='btn po-close'>"
+                    . lang('no')
+                    . "</button>\"  rel='popover'>
+                    <i class=\"fa fa-trash-o\"></i>
+                  </a>
+
+              </div>",
+              "id"
+            );
+
+      echo $this->datatables->generate();
   }
 
   function viewRack_view($id) {
+    $rack_data = $this->warehouses_model->getRackByID($id);
+
+    $this->data['rack_id'] = $id;
+    $this->data['rack_warehouse'] = $rack_data->warehouse_id;
+    $this->data['rack_name'] = $rack_data->name;
+    $this->data['rack_column'] = $rack_data->column;
+    $this->data['rack_row'] = $rack_data->row;
+    $this->data['rack_z_index'] = $rack_data->z_index;
+    $this->data['rack_floor_level'] = $rack_data->floor_level;
+    $this->data['rack_usage'] = $rack_data->rack_usage;
+    $this->data['rack_status'] = $rack_data->status;
+
     $this->page_construct('warehouses/view_rack', $meta, $this->data);
   }
 
   function handleGetRackItems_logic($rack_id = null) {
+
+    $this->sma->checkPermissions('index');
+    $this->load->library('datatables');
+    // Query
+    $this->datatables
+    ->select($this->db->dbprefix('NEW_pallets') . ".id as id, code, image, attachment")
+    ->from("NEW_pallets")
+    ->where('rack_id', $rack_id)
+    ->add_column(
+        "Actions",
+        "<div class=\"text-center\">
+            <a href='#' class='tip po' title='<b>"
+              . $this->lang->line("delete_supplier")
+              . "</b>' data-content=\"<p>"
+              . lang('r_u_sure')
+              . "</p><a class='btn btn-danger po-delete' href='"
+              . admin_url('warehouses/handleDeleteRackItem_logic/$1')
+              . "'>" . lang('i_m_sure')
+              . "</a> <button class='btn po-close'>"
+              . lang('no')
+              . "</button>\"  rel='popover'>
+              <i class=\"fa fa-trash-o\"></i>
+            </a>
+        </div>",
+        "id"
+    );
+
+    echo $this->datatables->generate();
+
   }
 
   // ---------------------------------------------------------------------------

@@ -89,6 +89,65 @@
 
                   </div>
 
+                  <!-- *******************************************************
+                    SELECT RACK
+                  ******************************************************** -->
+
+                  <div class="form-group all">
+                      <?php /* <label for="mcode" class="col-sm-4 control-label"><?= lang('product_code') ?> *</label> */ ?>
+
+                      <label><?= "Rack" ?></label>
+                      <?php /* <label for="mcode" class="col-sm-4 control-label"><?= "Product" ?> *</label> */ ?>
+
+                        <div class="form-group">
+                            <?php
+
+                            // // if(!isset($warehouse_id) || trim($warehouse_id) == '')
+                            // if ($_POST['rack_id'] == "")
+                            // {
+                            //
+                            //   // isset($_POST['rack_id'])
+                            //   //echo form_dropdown('rack_id', $whouse_rack, (isset($_POST['rack_id']) ? $_POST['rack_id'] : ($rack ? $rack->id : '')), 'class="form-control select" id="select_rack_id" placeholder="' . lang("select") . " " . "Warehouse First" . '" required="required" style="width:100%"')
+                            // }
+                            // else
+                            // {
+                            //     $whouse_rack[''] = "";
+                            //     foreach ($racks as $rack) {
+                            //         // $whouse_rack[$rack->id] = $rack->id;
+                            //         $whouse_rack[$rack->id] = $rack->name;
+                            //     }
+                            //     // echo form_dropdown('warehouse_id', $whouse_rack, (isset($_POST['warehouse_id']) ? $_POST['warehouse_id'] : ($rack ? $rack->name : '')), 'class="form-control select" id="select_warehouse_id" placeholder="' . lang("select") . " " . lang("supplier") . '" required="required" style="width:100%"')
+                            //     echo form_dropdown('rack_id', $whouse_rack, (isset($_POST['rack_id']) ? $_POST['rack_id'] : ($rack ? $rack->id : '')), 'class="form-control select" id="select_rack_id" placeholder="' . lang("select") . " " . "Rack" . '" required="required" style="width:100%"')
+                            // }
+
+                            $whouse_rack[''] = "";
+                            foreach ($racks as $rack) {
+                                // $whouse_rack[$rack->id] = $rack->id;
+
+                                $warehouse_name = "";
+                                $rack_name = "";
+
+                                foreach ($warehouses as $wh) {
+                                    if ($wh->id == $rack->warehouse_id) {
+                                      $warehouse_name = $wh->name;
+                                    }
+                                }
+
+                                // $whouse_rack[$rack->id] = $rack->name;
+                                $whouse_rack[$rack->id] = $rack->name . " - " . $warehouse_name;
+
+                                // if ($rack->warehouse_id == $_POST['warehouse_id']) {
+                                //   $whouse_rack[$rack->id] = $rack->name;
+                                // }
+                            }
+                            // echo form_dropdown('warehouse_id', $whouse_rack, (isset($_POST['warehouse_id']) ? $_POST['warehouse_id'] : ($rack ? $rack->name : '')), 'class="form-control select" id="select_warehouse_id" placeholder="' . lang("select") . " " . lang("supplier") . '" required="required" style="width:100%"')
+                            echo form_dropdown('rack_id', $whouse_rack, (isset($_POST['rack_id']) ? $_POST['rack_id'] : ($rack ? $rack->name : '')), 'class="form-control select" id="select_rack_id" placeholder="' . lang("select") . " " . "Rack" . '" required="required" style="width:100%"')
+
+                            ?>
+                        </div>
+
+                  </div>
+
                     <!-- *******************************************************
                       SELECT RECEIVING REPORT NO
                     ******************************************************** -->
@@ -96,7 +155,7 @@
                     <div class="form-group all">
                         <?php /* <label for="mcode" class="col-sm-4 control-label"><?= lang('product_code') ?> *</label> */ ?>
 
-                        <label><?= "Receiving Report No *" ?></label>
+                        <label><?= "Receiving Report No" ?></label>
                         <?php /* <label for="mcode" class="col-sm-4 control-label"><?= "Product" ?> *</label> */ ?>
 
                           <div class="form-group">

@@ -33,7 +33,7 @@ console.log($('#x_supply_order_id').val());
     $(document).ready(function () {
 
         console.log("Data Passed to this View");
-        console.log('<?php echo $inspection_id; ?>');
+        console.log('<?php echo "Inspection ID: " . $inspection_id; ?>');
         console.log('<?php echo $inspection_created_at; ?>');
         console.log('<?php echo $inspection_date; ?>');
         console.log('<?php echo $inspection_no; ?>');
@@ -364,20 +364,20 @@ console.log($('#x_supply_order_id').val());
                           <th style="min-width:30px; max-width:30px; width: 30px; text-align: center;">
                               <input class="checkbox checkth" type="checkbox" name="check"/>
                           </th>
-                          <th style="width:6%; text-align: center;">sise</th>
-                          <th style="width:6%; text-align: center;">sample</th>
-                          <th style="width:6%; text-align: center;">temp</th>
-                          <th style="width:6%; text-align: center;">presion</th>
-                          <th style="width:6%; text-align: center;">ripe</th>
-                          <th style="width:6%; text-align: center;">mold</th>
-                          <th style="width:6%; text-align: center;">clean</th>
-                          <th style="width:6%; text-align: center;">color</th>
-                          <th style="width:6%; text-align: center;">firm</th>
-                          <th style="width:6%; text-align: center;">mechanical<br>damage</th>
-                          <th style="width:6%; text-align: center;">weight</th>
-                          <th style="width:6%; text-align: center;">scars<br>russet/bruset</th>
-                          <th style="width:6%; text-align: center;">over<br>ripe</th>
-                          <th style="width:6%; text-align: center;">total</th>
+                          <th style="width:7%; text-align: center;">sise</th>
+                          <th style="width:7%; text-align: center;">sample</th>
+                          <th style="width:7%; text-align: center;">temp</th>
+                          <th style="width:7%; text-align: center;">presion</th>
+                          <th style="width:7%; text-align: center;">ripe</th>
+                          <th style="width:7%; text-align: center;">mold</th>
+                          <th style="width:7%; text-align: center;">clean</th>
+                          <th style="width:7%; text-align: center;">color</th>
+                          <th style="width:7%; text-align: center;">firm</th>
+                          <th style="width:9%; text-align: center;">mechanical<br>damage</th>
+                          <th style="width:7%; text-align: center;">weight</th>
+                          <th style="width:7%; text-align: center;">scars<br>russet/bruset</th>
+                          <th style="width:7%; text-align: center;">over<br>ripe</th>
+                          <th style="width:7%; text-align: center;">total</th>
 
                           <?php /*
                           // UNHIDE ACTIONS COLUMN

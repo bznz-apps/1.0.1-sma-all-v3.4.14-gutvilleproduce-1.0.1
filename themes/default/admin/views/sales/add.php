@@ -292,7 +292,7 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <?= /* lang("reference_no", "slref"); */ "PO Ref No" ?>
+                                <label><?= /* lang("reference_no", "slref"); */ "Customer Purchase Order" ?></label>
                                 <?php echo form_input('reference_no', (isset($_POST['reference_no']) ? $_POST['reference_no'] : $slnumber), 'class="form-control input-tip" id="slref"'); ?>
                             </div>
                         </div>
@@ -429,7 +429,7 @@
                                         *  FORM - 1 INPUT - SEARCH BAR
                                         ************************************ -->
 
-                                        <?php echo form_input('add_item', '', 'class="form-control input-lg" id="add_item" placeholder="' . lang("add_product_to_order") . '"'); ?>
+                                        <?php echo form_input('add_item', '', 'readonly="true" class="form-control input-lg" id="add_item" placeholder="' . lang("add_product_to_order") . '"'); ?>
 
                                         <!-- ***********************************
                                         *  ADD MANUALLY BUTTON
@@ -446,13 +446,15 @@
                                         *  GIFT CARD BUTTON
                                         ************************************ -->
 
-                                        <?php } if ($Owner || $Admin || $GP['sales-add_gift_card']) { ?>
-                                        <div class="input-group-addon" style="padding-left: 10px; padding-right: 10px;">
-                                            <a href="#" id="sellGiftCard" class="tip" title="<?= lang('sell_gift_card') ?>">
-                                               <i class="fa fa-2x fa-credit-card addIcon" id="addIcon"></i>
-                                            </a>
-                                        </div>
                                         <?php } ?>
+
+                                        <?php /* } if ($Owner || $Admin || $GP['sales-add_gift_card']) { */ ?>
+                                        <!-- <div class="input-group-addon" style="padding-left: 10px; padding-right: 10px;"> -->
+                                            <!-- <a href="#" id="sellGiftCard" class="tip" title=" --> <?= /* lang('sell_gift_card') */ "" ?> <!-- "> -->
+                                               <!-- <i class="fa fa-2x fa-credit-card addIcon" id="addIcon"></i> -->
+                                            <!-- </a> -->
+                                        <!-- </div> -->
+                                        <?php /* } */ ?>
 
                                     </div>
                                 </div>
@@ -953,20 +955,104 @@
             </div>
             <div class="modal-body" id="pr_popover_content">
                 <form class="form-horizontal" role="form">
+
+                    <!-- *******************************************************
+                      SELECT PRODUCT
+                    ******************************************************** -->
+
+                    <div class="form-group">
+                        <?php /* <label for="mcode" class="col-sm-4 control-label"><?= lang('product_code') ?> *</label> */ ?>
+
+                        <label class="col-sm-4 control-label"><?= "Select Product *" ?></label>
+                        <?php /* <label for="mcode" class="col-sm-4 control-label"><?= "Product" ?> *</label> */ ?>
+
+                          <div class="col-sm-8">
+                              <?php
+                              $prodct[''] = "";
+                              foreach ($products as $product) {
+                                  $prodct[$product->id] = $product->name;
+                              }
+                              echo form_dropdown('product', $prodct, (isset($_POST['product']) ? $_POST['product'] : ($product ? $product->id : '')), 'class="form-control select" id="mproduct_id" placeholder="' . lang("select") . " " . lang("product") . '" required="required" style="width:100%"')
+                              ?>
+                          </div>
+
+                    </div>
+
+                    <!-- *******************************************************
+                      PRODUCT CODE
+                    ******************************************************** -->
+
                     <div class="form-group">
                         <label for="mcode" class="col-sm-4 control-label"><?= lang('product_code') ?> *</label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="mcode">
+                            <input type="text" class="form-control" id="mcode" readonly="true">
                         </div>
                     </div>
+
+                    <!-- *******************************************************
+                      PRODUCT NAME
+                    ******************************************************** -->
+
                     <div class="form-group">
                         <label for="mname" class="col-sm-4 control-label"><?= lang('product_name') ?> *</label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="mname">
+                            <input type="text" class="form-control" id="mname" readonly="true">
                         </div>
                     </div>
+
+                    <!-- *******************************************************
+                      SELECT PALLET
+                    ******************************************************** -->
+
+                    <div class="form-group">
+                        <?php /* <label for="mcode" class="col-sm-4 control-label"><?= lang('product_code') ?> *</label> */ ?>
+
+                        <label class="col-sm-4 control-label"><?= "From Pallet *" ?></label>
+                        <?php /* <label for="mcode" class="col-sm-4 control-label"><?= "Product" ?> *</label> */ ?>
+
+                          <div class="col-sm-8">
+                              <?php
+                              $prodFromPallet[''] = "";
+                              // foreach ($pallets as $pallet) {
+                              //     // $prodFromPallet[$pallet->id] = $pallet->code;
+                              //     $prodFromPallet[$pallet->id] = $pallet->warehouse_id;
+                              //
+                              //     // warehouse - pallet code - rack name - prod qty available in pallet
+                              //     // warehouse_id
+                              //     // code
+                              //     // rack_id
+                              //     // pallet_items pallet_id
+                              // }
+                              foreach ($palletsMoreInfo as $pallet) {
+
+                                  // $productsAndQty = "";
+                                  // foreach ($pallet['pallet_items'] as $item) {
+                                  //   // code...
+                                  //   $productsAndQty = $item['product_id'] . " Qty " . $item['quantity'];
+                                  // }
+
+                                  // $prodFromPallet[$pallet['pallet_data']->id] = $pallet['pallet_data']->created_at;
+                                  $prodFromPallet[$pallet['pallet_data']->id] =
+                                    "Pallet Code: "
+                                    .  $pallet['pallet_data']->code
+                                    . " - Rack: "
+                                    . $pallet['rack_name']
+                                    . " - Warehouse: "
+                                    . $pallet['warehouse_name']
+                                    ;
+                              }
+                              echo form_dropdown('pallet_id', $prodFromPallet, (isset($_POST['pallet']) ? $_POST['pallet_id'] : ($pallet ? $pallet->id : '')), 'class="form-control select" id="mpallet_id" placeholder="' . lang("select") . " " . lang("pallet") . '" required="required" style="width:100%"')
+                              ?>
+                          </div>
+
+                    </div>
+
+                    <!-- *******************************************************
+                      PRODUCT TAX
+                    ******************************************************** -->
+
                     <?php if ($Settings->tax1) { ?>
                         <div class="form-group">
                             <label for="mtax" class="col-sm-4 control-label"><?= lang('product_tax') ?> *</label>
@@ -982,13 +1068,23 @@
                             </div>
                         </div>
                     <?php } ?>
+
+                    <!-- *******************************************************
+                      PRODUCT QTY
+                    ******************************************************** -->
+
                     <div class="form-group">
                         <label for="mquantity" class="col-sm-4 control-label"><?= lang('quantity') ?> *</label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="mquantity">
+                            <input type="number" class="form-control" id="mquantity">
                         </div>
                     </div>
+
+                    <!-- *******************************************************
+                      UNIT
+                    ******************************************************** -->
+
                     <div class="form-group">
                         <label for="munit" class="col-sm-4 control-label"><?= lang('unit') ?> *</label>
 
@@ -1002,6 +1098,11 @@
                             ?>
                         </div>
                     </div>
+
+                    <!-- *******************************************************
+                      PRODUCT DISCOUNT
+                    ******************************************************** -->
+
                     <?php if ($Settings->product_discount && ($Owner || $Admin || $this->session->userdata('allow_discount'))) { ?>
                         <div class="form-group">
                             <label for="mdiscount"
@@ -1012,13 +1113,23 @@
                             </div>
                         </div>
                     <?php } ?>
+
+                    <!-- *******************************************************
+                      UNIT PRICE
+                    ******************************************************** -->
+
                     <div class="form-group">
                         <label for="mprice" class="col-sm-4 control-label"><?= lang('unit_price') ?> *</label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="mprice">
+                            <input type="number" class="form-control" id="mprice">
                         </div>
                     </div>
+
+                    <!-- *******************************************************
+                      TABLE
+                    ******************************************************** -->
+
                     <table class="table table-bordered table-striped">
                         <tr>
                             <th style="width:25%;"><?= lang('net_unit_price'); ?></th>
@@ -1029,6 +1140,11 @@
                     </table>
                 </form>
             </div>
+
+            <!-- *******************************************************
+              ADD ITEM MODAL - SUBMIT BUTTON
+            ******************************************************** -->
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" id="addItemManually"><?= lang('submit') ?></button>
             </div>
@@ -1119,5 +1235,234 @@
             $(this).parent().parent('.input-group').children('input').val(no);
             return false;
         });
+    });
+</script>
+
+<script type="text/javascript">
+
+    // document.getElementById('#quantity_1556660855776').readonly = true;
+
+    $(document).ready(function () {
+
+        // $('#check').change(function() {
+        //     $("#1556660855776").prop("hidden", true);
+        //     $("#serial_1556660855776").attr("readonly", true);
+        //     $("#quantity_1556660855776").attr("readonly", true);
+        // })
+        //
+        //   $("#1556660855776").attr("disabled", true);
+        //   $("#serial_1556660855776").attr("readonly", true);
+        //   $("#quantity_1556660855776").attr("readonly", true);
+        //   $("#quantity_1556660855776").attr("type", "number");
+
+        // document.getElementById('telheaderid').yourattribute = "your_value";
+
+        // <i class="pull-right fa fa-edit tip pointer edit" id="" data-item="1556660855776" title="Edit" style="cursor:pointer;"></i>
+        // <input class="form-control input-sm rserial" name="serial[]" type="text" id="" value="">
+        // <input class="form-control text-center rquantity" tabindex="3" name="quantity[]" type="text" value="2" data-id="1556660855776" data-item="1556660855776" id="" onclick="this.select();">
+
+        var products = <?php echo json_encode($products); ?>;
+        function populateProdCodeAndName() {
+            let product_id = $('#mproduct_id').val();
+            if (product_id !== "" || product_id !== undefined || product_id !== null) {
+                products.map(prod => {
+                    if (prod.id.toString() === product_id.toString()) {
+                        $('#mcode').val(prod.code);
+                        $('#mname').val(prod.name);
+                    }
+                })
+            }
+        }
+        // window.populateProdCodeAndName =  populateProdCodeAndName;
+        populateProdCodeAndName();
+
+        $('#addManually').on("click",function(e){
+            populateProdCodeAndName();
+        });
+
+        $(document).on('change', '#mproduct_id', function(e) {
+            populateProdCodeAndName();
+            $('#mquantity').val("");
+        });
+
+        $(document).on('change', '#mpallet_id', function(e) {
+            $('#mquantity').val("");
+        });
+
+        $(document).on('change', '#mquantity', function(e) {
+            console.log("ProductID: " + $('#mproduct_id').val());
+            console.log("PalletID: " + $('#mpallet_id').val());
+
+            // parseInt($(this).val());
+
+            if ($(this).val() <= 0) {
+                alert("Please add a product quantity greater than 0.");
+                $(this).val("");
+            };
+            if (isNaN($(this).val()) === true) {
+                alert("Please add only numbers in product quantity.");
+                $(this).val("");
+            };
+            // if (!(Number.isInteger($(this).val()))) {
+            //     alert("Please add only integer numbers in product quantity.");
+            //     $(this).val("");
+            // };
+
+            let selectedProductId = $('#mproduct_id').val();
+            let selectedPalletId = $('#mpallet_id').val();
+
+            let palletProdQty = 0;
+            let palletData;
+
+            var palletsList = <?php echo json_encode($palletsMoreInfo); ?>;
+            palletsList.map(pallet => {
+                if (pallet.pallet_data.id.toString() === selectedPalletId.toString()) {
+                    // prodName = pallet.name;
+                    console.log(pallet);
+                    palletData = pallet;
+
+                    pallet.pallet_items.map(palletItem => {
+                        if (palletItem.product_id.toString() === selectedProductId.toString()) {
+                            palletProdQty += parseInt(palletItem.quantity);
+                            console.log(palletProdQty);
+                        }
+                    })
+
+                }
+                // console.log(pallet);
+            });
+
+            // get order items
+            // if order item prod id is equal to the selected prod id
+            // check order id prod qty
+            // loop through order items and for every prod id with same pallet id
+            // add an object with orderItems { prodId, palletId, qty } and sum qty
+            // total prod qty from the same pallet
+            // get that qty and rest it to the palletProdQty here...
+            // if selected prod qty is > than palletProdQty - current order items qty (same prod id on same pallet id)
+            // then send message that pallet has X real num in total, but order already have selected some prds from this pallet
+            // remove order items or add less items from this pallet or chose another pallet...
+
+            // localStorage.clear();
+
+            var orderItems = JSON.parse(localStorage.getItem('form-add_sale-items'));
+            console.log("orderItems after qty change");
+            console.log(orderItems);
+
+            if (orderItems === null || orderItems === undefined) {
+              if ($(this).val() > palletProdQty) {
+                  alert("Product quantity selected is " + $(this).val() + ", product quantity on pallet is " + palletProdQty + ". Product quantity selected exceeds the product quantity on pallet with code " + palletData.pallet_data.code + ", found in rack name " + palletData.rack_name + ", on warehouse " + palletData.warehouse_name + ".");
+                  $(this).val("");
+              }
+            }
+
+
+            if (orderItems !== null || orderItems !== undefined) {
+                let totalProdQtyFromSamePallet = 0;
+                orderItems.map(orderItem => {
+                    if (orderItem.prodId.toString() === selectedProductId.toString()
+                    && orderItem.palletId.toString() === selectedPalletId.toString()) {
+                        totalProdQtyFromSamePallet += parseInt(orderItem.qty);
+                    }
+                });
+                let palletProdQtyLeft = parseInt(palletProdQty) - parseInt(totalProdQtyFromSamePallet);
+                if ($(this).val() > palletProdQtyLeft) {
+                    // alert("Product quantity selected is " + $(this).val() + ", but you already added " + totalProdQtyFromSamePallet + " products from this pallet to this sale. Product quantity left on this pallet is " + palletProdQtyLeft + ". Add same product quantity or less from this pallet or select another pallet with enough product quantity.");
+                    if (totalProdQtyFromSamePallet > 0) {
+                        alert("Product quantity selected is " + $(this).val() + ", but you already added " + totalProdQtyFromSamePallet + " products from this pallet to this sale. Product quantity left on this pallet is " + palletProdQtyLeft + ". Add same product quantity or less from this pallet or select another pallet with enough product quantity.");
+                    } else {
+                        alert("Product quantity selected is " + $(this).val() + ". Product quantity available on this pallet is " + palletProdQtyLeft + ". Select another pallet with enough product quantity or in case this pallet still has available items add equal or less product quantity.");
+                    }
+                    $(this).val("");
+                }
+
+                console.log("totalProdQtyFromSamePallet");
+                console.log(totalProdQtyFromSamePallet);
+                console.log("palletProdQtyLeft");
+                console.log(palletProdQtyLeft);
+            }
+
+        });
+
+        $('#addItemManually').on("click",function(e) {
+
+            if (
+               $('#mproduct_id').val() === "" || $('#mproduct_id').val() === null || $('#mproduct_id').val() === undefined
+            || $('#mcode').val() === "" || $('#mcode').val() === null || $('#mcode').val() === undefined
+            || $('#mname').val() === "" || $('#mname').val() === null || $('#mname').val() === undefined
+            || $('#mpallet_id').val() === "" || $('#mpallet_id').val() === null || $('#mpallet_id').val() === undefined
+            || $('#mtax').val() === "" || $('#mtax').val() === null || $('#mtax').val() === undefined
+            || $('#mquantity').val() === "" || $('#mquantity').val() === null || $('#mquantity').val() === undefined
+            || $('#munit').val() === "" || $('#munit').val() === null || $('#munit').val() === undefined
+            || $('#mprice').val() === "" || $('#mprice').val() === null || $('#mprice').val() === undefined
+            ) {
+                alert("The field labels marked with * are required input fields.")
+                e.preventDefault();
+                return false;
+            };
+
+            // make sure all values are not empty and contain numbers
+
+            // get order items, with pallet info
+            // if undefined, create a new array and add  a new object...
+            // { prodId, qty, palletId }
+
+            console.log("Product Id, Pallet Id, Qty");
+
+            let prodId = $('#mproduct_id').val();
+            let qty = $('#mquantity').val();
+            let palletId = $('#mpallet_id').val();
+
+            let prodIdHasVal = false;
+            let qtyHasVal = false;
+            let palletIdHasVal = false;
+
+            function isNumber(n) {
+              return !isNaN(parseFloat(n)) && isFinite(n);
+            }
+
+            if (prodId !== "" || prodId !== undefined || prodId !== null) {
+                if (isNumber(prodId)) {
+                    prodIdHasVal = true;
+                }
+            }
+            if (qty !== "" || qty !== undefined || qty !== null) {
+                if (isNumber(qty)) {
+                    qtyHasVal = true;
+                }
+            }
+            if (palletId !== "" || palletId !== undefined || palletId !== null) {
+                if (isNumber(palletId)) {
+                    palletIdHasVal = true;
+                }
+            }
+
+            if (prodIdHasVal === true && qtyHasVal === true && palletIdHasVal === true) {
+                console.log(prodId + " - " + qty + " - " + palletId);
+
+                let orderItem = { prodId, qty, palletId };
+
+                var orderItems = JSON.parse(localStorage.getItem('form-add_sale-items'));
+                console.log("orderItems");
+                console.log(orderItems);
+
+                if (orderItems === null || orderItems === undefined) {
+                    orderItems = [];
+                }
+
+                let updatedOrderItems = [];
+                updatedOrderItems.push(...orderItems);
+                updatedOrderItems.push(orderItem);
+
+                localStorage.setItem('form-add_sale-items', JSON.stringify(updatedOrderItems));
+
+                console.log("orderItems");
+                console.log(orderItems);
+
+                // later, when removing item from table, remove it from this localStorage as well..
+            }
+
+        });
+
     });
 </script>

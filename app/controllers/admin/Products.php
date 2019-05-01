@@ -689,6 +689,7 @@ class Products extends MY_Controller
             $this->data['variants'] = $this->products_model->getAllVariants();
             $this->data['combo_items'] = ($id && $this->data['product']->type == 'combo') ? $this->products_model->getProductComboItems($id) : NULL;
             $this->data['product_options'] = $id ? $this->products_model->getProductOptionsWithWH($id) : NULL;
+
             $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('products'), 'page' => lang('products')), array('link' => '#', 'page' => lang('add_product')));
             $meta = array('page_title' => lang('add_product'), 'bc' => $bc);
             $this->page_construct('products/add', $meta, $this->data);

@@ -263,7 +263,7 @@ class Quality extends MY_Controller
       $this->load->library('datatables');
       // Query
       $this->datatables
-      ->select($this->db->dbprefix('NEW_quality_control_report_item') . ".id as id, sise, sample, temp, presion, ripe, mold, cleam, color, firm, mechanical_damage, weight, scars_russet_bruset, over_ripe, total")
+      ->select($this->db->dbprefix('NEW_quality_control_report_item') . ".id as id, sise, sample, temp, presion, ripe, mold, clean, color, firm, mechanical_damage, weight, scars_russet_bruset, over_ripe, total")
       ->from("NEW_quality_control_report_item")
       ->where('inspection_id', $inspection_id)
       ->add_column(

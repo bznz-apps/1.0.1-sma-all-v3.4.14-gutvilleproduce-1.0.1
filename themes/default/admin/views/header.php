@@ -587,7 +587,7 @@
                                         <span class="text"> Add Manifest </span>
                                     </a>
                                 </li>
-                                
+
                                 */ ?>
 
                                 <li id="products_index">
@@ -619,7 +619,7 @@
                         <li class="">
                             <a class="dropmenu" href="#">
                                 <i class="fa fa-barcode"></i>
-                                <span class="text"> Quality Control </span>
+                                <span class="text"> Quality </span>
                                 <span class="chevron closed"></span>
                             </a>
 

@@ -1,4 +1,3 @@
-add pickuopoders
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
 <div class="box">
@@ -13,7 +12,7 @@ add pickuopoders
         <?php /*
           <h2 class="blue"><i class="fa-fw fa fa-plus"></i><?= lang('add_product'); ?></h2>
         */ ?>
-        <h2 class="blue"><i class="fa-fw fa fa-plus"></i>Add Supply Order</h2>
+        <h2 class="blue"><i class="fa-fw fa fa-plus"></i>Add Pick Up Order</h2>
     </div>
 
     <div class="box-content">
@@ -37,7 +36,7 @@ add pickuopoders
                 <?php
                 $attrib = array('data-toggle' => 'validator', 'role' => 'form');
                 // echo admin_form_open_multipart("products/add", $attrib)
-                echo admin_form_open_multipart("suppliers/handleAddSupplyOrder_logic", $attrib)
+                echo admin_form_open_multipart("shipping/handleAddPickUpOrder_logic", $attrib)
                 ?>
 
                 <div class="col-md-12">
@@ -60,30 +59,30 @@ add pickuopoders
                       <?php /*
                           // Ucomment just this line below
                           echo form_input('supplier', (isset($_POST['supplier']) ? $_POST['supplier'] : ''), 'class="form-control ' . ($product ? '' : 'suppliers') . '" id="' . ($product && ! empty($product->supplier1) ? 'supplier1' : 'supplier') . '" placeholder="' . lang("select") . ' ' . lang("supplier") . '" style="width:100%;"');
-                          // echo form_input('supplier', (isset($_POST['supplier']) ? $_POST['supplier'] : ''), 'class="form-control ' . ($product ? '' : 'suppliers') . '" id="' . "form-add_supply_order-supplier" . '" placeholder="' . lang("select") . ' ' . lang("supplier") . '" style="width:100%;"');
-                          // id="form-add_supply_order-supplier"
+                          // echo form_input('supplier', (isset($_POST['supplier']) ? $_POST['supplier'] : ''), 'class="form-control ' . ($product ? '' : 'suppliers') . '" id="' . "form-add_pick_up_order-supplier" . '" placeholder="' . lang("select") . ' ' . lang("supplier") . '" style="width:100%;"');
+                          // id="form-add_pick_up_order-supplier"
                       */ ?>
                   <?php /*
                   </div>
                   */ ?>
 
                     <!-- *******************************************************
-                      SELECT SUPPLIER
+                      SELECT SALE
                     ******************************************************** -->
 
                     <div class="form-group all">
                         <?php /* <label for="mcode" class="col-sm-4 control-label"><?= lang('product_code') ?> *</label> */ ?>
 
-                        <label><?= "Select Supplier *" ?></label>
+                        <label><?= "Sale No" ?></label>
                         <?php /* <label for="mcode" class="col-sm-4 control-label"><?= "Product" ?> *</label> */ ?>
 
                           <div class="form-group">
                               <?php
-                              $supp[''] = "";
-                              foreach ($suppliers as $supplier) {
-                                  $supp[$supplier->id] = $supplier->company;
+                              $sl[''] = "";
+                              foreach ($sales as $sale) {
+                                  $sl[$sale->id] = $sale->company;
                               }
-                              echo form_dropdown('supplier', $supp, (isset($_POST['supplier']) ? $_POST['supplier'] : ($supplier ? $supplier->supplier_id : '')), 'class="form-control select" id="supply_order_supplier_id" placeholder="' . lang("select") . " " . lang("supplier") . '" required="required" style="width:100%"')
+                              echo form_dropdown('sale', $sl, (isset($_POST['sale']) ? $_POST['sale'] : ($sale ? $sale->sale_id : '')), 'class="form-control select" id="pick_up_order_sale_id" placeholder="' . lang("select") . " " . lang("sale") . '" required="required" style="width:100%"')
                               ?>
                           </div>
 
@@ -124,7 +123,7 @@ add pickuopoders
                         <label><?= "Add Image" ?></label>
                         <br>
                         <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="supply_order_image" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
+                        <input id="pick_up_order_image" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
                                data-show-preview="false" accept="image/*" class="form-control file">
                     </div>
 
@@ -137,7 +136,7 @@ add pickuopoders
                         <label><?= "Add Image Gallery" ?></label>
                         <br>
                         <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="supply_order_images" type="file" data-browse-label="<?= lang('browse'); ?>" name="userfile[]" multiple="true" data-show-upload="false"
+                        <input id="pick_up_order_images" type="file" data-browse-label="<?= lang('browse'); ?>" name="userfile[]" multiple="true" data-show-upload="false"
                                data-show-preview="false" class="form-control file" accept="image/*">
                     </div>
                     <div id="img-details"></div>
@@ -150,7 +149,7 @@ add pickuopoders
                         <?= lang("document", "document") ?>
                         <br>
                         <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="supply_order_document" type="file" data-browse-label="<?= lang('browse'); ?>" name="document" data-show-upload="false"
+                        <input id="pick_up_order_document" type="file" data-browse-label="<?= lang('browse'); ?>" name="document" data-show-upload="false"
                                data-show-preview="false" class="form-control file">
                     </div>
 
@@ -170,7 +169,7 @@ add pickuopoders
                                 <?php /*
                                 <a href="#" id="addManually" class="tip" title="<?= lang('add_product_manually') ?>">
                                 */ ?>
-                                <a data-toggle="modal" data-target="#addSupplyOrderProductModal" href="#" id="" class="tip" title="<?= lang('add_product_manually') ?>">
+                                <a data-toggle="modal" data-target="#addPickUpOrderProductModal" href="#" id="" class="tip" title="<?= lang('add_product_manually') ?>">
                                     <i class="fa fa-2x fa-plus-circle addIcon" id="addIcon"></i>
                                 </a>
                             </div>
@@ -191,7 +190,7 @@ add pickuopoders
                             <label class="table-label"><?= lang("order_items"); ?> *</label>
 
                             <div class="controls table-controls">
-                                <table id="supplyOrderTable" class="table items table-striped table-bordered table-condensed table-hover sortable_table">
+                                <table id="Pick_Up_OrderTable" class="table items table-striped table-bordered table-condensed table-hover sortable_table">
                                     <thead>
                                     <tr>
 
@@ -245,7 +244,7 @@ add pickuopoders
                     <div class="form-group">
                         <!-- SEND SUPPLY ORDER - BUTTON -->
                         <?php /* echo form_submit('add_product', $this->lang->line("add_product"), 'class="btn btn-primary"'); */ ?>
-                        <?php echo form_submit('add_product', "Reset", 'class="btn btn-danger" id="supply_order_items-reset_button"'); ?>
+                        <?php echo form_submit('add_product', "Reset", 'class="btn btn-danger" id="pick_up_order_items-reset_button"'); ?>
                         <?php echo form_submit('add_product', "Send Order to Supplier", 'class="btn btn-primary"'); ?>
                     </div>
 
@@ -265,7 +264,7 @@ add pickuopoders
 
 **************************************************************************** -->
 
-<div class="modal" id="addSupplyOrderProductModal" tabindex="-1" role="dialog" aria-labelledby="mModalLabel" aria-hidden="true">
+<div class="modal" id="addPickUpOrderProductModal" tabindex="-1" role="dialog" aria-labelledby="mModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -298,7 +297,7 @@ add pickuopoders
                               foreach ($products as $product) {
                                   $prod[$product->id] = $product->name;
                               }
-                              echo form_dropdown('product', $prod, (isset($_POST['product']) ? $_POST['product'] : ($product ? $product->product_id : '')), 'class="form-control select" id="supply_order_product_id" placeholder="' . lang("select") . " " . lang("product") . '" required="required" style="width:100%"')
+                              echo form_dropdown('product', $prod, (isset($_POST['product']) ? $_POST['product'] : ($product ? $product->product_id : '')), 'class="form-control select" id="pick_up_order_product_id" placeholder="' . lang("select") . " " . lang("product") . '" required="required" style="width:100%"')
                               ?>
                           </div>
 
@@ -312,14 +311,14 @@ add pickuopoders
                     <div class="form-group">
                         <label for="mquantity" class="col-sm-4 control-label"><?= lang('quantity') ?> *</label>
                         <div class="col-sm-8">
-                            <input type="number" min="0" class="form-control" id="supply_order_product_qty" required>
+                            <input type="number" min="0" class="form-control" id="pick_up_order_product_qty" required>
                         </div>
                     </div>
 
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="addSupplyOrderProductButton"><?= lang('submit') ?></button>
+                <button type="button" class="btn btn-primary" id="addPickUpOrderProductButton"><?= lang('submit') ?></button>
             </div>
         </div>
     </div>
@@ -350,14 +349,14 @@ add pickuopoders
         // *********************************************************************
 
         function clearThisFormFronLocalStorage() {
-          localStorage.removeItem('form-add_supply_order-supplier');
-          localStorage.removeItem('form-add_supply_order-message_to_supplier');
-          localStorage.removeItem('form-add_supply_order-message_to_receiving');
-          localStorage.removeItem('form-add_supply_order-image');
-          localStorage.removeItem('form-add_supply_order-image_gallery');
-          localStorage.removeItem('form-add_supply_order-attachment');
-          localStorage.removeItem('form-add_supply_order-items');
-          localStorage.removeItem('form-add_supply_order-items_rows_count');
+          localStorage.removeItem('form-add_pick_up_order-supplier');
+          localStorage.removeItem('form-add_pick_up_order-message_to_supplier');
+          localStorage.removeItem('form-add_pick_up_order-message_to_receiving');
+          localStorage.removeItem('form-add_pick_up_order-image');
+          localStorage.removeItem('form-add_pick_up_order-image_gallery');
+          localStorage.removeItem('form-add_pick_up_order-attachment');
+          localStorage.removeItem('form-add_pick_up_order-items');
+          localStorage.removeItem('form-add_pick_up_order-items_rows_count');
         }
         window.clearThisFormFronLocalStorage =  clearThisFormFronLocalStorage;
 
@@ -365,52 +364,52 @@ add pickuopoders
         // CHECK IF localStorage VALUES FOR INPUTS EXIST
         // *********************************************************************
 
-        if (localStorage.getItem('form-add_supply_order-supplier')) {
+        if (localStorage.getItem('form-add_pick_up_order-supplier')) {
             // // localStorage.removeItem('slwarehouse');
             // // SET INPUT VALUE TO THE ONE ON localStorage
-            // console.log("Found value for supplier is: " + localStorage.getItem('form-add_supply_order-supplier'));
-            // $('#supplier').val(localStorage.getItem('form-add_supply_order-supplier'));
-            // $('#supplier').text(localStorage.getItem('form-add_supply_order-supplier')).change();
-            // $('#supplier').select(localStorage.getItem('form-add_supply_order-supplier'));
-            // $('#supplier').filter(localStorage.getItem('form-add_supply_order-supplier'));
-            // // $('#supplier').selected(localStorage.getItem('form-add_supply_order-supplier'));
+            // console.log("Found value for supplier is: " + localStorage.getItem('form-add_pick_up_order-supplier'));
+            // $('#supplier').val(localStorage.getItem('form-add_pick_up_order-supplier'));
+            // $('#supplier').text(localStorage.getItem('form-add_pick_up_order-supplier')).change();
+            // $('#supplier').select(localStorage.getItem('form-add_pick_up_order-supplier'));
+            // $('#supplier').filter(localStorage.getItem('form-add_pick_up_order-supplier'));
+            // // $('#supplier').selected(localStorage.getItem('form-add_pick_up_order-supplier'));
         }
 
-        if (localStorage.getItem('form-add_supply_order-message_to_supplier')) {
+        if (localStorage.getItem('form-add_pick_up_order-message_to_supplier')) {
             // // localStorage.removeItem('slwarehouse');
             // // SET INPUT VALUE TO THE ONE ON localStorage
-            // let val = $('#form-add_supply_order-message_to_supplier').val(localStorage.getItem('form-add_supply_order-message_to_supplier'));
+            // let val = $('#form-add_pick_up_order-message_to_supplier').val(localStorage.getItem('form-add_pick_up_order-message_to_supplier'));
         }
 
-        if (localStorage.getItem('supply_order_document')) {
-            let val = $('#supply_order_document').val(localStorage.getItem('form-add_supply_order-attachment'));
+        if (localStorage.getItem('pick_up_order_document')) {
+            let val = $('#pick_up_order_document').val(localStorage.getItem('form-add_pick_up_order-attachment'));
         }
 
         // *********************************************************************
-        // INIT localStorage ITEM 'form-add_supply_order-items'
+        // INIT localStorage ITEM 'form-add_pick_up_order-items'
         // *********************************************************************
 
-        var initSupplyOrderItems = localStorage.getItem('form-add_supply_order-items');
-        if (initSupplyOrderItems === null || initSupplyOrderItems === undefined || initSupplyOrderItems.constructor.toString().indexOf("Array") != -1) {
-          initSupplyOrderItems = [];
-          localStorage.setItem('form-add_supply_order-items', JSON.stringify(initSupplyOrderItems));
+        var initPickUpOrderItems = localStorage.getItem('form-add_pick_up_order-items');
+        if (initPickUpOrderItems === null || initPickUpOrderItems === undefined || initPickUpOrderItems.constructor.toString().indexOf("Array") != -1) {
+          initPickUpOrderItems = [];
+          localStorage.setItem('form-add_pick_up_order-items', JSON.stringify(initPickUpOrderItems));
         }
 
         // *********************************************************************
         // POPULATE TABLE - SUPPLY ORDER ITEMS
         // *********************************************************************
 
-        loadSupplyOrderItems();
+        loadPickUpOrderItems();
 
-        function loadSupplyOrderItems() {
+        function loadPickUpOrderItems() {
 
-            var currentOrderItems = localStorage.getItem('form-add_supply_order-items');
+            var currentOrderItems = localStorage.getItem('form-add_pick_up_order-items');
 
             if (currentOrderItems && currentOrderItems.length > 0) {
 
-              $('#supplyOrderTable tbody').empty();
+              $('#Pick_Up_OrderTable tbody').empty();
 
-              currentOrderItems = JSON.parse(localStorage.getItem('form-add_supply_order-items'));
+              currentOrderItems = JSON.parse(localStorage.getItem('form-add_pick_up_order-items'));
 
               currentOrderItems.map(item => {
 
@@ -425,7 +424,7 @@ add pickuopoders
                 // on qty input:
                 // remove disable and be able to edit that input
                 // add onChange prop and create and call function updateItemQty(rowNo, qty)
-                // takes rowNo and qty, loads the localStorage for 'supplyOrderItems'
+                // takes rowNo and qty, loads the localStorage for 'pick_upOrderItems'
                 // maps thru it and find the object where rowNo is equal to the one passed to this updateItemQty(rowNo, qty) functino
                 // then updates the qty,
                 // saves new data on new array and save that array back to the localStorage
@@ -450,7 +449,7 @@ add pickuopoders
                                 class="fa fa-times tip pointer sldel"
                                 title="Remove"
                                 style="cursor:pointer;"
-                                onclick='removeSupplyOrderItem(${row_no})'
+                                onclick='removePickUpOrderItem(${row_no})'
                             >
                             </i>
                         </td>
@@ -461,7 +460,7 @@ add pickuopoders
                         </td>`;
 
                 newTr.html(tr_html);
-                newTr.prependTo('#supplyOrderTable');
+                newTr.prependTo('#Pick_Up_OrderTable');
 
               })
             }
@@ -472,30 +471,30 @@ add pickuopoders
         // ADD ITEM TO ORDER - MODAL FORM SUBMIT BUTTON
         // *********************************************************************
 
-        $(document).on('click', '#addSupplyOrderProductButton', function(e) {
+        $(document).on('click', '#addPickUpOrderProductButton', function(e) {
             event.preventDefault();
 
             var createdAt = new Date().getTime();
-            var supply_order_product_id = $('#supply_order_product_id').val();
-            var supply_order_product_qty = $('#supply_order_product_qty').val();
+            var pick_up_order_product_id = $('#pick_up_order_product_id').val();
+            var pick_up_order_product_qty = $('#pick_up_order_product_qty').val();
 
-            if (supply_order_product_id && supply_order_product_qty) {
+            if (pick_up_order_product_id && pick_up_order_product_qty) {
 
-                var currentOrderItems2 = JSON.parse(localStorage.getItem('form-add_supply_order-items'));
+                var currentOrderItems2 = JSON.parse(localStorage.getItem('form-add_pick_up_order-items'));
 
-                var rowCount = localStorage.getItem('form-add_supply_order-items_rows_count');
+                var rowCount = localStorage.getItem('form-add_pick_up_order-items_rows_count');
                 if (rowCount === null || rowCount === undefined) {
                   rowCount = 1;
                 } else {
                   rowCount++;
                 }
-                localStorage.setItem('form-add_supply_order-items_rows_count', rowCount);
+                localStorage.setItem('form-add_pick_up_order-items_rows_count', rowCount);
 
                 var productsList = <?php echo json_encode($products); ?>;
 
                 let prodName = "";
                 productsList.map(prod => {
-                  if (prod.id.toString() === supply_order_product_id.toString()) {
+                  if (prod.id.toString() === pick_up_order_product_id.toString()) {
                     prodName = prod.name;
                   }
                 })
@@ -505,9 +504,9 @@ add pickuopoders
                     createdAt,
                     row: {
                       row_no: rowCount,
-                      product_id: supply_order_product_id,
+                      product_id: pick_up_order_product_id,
                       product_name: prodName,
-                      product_quantity: supply_order_product_qty,
+                      product_quantity: pick_up_order_product_qty,
                     },
                     options: false,
                 };
@@ -516,13 +515,13 @@ add pickuopoders
                 updatedOrderItems.push(...currentOrderItems2);
                 updatedOrderItems.push(orderItem);
 
-                localStorage.setItem('form-add_supply_order-items', JSON.stringify(updatedOrderItems));
-                loadSupplyOrderItems();
+                localStorage.setItem('form-add_pick_up_order-items', JSON.stringify(updatedOrderItems));
+                loadPickUpOrderItems();
             }
 
-            $('#addSupplyOrderProductModal').modal('hide');
+            $('#addPickUpOrderProductModal').modal('hide');
 
-            $('#supply_order_product_qty').val('');
+            $('#pick_up_order_product_qty').val('');
             return false;
         });
 
@@ -530,9 +529,9 @@ add pickuopoders
         // REMOVE ORDER ITEM - REMOVE ROW FROM TABLE AND OBJ FROM localStorage
         // *********************************************************************
 
-        function removeSupplyOrderItem(rowNo) {
+        function removePickUpOrderItem(rowNo) {
           // console.log("REMOVING ROW: " + rowNo);
-          var orderItems = JSON.parse(localStorage.getItem('form-add_supply_order-items'));
+          var orderItems = JSON.parse(localStorage.getItem('form-add_pick_up_order-items'));
           orderItems.map(item => {
             if (rowNo.toString() === item.row.row_no.toString()) {
                 // HELPER FUNCTION TO REMOVE OBJECT FROM ARRAY BY OBJECT ATTRIBUTE
@@ -551,19 +550,19 @@ add pickuopoders
                 }
                 // HELPER FUNCTION CALL
                 removeByAttr(orderItems, 'item_id', rowNo);
-                localStorage.setItem('form-add_supply_order-items', JSON.stringify(orderItems));
+                localStorage.setItem('form-add_pick_up_order-items', JSON.stringify(orderItems));
                 let trID = `#row_${rowNo}`;
                 $(trID).remove();
             }
           })
         }
-        window.removeSupplyOrderItem =  removeSupplyOrderItem;
+        window.removePickUpOrderItem =  removePickUpOrderItem;
 
         // *********************************************************************
         // RESET ORDER
         // *********************************************************************
 
-        $(document).on('click', '#supply_order_items-reset_button', function(e) {
+        $(document).on('click', '#pick_up_order_items-reset_button', function(e) {
           event.preventDefault();
           localStorage.clear();
           location.reload();
@@ -573,17 +572,17 @@ add pickuopoders
 
         $(document).on('change', '#supplier', function(e) {
 
-          let val = $('#form-add_supply_order-supplier').val();
+          let val = $('#form-add_pick_up_order-supplier').val();
 
           console.log($(this).val());
           console.log("chaing");
 
-          // localStorage.setItem('form-add_supply_order-supplier', JSON.stringify(val));
-          localStorage.setItem('form-add_supply_order-supplier', val);
+          // localStorage.setItem('form-add_pick_up_order-supplier', JSON.stringify(val));
+          localStorage.setItem('form-add_pick_up_order-supplier', val);
 
         });
 
-        // // $(document).on('change', '#form-add_supply_order-message_to_supplier', function(e) {
+        // // $(document).on('change', '#form-add_pick_up_order-message_to_supplier', function(e) {
         // $(document).on('change', '#supplier', function(e) {
         //   // console.log($(this).val());
         //   // console.log("chaing");
@@ -591,19 +590,19 @@ add pickuopoders
         //   // let val = $('#supplier').val();
         //   let val = $(this).val();
         //
-        //   // // localStorage.setItem('form-add_supply_order-supplier', JSON.stringify(val));
-        //   localStorage.setItem('form-add_supply_order-supplier', val);
+        //   // // localStorage.setItem('form-add_pick_up_order-supplier', JSON.stringify(val));
+        //   localStorage.setItem('form-add_pick_up_order-supplier', val);
         //
         // });
 
-        // $(document).on('change', '#form-add_supply_order-message_to_supplier', function(e) {
+        // $(document).on('change', '#form-add_pick_up_order-message_to_supplier', function(e) {
         $(document).on('input', '#msgToSupplier', function(e) {
           // console.log($(this).val());
           console.log("chaing");
-          // let val = $('#form-add_supply_order-message_to_supplier').val();
+          // let val = $('#form-add_pick_up_order-message_to_supplier').val();
           //
-          // // localStorage.setItem('form-add_supply_order-message_to_supplier', JSON.stringify(val));
-          // localStorage.setItem('form-add_supply_order-message_to_supplier', val);
+          // // localStorage.setItem('form-add_pick_up_order-message_to_supplier', JSON.stringify(val));
+          // localStorage.setItem('form-add_pick_up_order-message_to_supplier', val);
         });
 
         $(document).on('change', '#supplier', function(e) {
@@ -615,38 +614,38 @@ add pickuopoders
         $(document).on('hover', '#msg_to_receiving', function(e) {
           console.log("msg_to_receiving");
         });
-        $(document).on('change', '#supply_order_image', function(e) {
-          console.log("supply_order_image");
-          // localStorage.setItem('supply_order_image', JSON.stringify(val));
-          localStorage.setItem('supply_order_image', val);
+        $(document).on('change', '#pick_up_order_image', function(e) {
+          console.log("pick_up_order_image");
+          // localStorage.setItem('pick_up_order_image', JSON.stringify(val));
+          localStorage.setItem('pick_up_order_image', val);
         });
-        $(document).on('change', '#supply_order_images', function(e) {
-          console.log("supply_order_images");
-          // localStorage.setItem('supply_order_images', JSON.stringify(val));
-          localStorage.setItem('supply_order_images', val);
+        $(document).on('change', '#pick_up_order_images', function(e) {
+          console.log("pick_up_order_images");
+          // localStorage.setItem('pick_up_order_images', JSON.stringify(val));
+          localStorage.setItem('pick_up_order_images', val);
         });
-        $(document).on('change', '#supply_order_document', function(e) {
-          console.log("supply_order_document");
-          // localStorage.setItem('supply_order_document', JSON.stringify(val));
-          localStorage.setItem('form-add_supply_order-attachment', val);
+        $(document).on('change', '#pick_up_order_document', function(e) {
+          console.log("pick_up_order_document");
+          // localStorage.setItem('pick_up_order_document', JSON.stringify(val));
+          localStorage.setItem('form-add_pick_up_order-attachment', val);
         });
 
-        // $('#form-add_supply_order-supplier').on('change', function(e) {
+        // $('#form-add_pick_up_order-supplier').on('change', function(e) {
         //   // alert($(this).val());
         //   console.log($(this).val());
-        //   let val = $('#form-add_supply_order-supplier').val();
-        //   // localStorage.setItem('form-add_supply_order-supplier', JSON.stringify(val));
-        //   localStorage.setItem('form-add_supply_order-supplier', val);
+        //   let val = $('#form-add_pick_up_order-supplier').val();
+        //   // localStorage.setItem('form-add_pick_up_order-supplier', JSON.stringify(val));
+        //   localStorage.setItem('form-add_pick_up_order-supplier', val);
         // });
         //
-        // // $('#form-add_supply_order-message_to_supplier').on('change', function(e) {
+        // // $('#form-add_pick_up_order-message_to_supplier').on('change', function(e) {
         // $('#msgToSupplier').on('change', function(e) {
         //   // alert($(this).val());
         //   console.log($(this).val());
         //   console.log("chaing");
-        //   let val = $('#form-add_supply_order-message_to_supplier').val();
-        //   // localStorage.setItem('form-add_supply_order-message_to_supplier', JSON.stringify(val));
-        //   localStorage.setItem('form-add_supply_order-message_to_supplier', val);
+        //   let val = $('#form-add_pick_up_order-message_to_supplier').val();
+        //   // localStorage.setItem('form-add_pick_up_order-message_to_supplier', JSON.stringify(val));
+        //   localStorage.setItem('form-add_pick_up_order-message_to_supplier', val);
         // });
 
         // *********************************************************************

@@ -1,4 +1,3 @@
-list of racks - warehouse
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <style type="text/css" media="screen"></style>
 <script>
@@ -7,15 +6,16 @@ list of racks - warehouse
 
     var oTable;
     $(document).ready(function () {
-        oTable = $('#ManifestsDataTable').dataTable({
-            "aaSorting": [[2, "asc"], [3, "asc"]],
+        oTable = $('#RacksDataTable').dataTable({
+            // "aaSorting": [[2, "asc"], [3, "asc"]],
+            "aaSorting": [[1, "desc"]], // array of [row_number, sorting_asc_or_desc]
             "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "<?= lang('all') ?>"]],
             "iDisplayLength": <?= $Settings->rows_per_page ?>,
             'bProcessing': true, 'bServerSide': true,
             <?php /*
             'sAjaxSource': '<?= admin_url('receiving/getSupplyOrdersLogic'.($warehouse_id ? '/'.$warehouse_id : '').($supplier ? '?supplier='.$supplier->id : '')) ?>',
             */ ?>
-            'sAjaxSource': '<?= admin_url('receiving/handleGetManifests_logic')?>',
+            'sAjaxSource': '<?= admin_url('warehouses/handleGetRacks_logic')?>',
             'fnServerData': function (sSource, aoData, fnCallback) {
                 aoData.push({
                     "name": "<?= $this->security->get_csrf_token_name() ?>",
@@ -26,7 +26,7 @@ list of racks - warehouse
             'fnRowCallback': function (nRow, aData, iDisplayIndex) {
                 var oSettings = oTable.fnSettings();
                 nRow.id = aData[0];
-                nRow.className = "supply_order_link";
+                nRow.className = "rack_link";
                 nRow.style = "text-align: center;";
                 // nRow.className = "product_link";
                 //if(aData[7] > aData[9]){ nRow.className = "product_link warning"; } else { nRow.className = "product_link"; }
@@ -37,13 +37,19 @@ list of racks - warehouse
 
             "aoColumns": [
                 {"bSortable": false, "mRender": checkbox},
-                null, null, null
+                null, null, null, null, null, null, null, null, null
             ]
 
         })
         .fnSetFilteringDelay().dtFilter([
-            {column_number: 1, filter_default_label: "[Search Supply Order No]", filter_type: "text", data: []},
-            {column_number: 2, filter_default_label: "[Search Date]", filter_type: "text", data: []},
+            {column_number: 1, filter_default_label: "[Warehouse]", filter_type: "text", data: []},
+            {column_number: 2, filter_default_label: "[Name]", filter_type: "text", data: []},
+            {column_number: 3, filter_default_label: "[Column]", filter_type: "text", data: []},
+            {column_number: 4, filter_default_label: "[Row]", filter_type: "text", data: []},
+            {column_number: 5, filter_default_label: "[Z-Index]", filter_type: "text", data: []},
+            {column_number: 6, filter_default_label: "[Floor Level]", filter_type: "text", data: []},
+            {column_number: 7, filter_default_label: "[Usage]", filter_type: "text", data: []},
+            {column_number: 8, filter_default_label: "[Status]", filter_type: "text", data: []},
         ], "footer");
     });
 </script>
@@ -61,7 +67,7 @@ list of racks - warehouse
           <?php /*
           <i class="fa-fw fa fa-barcode"></i><?= lang('products') . ' (' . ($warehouse_id ? $warehouse->name : lang('all_warehouses')) . ')'.($supplier ? ' ('.lang('supplier').': '.($supplier->company && $supplier->company != '-' ? $supplier->company : $supplier->name).')' : ''); ?>
           */ ?>
-          <i class="fa-fw fa fa-barcode"></i> Manifests
+          <i class="fa-fw fa fa-barcode"></i> Racks
         </h2>
 
         <!-- View - Header - Right Side Menu Items -->
@@ -75,9 +81,9 @@ list of racks - warehouse
                     <ul class="dropdown-menu pull-right tasks-menus" role="menu" aria-labelledby="dLabel">
 
                         <li>
-                            <a href="<?= admin_url('receiving/addManifest_view') ?>">
+                            <a href="<?= admin_url('warehouses/addRack_view') ?>">
                               <?php /*  <i class="fa fa-plus-circle"></i> <?= lang('add_product') ?> */ ?>
-                                <i class="fa fa-plus-circle"></i> <?= "Add Manifest" ?>
+                                <i class="fa fa-plus-circle"></i> <?= "Add Rack" ?>
                             </a>
                         </li>
 
@@ -110,7 +116,7 @@ list of racks - warehouse
                 <p class="introtext"><?= lang('list_results'); ?></p>
 
                 <div class="table-responsive">
-                    <table id="ManifestsDataTable" class="table table-bordered table-condensed table-hover table-striped">
+                    <table id="RacksDataTable" class="table table-bordered table-condensed table-hover table-striped">
 
                       <!-- Table Header Row -->
 
@@ -120,8 +126,14 @@ list of racks - warehouse
                           <th style="min-width:30px; max-width:30px; width: 30px; text-align: center;">
                               <input class="checkbox checkth" type="checkbox" name="check"/>
                           </th>
-                          <th style="width:50%; text-align: center;">Supply Order No</th>
-                          <th style="width:50%; text-align: center;">Date</th>
+                          <th style="width:14%; text-align: center;">Warehouse</th>
+                          <th style="width:14%; text-align: center;">Name</th>
+                          <th style="width:12%; text-align: center;">Column</th>
+                          <th style="width:12%; text-align: center;">Row</th>
+                          <th style="width:12%; text-align: center;">Z-Index</th>
+                          <th style="width:12%; text-align: center;">Floor<br>Level</th>
+                          <th style="width:12%; text-align: center;">Usage</th>
+                          <th style="width:12%; text-align: center;">Status</th>
                           <th style="width:fit-content; text-align:center;"><?= lang("actions") ?></th>
 
                         </tr>
@@ -141,6 +153,12 @@ list of racks - warehouse
                           <th style="min-width:30px; max-width:30px; width: 30px; text-align: center;">
                               <input class="checkbox checkft" type="checkbox" name="check"/>
                           </th>
+                          <th style="text-align: center;"></th>
+                          <th style="text-align: center;"></th>
+                          <th style="text-align: center;"></th>
+                          <th style="text-align: center;"></th>
+                          <th style="text-align: center;"></th>
+                          <th style="text-align: center;"></th>
                           <th style="text-align: center;"></th>
                           <th style="text-align: center;"></th>
                           <th style="width:fit-content; text-align:center;"><?= lang("actions") ?></th>
@@ -174,12 +192,12 @@ list of racks - warehouse
 
         var clickedColumn = null;
         var clickedRow = null;
-        var totalColumns = $("#ManifestsDataTable").find('tr')[0].cells.length;
-        var totalRows = $('#ManifestsDataTable tr').length;
+        var totalColumns = $("#RacksDataTable").find('tr')[0].cells.length;
+        var totalRows = $('#RacksDataTable tr').length;
 
         // GET COLUMN AND ROW CLICKED
 
-        $('#ManifestsDataTable tbody').on('click', 'td', function() {
+        $('#RacksDataTable tbody').on('click', 'td', function() {
             clickedColumn = $(this).parent().children().index($(this));
             clickedRow = $(this).parent().parent().children().index($(this).parent());
             // alert('Row: ' + clickedRow + ', Column: ' + clickedColumn);
@@ -187,7 +205,7 @@ list of racks - warehouse
 
         // GET RECORD ID FOUND ON ROW CLICKED
 
-        $('#ManifestsDataTable tbody').on('click', 'tr', function() {
+        $('#RacksDataTable tbody').on('click', 'tr', function() {
           // console.log('Clicked Row Info:');
           // console.log($(this));
 
@@ -202,7 +220,7 @@ list of racks - warehouse
             // ROW MUST HAVE A RECORD ID VALUE IN ITS CONTENT
             if (itemID !== "") {
               // PREVIEW ITEMID
-              window.location.href = site.base_url + 'receiving/viewManifest_view/' + itemID;
+              window.location.href = site.base_url + 'warehouses/viewRack_view/' + itemID;
               // EDIT ITEMID
               // window.location.href = site.base_url + 'receiving/editSupplyOrder/' + itemID;
             }
@@ -214,10 +232,10 @@ list of racks - warehouse
         // DISPLAY HAND CURSOR OR POINTER WHEN HOVERING ON TABLE
         // *********************************************************************
 
-        $('#ManifestsDataTable tbody').css( 'cursor', 'pointer' );
+        $('#RacksDataTable tbody').css( 'cursor', 'pointer' );
 
         // for old IE browsers
-        $('#ManifestsDataTable tbody').css( 'cursor', 'hand' );
+        $('#RacksDataTable tbody').css( 'cursor', 'hand' );
 
         // *********************************************************************
         // *********************************************************************

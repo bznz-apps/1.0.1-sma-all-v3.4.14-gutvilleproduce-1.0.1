@@ -18,6 +18,8 @@ class Sales extends MY_Controller
         $this->lang->admin_load('sales', $this->Settings->user_language);
         $this->load->library('form_validation');
         $this->load->admin_model('sales_model');
+        $this->load->admin_model('products_model');
+        $this->load->admin_model('warehouses_model');
         $this->digital_upload_path = 'files/';
         $this->upload_path = 'assets/uploads/';
         $this->thumbs_path = 'assets/uploads/thumbs/';
@@ -715,6 +717,78 @@ class Sales extends MY_Controller
             //$this->data['currencies'] = $this->sales_model->getAllCurrencies();
             $this->data['slnumber'] = ''; //$this->site->getReference('so');
             $this->data['payment_ref'] = ''; //$this->site->getReference('pay');
+
+            $this->data['products'] = $this->products_model->getAllProducts();
+            $this->data['pallets'] = $this->warehouses_model->getAllPallets();
+
+            $pallets = $this->warehouses_model->getAllPallets();
+
+            $palletsMoreInfo = array();
+
+            // warehouse - pallet code - rack name - prod qty available in pallet
+            // warehouse_id
+            // code
+            // rack_id
+            // pallet_items pallet_id
+
+            foreach ($pallets as $key => $value) {
+                // echo '<pre>'; print_r($key); echo '</pre>';
+                // echo '<pre>'; print_r($value); echo '</pre>';
+
+                $onePalletMoreInfo = array();
+                $onePalletMoreInfo['pallet_data'] = $value;
+
+                foreach ($value as $key2 => $value2) {
+                    // echo '<pre>'; print_r($key2); echo '</pre>';
+                    // echo '<pre>'; print_r($value2); echo '</pre>';
+
+                    // pallet info array
+                    // get warehouse_id -> name
+                    // get rack_id -> name
+                    // get all pallet items id, where this pallet_id is found
+
+                    if ($key2 == "warehouse_id") {
+                      $warehouse_data = $this->warehouses_model->getWarehouseByID($value2);
+                      // array_push($onePalletMoreInfo, $warehouse_data->name);
+                      $onePalletMoreInfo['warehouse_name'] = $warehouse_data->name;
+                    }
+                    if ($key2 == "rack_id") {
+                      $rack_data = $this->warehouses_model->getRackByID($value2);
+                      // array_push($onePalletMoreInfo, $rack_data->name);
+                      $onePalletMoreInfo['rack_name'] = $rack_data->name;
+                    }
+                    if ($key2 == "id") {
+                      $pallet_items = $this->warehouses_model->getAllPalletItemsByPalletID($value2);
+                      $onePalletMoreInfo['pallet_items'] = $pallet_items;
+                      // $onePalletMoreInfo['pallet_items'] = $value2;
+                      // $pallet_items_array = array();
+                      // foreach ($pallet_items as $palletItemField => $palletItemValue) {
+                      //     $pallet_items_array['pallet_item'] = $palletItemValue;
+                      //     // if ($palletItemField == "product_id") {
+                      //     //     // array_push($onePalletMoreInfo, $palletItemValue);
+                      //     //     $onePalletMoreInfo['product_id'] = $palletItemValue;
+                      //     // }
+                      //     // if ($palletItemField == "quantity") {
+                      //     //     // array_push($onePalletMoreInfo, $palletItemValue);
+                      //     //     $onePalletMoreInfo['quantity'] = $palletItemValue;
+                      //     // }
+                      // }
+                      // $onePalletMoreInfo['pallet_items'] = $pallet_items_array;
+                    }
+
+
+                }
+
+                array_push($palletsMoreInfo, $onePalletMoreInfo);
+
+            }
+
+            // echo '<pre>'; print_r($this->data); echo '</pre>';
+            // echo '<pre>'; print_r($pallets); echo '</pre>';
+            // echo '<pre>'; print_r($palletsMoreInfo); echo '</pre>';
+
+            $this->data['palletsMoreInfo'] = $palletsMoreInfo;
+
             $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('sales'), 'page' => lang('sales')), array('link' => '#', 'page' => lang('add_sale')));
             $meta = array('page_title' => lang('add_sale'), 'bc' => $bc);
             $this->page_construct('sales/add', $meta, $this->data);
