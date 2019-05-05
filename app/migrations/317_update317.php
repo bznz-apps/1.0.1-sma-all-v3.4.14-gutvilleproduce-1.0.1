@@ -374,12 +374,12 @@ class Migration_Update317 extends CI_Migration {
       // SUPPLY ORDER COUNT
 
       $this->dbforge->add_field(array(
-          'starter_supply_order_number' => array(
+          'starter_no' => array(
             'type' => 'INT',
             'constraint' => 11,
             'null' => FALSE,
           ),
-          'last_supply_order_number' => array(
+          'last_no' => array(
             'type' => 'INT',
             'constraint' => 11,
             'null' => FALSE,
@@ -676,12 +676,12 @@ class Migration_Update317 extends CI_Migration {
       // RECEIVINGS COUNT
 
       $this->dbforge->add_field(array(
-          'starter_receiving_report_number' => array(
+          'starter_no' => array(
             'type' => 'INT',
             'constraint' => 11,
             'null' => FALSE,
           ),
-          'last_receiving_report_number' => array(
+          'last_no' => array(
             'type' => 'INT',
             'constraint' => 11,
             'null' => FALSE,
@@ -1222,11 +1222,20 @@ class Migration_Update317 extends CI_Migration {
             'constraint' => 11,
             'null' => TRUE,
           ),
+          'biller_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => TRUE,
+          ),
           'warehouse_id' => array(
             'type' => 'TEXT',
             'null' => TRUE
           ),
           'pickup_address' => array(
+            'type' => 'TEXT',
+            'null' => TRUE
+          ),
+          'default_po' => array(
             'type' => 'TEXT',
             'null' => TRUE
           ),
@@ -1242,6 +1251,13 @@ class Migration_Update317 extends CI_Migration {
             'type' => 'TEXT',
             'null' => TRUE
           ),
+          'shipping_date' => array(
+            'type' => 'varchar', // timestam?
+            'constraint' => 250,
+            'null' => true,
+            'on update' => 'NOW()'
+            // default 'CURRENT_TIMESTAMP'
+          ),
           'shipper' => array(
             'type' => 'TEXT',
             'null' => TRUE
@@ -1255,6 +1271,15 @@ class Migration_Update317 extends CI_Migration {
             'null' => TRUE
           ),
           'po' => array(
+            'type' => 'TEXT',
+            'null' => TRUE
+          ),
+
+          'ship_to_po' => array(
+            'type' => 'TEXT',
+            'null' => TRUE
+          ),
+          'bill_to_po' => array(
             'type' => 'TEXT',
             'null' => TRUE
           ),
@@ -1294,6 +1319,15 @@ class Migration_Update317 extends CI_Migration {
             'null' => TRUE
           ),
           'driver_signature' => array(
+            'type' => 'TEXT',
+            'null' => TRUE
+          ),
+
+          'tem_recorder_no' => array(
+            'type' => 'TEXT',
+            'null' => TRUE
+          ),
+          'tem_seal_no' => array(
             'type' => 'TEXT',
             'null' => TRUE
           ),
@@ -1351,6 +1385,19 @@ class Migration_Update317 extends CI_Migration {
             // 'default' => null
           ),
 
+          'image_of_temp_recorder' => array(
+            'type' => 'VARCHAR(255)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            // 'default' => null
+          ),
+          'attachment_of_temp_recorder' => array(
+            'type' => 'VARCHAR(55)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            // 'default' => null
+          ),
+
           'image_of_other_doc_1' => array(
             'type' => 'VARCHAR(255)',
             'collation' => 'utf8_general_ci',
@@ -1364,9 +1411,68 @@ class Migration_Update317 extends CI_Migration {
             // 'default' => null
           ),
 
+          'image_of_other_doc_2' => array(
+            'type' => 'VARCHAR(255)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            // 'default' => null
+          ),
+          'attachment_of_other_doc_2' => array(
+            'type' => 'VARCHAR(55)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            // 'default' => null
+          ),
+
+          'image_of_other_doc_3' => array(
+            'type' => 'VARCHAR(255)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            // 'default' => null
+          ),
+          'attachment_of_other_doc_3' => array(
+            'type' => 'VARCHAR(55)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            // 'default' => null
+          ),
+
       ));
       $this->dbforge->add_key('id', TRUE);
       $this->dbforge->create_table('NEW_bills_of_lading');
+
+      // -----------------------------------------------------------------------
+      // BILL OF LADING ITEM
+
+      $this->dbforge->add_field(array(
+          'id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'unsigned' => TRUE,
+            'auto_increment' => TRUE
+          ),
+          'bol_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => TRUE,
+          ),
+          'product_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => TRUE,
+          ),
+          'qty' => array(
+            'type' => 'TEXT',
+            'null' => TRUE
+          ),
+          'shipping_qty' => array(
+            'type' => 'TEXT',
+            'null' => TRUE
+          ),
+
+      ));
+      $this->dbforge->add_key('id', TRUE);
+      $this->dbforge->create_table('NEW_bill_of_lading_item');
 
       // -----------------------------------------------------------------------
       // BILLS OF LADING COUNT
@@ -1511,6 +1617,37 @@ class Migration_Update317 extends CI_Migration {
       $this->dbforge->create_table('NEW_rack_photos');
 
       // -----------------------------------------------------------------------
+      // LEGENDS
+
+      $this->dbforge->add_field(array(
+          'id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'unsigned' => TRUE,
+            'auto_increment' => TRUE
+          ),
+
+          'title_description' => array(
+            'type' => 'TEXT',
+            'null' => FALSE
+          ),
+          'legend_text' => array(
+            'type' => 'TEXT',
+            'null' => FALSE
+          ),
+
+          'image' => array(
+            'type' => 'VARCHAR(255)',
+            'collation' => 'utf8_general_ci',
+            'null' => TRUE,
+            // 'default' => null
+          ),
+
+      ));
+      $this->dbforge->add_key('id', TRUE);
+      $this->dbforge->create_table('NEW_text_legends');
+
+      // -----------------------------------------------------------------------
       // XXXXXXX
 
       // -----------------------------------------------------------------------
@@ -1530,8 +1667,28 @@ class Migration_Update317 extends CI_Migration {
             'type' => 'INT',
             'constraint' => 11,
           ),
+          'sales_terms' => array(
+            'type' => 'TEXT',
+            'null' => FALSE
+          ),
+          'ship_to_customer_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
       );
       $this->dbforge->add_column('sales', $fields);
+
+      // -----------------------------------------------------------------------
+      // UDPATE SALE ITEMS - PALLET ID
+
+      $fields = array(
+          'pallet_id' => array(
+              'type' => 'INT',
+              'constraint' => 11,
+          ),
+      );
+      $this->dbforge->add_column('sale_items', $fields);
 
     }
 
@@ -1561,10 +1718,12 @@ class Migration_Update317 extends CI_Migration {
       $this->dbforge->create_table('NEW_pickup_order_photos');
       $this->dbforge->create_table('NEW_pickup_order_item');
       $this->dbforge->create_table('NEW_bills_of_lading');
+      $this->dbforge->create_table('NEW_bill_of_lading_item');
       $this->dbforge->create_table('NEW_bills_of_lading_count');
       $this->dbforge->create_table('NEW_bill_of_lading_photos');
       $this->dbforge->create_table('NEW_racks');
       $this->dbforge->create_table('NEW_rack_photos');
+      $this->dbforge->create_table('NEW_text_legends');
     }
 
 }

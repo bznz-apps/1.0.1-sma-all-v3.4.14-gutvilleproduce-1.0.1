@@ -118,41 +118,41 @@ class Receiving extends MY_Controller
 
       // INCREMENTING: RECEIVING REPORT NUMBER
 
-      $default_starter_receiving_report_number = 1000;
-      $receiving_reports_count_total_rows = $this->db->count_all_results('NEW_receiving_reports_count');
-      $new_receiving_report_number = 1;
-      $last_receiving_report_number = 0;
+      $default_starter_no = 1000;
+      $count_total_rows = $this->db->count_all_results('NEW_receiving_reports_count');
+      $new_no = 1;
+      $last_no = 0;
 
       // CHECK IF TABLE 'NEW_receiving_reports_count' IS EMPTY OR HAS RESULTS
 
-      if ($receiving_reports_count_total_rows == 0) {
+      if ($count_total_rows == 0) {
 
           // IF EMPTY, INIT RECEIVING REPORT NUMBER AND CREATE RECORD
 
           $receiving_reports_count_data = array(
-              'starter_receiving_report_number' => $default_starter_receiving_report_number,
-              'last_receiving_report_number' => $default_starter_receiving_report_number,
+              'starter_no' => $default_starter_no,
+              'last_no' => $default_starter_no,
           );
           $this->db->insert('NEW_receiving_reports_count', $receiving_reports_count_data);
-          $new_receiving_report_number = $default_starter_receiving_report_number;
+          $new_no = $default_starter_no;
 
       } else {
 
         // IF RECORD FOUND, GET LAST RECEIVING REPORT NUMBER SAVED AND UPDATE +1
 
-        $last_receiving_report_number = $this->db->get('NEW_receiving_reports_count')->row()->last_receiving_report_number;
-        $new_receiving_report_number = $last_receiving_report_number + 1;
+        $last_no = $this->db->get('NEW_receiving_reports_count')->row()->last_no;
+        $new_no = $last_no + 1;
         $dataForReceivingReportsCount = array(
-            'last_receiving_report_number' => $new_receiving_report_number,
+            'last_no' => $new_no,
         );
-        $this->db->update('NEW_receiving_reports_count', $dataForReceivingReportsCount, array('starter_receiving_report_number' => $default_starter_receiving_report_number));
+        $this->db->update('NEW_receiving_reports_count', $dataForReceivingReportsCount, array('starter_no' => $default_starter_no));
 
       }
 
       // MODEL DATABASE OPERATION RESULTS
 
       $dataToInsert = array(
-          'receiving_report_number' => $new_receiving_report_number,
+          'receiving_report_number' => $new_no,
           'warehouse_id' => $this->input->post('warehouse_id'),
           'supply_order_id' => $this->input->post('supply_order'),
           'manifest_ref_no' => $this->input->post('manifest_ref_no'),

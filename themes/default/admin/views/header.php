@@ -47,11 +47,13 @@
                 <button class="navbar-toggle btn" type="button" data-toggle="collapse" data-target="#sidebar_menu">
                     <span class="fa fa-bars"></span>
                 </button>
-                <?php if (SHOP) { ?>
-                <a href="<?= site_url('/') ?>" class="btn">
+                <!--
+                <?php "" /***** if (SHOP) { *****/ ?>
+                <a href="<?= "" /***** site_url('/') *****/ ?>" class="btn">
                     <span class="fa fa-shopping-cart"></span>
                 </a>
-                <?php } ?>
+                <?php "" /***** } *****/ ?>
+              ``-->
                 <a href="<?= admin_url('calendar') ?>" class="btn">
                     <span class="fa fa-calendar"></span>
                 </a>
@@ -93,9 +95,11 @@
                 </ul>
                 <ul class="nav navbar-nav pull-right">
                     <li class="dropdown hidden-xs"><a class="btn tip" title="<?= lang('dashboard') ?>" data-placement="bottom" href="<?= admin_url('welcome') ?>"><i class="fa fa-dashboard"></i></a></li>
-                    <?php if (SHOP) { ?>
-                    <li class="dropdown hidden-xs"><a class="btn tip" title="<?= lang('shop') ?>" data-placement="bottom" href="<?= base_url() ?>"><i class="fa fa-shopping-cart"></i></a></li>
-                    <?php } ?>
+                    <!--
+                    <?php "" /***** if (SHOP) { *****/ ?>
+                    <li class="dropdown hidden-xs"><a class="btn tip" title="<?= "" /***** lang('shop') *****/ ?>" data-placement="bottom" href="<?= "" /***** base_url() *****/ ?>"><i class="fa fa-shopping-cart"></i></a></li>
+                    <?php "" /***** } *****/ ?>
+                    -->
                     <?php if ($Owner) { ?>
                     <li class="dropdown hidden-sm">
                         <a class="btn tip" title="<?= lang('settings') ?>" data-placement="bottom" href="<?= admin_url('system_settings') ?>">
@@ -268,22 +272,30 @@
                             </ul>
                         </li>
                     <?php } ?>
-                    <?php if (POS) { ?>
+
+                    <!--
+                    <?php "" /***** if (POS) { *****/ ?>
                     <li class="dropdown hidden-xs">
-                        <a class="btn bdarkGreen tip" title="<?= lang('pos') ?>" data-placement="bottom" href="<?= admin_url('pos') ?>">
-                            <i class="fa fa-th-large"></i> <span class="padding05"><?= lang('pos') ?></span>
+                        <a class="btn bdarkGreen tip" title="<?= "" /***** lang('pos') *****/ ?>" data-placement="bottom" href="<?= "" /***** admin_url('pos') *****/ ?>">
+                            <i class="fa fa-th-large"></i> <span class="padding05"><?= "" /***** lang('pos') *****/ ?></span>
                         </a>
                     </li>
-                    <?php } ?>
-                    <?php if ($Owner) { ?>
+                    <?php "" /***** } *****/ ?>
+                    -->
+
+                    <!--
+                    <?php "" /***** if ($Owner) { *****/ ?>
                         <li class="dropdown">
-                            <a class="btn bdarkGreen tip" id="today_profit" title="<span><?= lang('today_profit') ?></span>"
-                                data-placement="bottom" data-html="true" href="<?= admin_url('reports/profit') ?>"
+                            <a class="btn bdarkGreen tip" id="today_profit" title="<span><?= "" /***** lang('today_profit') *****/ ?></span>"
+                                data-placement="bottom" data-html="true" href="<?= "" /***** admin_url('reports/profit') *****/ ?>"
                                 data-toggle="modal" data-target="#myModal">
                                 <i class="fa fa-hourglass-2"></i>
                             </a>
                         </li>
-                    <?php } ?>
+                    <?php "" /***** } *****/ ?>
+                    -->
+
+                    <!--
                     <?php if ($Owner || $Admin) { ?>
                     <?php if (POS) { ?>
                     <li class="dropdown hidden-xs">
@@ -292,12 +304,15 @@
                         </a>
                     </li>
                     <?php } ?>
+                    -->
+
                     <li class="dropdown hidden-xs">
                         <a class="btn bred tip" title="<?= lang('clear_ls') ?>" data-placement="bottom" id="clearLS" href="#">
                             <i class="fa fa-eraser"></i>
                         </a>
                     </li>
                     <?php } ?>
+
                 </ul>
             </div>
         </div>
@@ -451,12 +466,12 @@
 
                                 <!-- SIDEBAR - Products - Import Product -->
 
-                                <li id="products_import_csv">
+                                <!-- <li id="products_import_csv">
                                     <a class="submenu" href="<?= admin_url('products/import_csv'); ?>">
                                         <i class="fa fa-file-text"></i>
                                         <span class="text"> <?= lang('import_products'); ?></span>
                                     </a>
-                                </li>
+                                </li> -->
 
                                 <!-- SIDEBAR - Products - Print Barcode/Label --->
 
@@ -469,39 +484,40 @@
 
                                 <!-- SIDEBAR - Products - Quantity Adjustments --->
 
-                                <li id="products_quantity_adjustments">
+                                <!-- <li id="products_quantity_adjustments">
                                     <a class="submenu" href="<?= admin_url('products/quantity_adjustments'); ?>">
                                         <i class="fa fa-filter"></i>
                                         <span class="text"> <?= lang('quantity_adjustments'); ?></span>
                                     </a>
-                                </li>
+                                </li> -->
 
                                 <!-- SIDEBAR - Products - Add Adjustment -->
 
-                                <li id="products_add_adjustment">
+                                <!-- <li id="products_add_adjustment">
                                     <a class="submenu" href="<?= admin_url('products/add_adjustment'); ?>">
                                         <i class="fa fa-filter"></i>
                                         <span class="text"> <?= lang('add_adjustment'); ?></span>
                                     </a>
-                                </li>
+                                </li> -->
 
                                 <!-- SIDEBAR - Products - Stock Counts ---->
 
-                                <li id="products_stock_counts">
+                                <!-- <li id="products_stock_counts">
                                     <a class="submenu" href="<?= admin_url('products/stock_counts'); ?>">
                                         <i class="fa fa-list-ol"></i>
                                         <span class="text"> <?= lang('stock_counts'); ?></span>
                                     </a>
-                                </li>
+                                </li> -->
 
                                 <!-- SIDEBAR - Products - Count Stock ----->
 
-                                <li id="products_count_stock">
+                                <!-- <li id="products_count_stock">
                                     <a class="submenu" href="<?= admin_url('products/count_stock'); ?>">
                                         <i class="fa fa-plus-circle"></i>
                                         <span class="text"> <?= lang('count_stock'); ?></span>
                                     </a>
-                                </li>
+                                </li> -->
+
                             </ul>
                         </li>
 
@@ -730,27 +746,27 @@
 
                                 <!-- SIDEBAR - Transfers - List Transfers --->
 
-                                <li id="transfers_index">
+                                <!-- <li id="transfers_index">
                                     <a class="submenu" href="<?= admin_url('transfers'); ?>">
                                         <i class="fa fa-star-o"></i><span class="text"> <?= lang('list_transfers'); ?></span>
                                     </a>
-                                </li>
+                                </li> -->
 
                                 <!-- SIDEBAR - Transfers - Add Transfer --->
 
-                                <li id="transfers_add">
+                                <!-- <li id="transfers_add">
                                     <a class="submenu" href="<?= admin_url('transfers/add'); ?>">
                                         <i class="fa fa-plus-circle"></i><span class="text"> <?= lang('add_transfer'); ?></span>
                                     </a>
-                                </li>
+                                </li> -->
 
                                 <!-- SIDEBAR - Transfers - Add Transfer by CSV -->
 
-                                <li id="transfers_purchase_by_csv">
+                                <!-- <li id="transfers_purchase_by_csv">
                                     <a class="submenu" href="<?= admin_url('transfers/transfer_by_csv'); ?>">
                                         <i class="fa fa-plus-circle"></i><span class="text"> <?= lang('add_transfer_by_csv'); ?></span>
                                     </a>
-                                </li>
+                                </li> -->
 
                             </ul>
 
@@ -786,12 +802,12 @@
 
                                 <!-- SIDEBAR - Sales - Add Sale by CSV ---->
 
-                                <li id="sales_sale_by_csv">
+                                <!-- <li id="sales_sale_by_csv">
                                     <a class="submenu" href="<?= admin_url('sales/sale_by_csv'); ?>">
                                         <i class="fa fa-plus-circle"></i>
                                         <span class="text"> <?= lang('add_sale_by_csv'); ?></span>
                                     </a>
-                                </li>
+                                </li> -->
 
                                 <?php /*
 
@@ -1331,7 +1347,8 @@
 
                                         <!-- SIDEBAR - Settings - POS Settings -->
 
-                                        <?php if (POS) { ?>
+                                        <?php /* if (POS) { ?>
+
                                         <li id="pos_settings">
                                             <a href="<?= admin_url('pos/settings') ?>">
                                                 <i class="fa fa-th-large"></i><span class="text"> <?= lang('pos_settings'); ?></span>
@@ -1361,7 +1378,8 @@
                                                 <i class="fa fa-plus-circle"></i><span class="text"> <?= lang('add_printer'); ?></span>
                                             </a>
                                         </li>
-                                        <?php } ?>
+
+                                        <?php } */ ?>
 
                                         <!-- SIDEBAR - Settings - Change Logo -->
 
@@ -1485,7 +1503,7 @@
                                 </li>
                             <?php } ?>
 
-                            <?php if ($Owner && file_exists(APPPATH.'controllers'.DIRECTORY_SEPARATOR.'shop'.DIRECTORY_SEPARATOR.'Shop.php')) { ?>
+                            <?php /* if ($Owner && file_exists(APPPATH.'controllers'.DIRECTORY_SEPARATOR.'shop'.DIRECTORY_SEPARATOR.'Shop.php')) { ?>
                             <li class="mm_shop_settings mm_api_settings">
                                 <a class="dropmenu" href="#">
                                     <i class="fa fa-shopping-cart"></i><span class="text"> <?= lang('front_end'); ?> </span>
@@ -1536,7 +1554,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            <?php } ?>
+                          <?php } */ ?>
 
                         <?php
                         } else { // not owner and not admin

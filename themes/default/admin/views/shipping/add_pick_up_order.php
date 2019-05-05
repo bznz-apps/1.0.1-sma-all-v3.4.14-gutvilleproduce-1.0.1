@@ -1,5 +1,89 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
+<script>
+
+    // Default DataTables Code, Leave as is... Starts here --->
+
+    var oTable;
+    $(document).ready(function () {
+
+      console.log("ready!");
+
+      $(document).on('change', '#pick_up_order_sale_id', function(e) {
+              let sale_id = $(this).val();
+
+              console.log("changed!");
+              console.log(sale_id);
+
+              <?php
+                  $urlParam = $_POST['sale_id'];
+                  // $urlParam = 3;
+              ?>
+
+              oTable = $('#ViewSaleItemsInPickUpTable').dataTable({
+                  "aaSorting": [[2, "asc"], [3, "asc"]],
+                  "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "<?= lang('all') ?>"]],
+                  "iDisplayLength": <?= $Settings->rows_per_page ?>,
+                  'bProcessing': true, 'bServerSide': true,
+                  <?php /*
+                  'sAjaxSource': '<?= admin_url('suppliers/getSupplyOrdersLogic'.($warehouse_id ? '/'.$warehouse_id : '').($supplier ? '?supplier='.$supplier->id : '')) ?>',
+                  */
+                  ?>
+                  // 'sAjaxSource': '<?= /* admin_url('sales/handleGetSaleItems_logic' . ($urlParam ? '/' . $urlParam : '')) */ ""?>',
+                  'sAjaxSource': '<?= admin_url() ?>' + 'sales/handleGetSaleItems_logic' + (sale_id ? '/' + sale_id : ''),
+                  'fnServerData': function (sSource, aoData, fnCallback) {
+                    console.log(aoData);
+                      aoData.push({
+                          "name": "<?= $this->security->get_csrf_token_name() ?>",
+                          "value": "<?= $this->security->get_csrf_hash() ?>"
+                      });
+                      $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
+                  },
+                  'fnRowCallback': function (nRow, aData, iDisplayIndex) {
+                      var oSettings = oTable.fnSettings();
+                      nRow.id = aData[0];
+                      nRow.className = "supply_order_link";
+                      nRow.style = "text-align: center;";
+                      // nRow.className = "product_link";
+                      //if(aData[7] > aData[9]){ nRow.className = "product_link warning"; } else { nRow.className = "product_link"; }
+                      return nRow;
+                  },
+                  "bDestroy" : true, // This is needed to make sure we can load a new table if some value changes and we need to pull off new items from that id value that changed...
+
+          // Default DataTables Code, Leave as is... Ends here <---
+
+                  // DATATABE COLUMN OPTIONS
+                  // we set option to element 0, or the first column, so that i can be checkboxes
+
+                  "aoColumns": [
+                      {"bSortable": false, "mRender": checkbox},
+                      null, // product column
+                      null, // quantity column
+                      // UNHIDE ACTIONS COLUMN
+                      // null  // actions column
+                  ]
+
+              })
+
+              // Last Row, In order to filter data by column row value
+              // Dont forget to add .lang language
+
+              .fnSetFilteringDelay().dtFilter([
+                  <?php /*
+                    // Description:
+                    // Line below is just an example of using the var lang for localization:
+                    {column_number: 2, filter_default_label: "[<?=lang('code');?>]", filter_type: "text", data: []},
+                  */ ?>
+                  {column_number: 1, filter_default_label: "[Product]", filter_type: "text", data: []},
+                  {column_number: 2, filter_default_label: "[Quantity]", filter_type: "text", data: []},
+
+              ], "footer");
+
+      });
+
+    });
+</script>
+
 <div class="box">
 
     <!-- ***********************************************************************
@@ -70,7 +154,7 @@
                       SELECT SALE
                     ******************************************************** -->
 
-                    <div class="form-group all">
+                    <div class="col-md-4">
                         <?php /* <label for="mcode" class="col-sm-4 control-label"><?= lang('product_code') ?> *</label> */ ?>
 
                         <label><?= "Sale No" ?></label>
@@ -80,90 +164,326 @@
                               <?php
                               $sl[''] = "";
                               foreach ($sales as $sale) {
-                                  $sl[$sale->id] = $sale->company;
+                                  $sl[$sale->id] = $sale->sale_no;
                               }
-                              echo form_dropdown('sale', $sl, (isset($_POST['sale']) ? $_POST['sale'] : ($sale ? $sale->sale_id : '')), 'class="form-control select" id="pick_up_order_sale_id" placeholder="' . lang("select") . " " . lang("sale") . '" required="required" style="width:100%"')
+                              // echo form_dropdown('sale_id', $sl, (isset($_POST['sale_id']) ? $_POST['sale_id'] : ($sale ? $sale->sale_id : '')), 'class="form-control select" id="pick_up_order_sale_id" placeholder="' . lang("select") . " " . lang("sale") . '" required="required" style="width:100%"')
+                              echo form_dropdown('sale_id', $sl, (isset($_POST['sale_id']) ? $_POST['sale_id'] : ($sale ? $sale->sale_id : '')), 'class="form-control select" id="pick_up_order_sale_id" placeholder="Select Sale No" required="required" style="width:100%"')
                               ?>
                           </div>
 
                     </div>
 
-                    <!-- *******************************************************
-                      SUPPLY ORDER MESSAGE TO SUPPLIER
-                    ******************************************************** -->
+                    <!-- ***************************************************
+                    *  SOLD TO
+                    **************************************************** -->
 
-                    <div class="form-group all">
-                        <?php /* <?= lang("product_details", "product_details") ?> */ ?>
-                        <label><?= "Add Message To Supplier" ?></label>
-                        <br>
-                        <?= "\n(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <?php /* <?= form_textarea('product_details', (isset($_POST['product_details']) ? $_POST['product_details'] : ($product ? $product->product_details : '')), 'class="form-control" id="details"'); ?> */ ?>
-                        <?= form_textarea('msgToSupplier', (isset($_POST['msgToSupplier']) ? $_POST['msgToSupplier'] : ($product ? $product->msgToSupplier : '')), 'class="form-control" id="msgToSupplier"'); ?>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Sold To" ?> </label>
+                            <?php echo form_input('sold_to', (isset($_POST['sold_to']) ? $_POST['sold_to'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                        </div>
                     </div>
 
-                    <!-- *******************************************************
-                      SUPPLY ORDER MESSAGE TO RECEIVING
-                    ******************************************************** -->
+                    <!-- ***************************************************
+                    *  SHIP TO
+                    **************************************************** -->
 
-                    <div class="form-group all">
-                        <?php /* <?= lang("product_details", "product_details") ?> */ ?>
-                        <label><?= "Add Message to Receiving" ?></label>
-                        <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <?php /* <?= form_textarea('product_details', (isset($_POST['product_details']) ? $_POST['product_details'] : ($product ? $product->product_details : '')), 'class="form-control" id="details"'); ?> */ ?>
-                        <?= form_textarea('msgToReceiving', (isset($_POST['msgToReceiving']) ? $_POST['msgToReceiving'] : ($product ? $product->msgToReceiving : '')), 'class="form-control" id="msgToReceiving"'); ?>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Ship To" ?> </label>
+                            <?php echo form_input('ship_to', (isset($_POST['ship_to']) ? $_POST['ship_to'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                        </div>
                     </div>
 
-                    <!-- *******************************************************
-                      IMAGE
-                    ******************************************************** -->
+                    <div class="row"></div>
+                    <hr>
 
-                    <div class="form-group all">
-                        <?php /* <?= lang("product_image", "product_image") ?> */ ?>
-                        <label><?= "Add Image" ?></label>
-                        <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="pick_up_order_image" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
-                               data-show-preview="false" accept="image/*" class="form-control file">
+                    <!-- ***************************************************
+                    *  ORDER NO
+                    **************************************************** -->
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Order No" ?> </label>
+                            <?php echo form_input('order_no', (isset($_POST['order_no']) ? $_POST['order_no'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                        </div>
                     </div>
 
-                    <!-- *******************************************************
-                      IMAGE GALLERY
-                    ******************************************************** -->
+                    <!-- ***************************************************
+                    *  SALES LOAD
+                    **************************************************** -->
 
-                    <div class="form-group all">
-                        <?php /* <?= lang("product_gallery_images", "images") ?> */ ?>
-                        <label><?= "Add Image Gallery" ?></label>
-                        <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="pick_up_order_images" type="file" data-browse-label="<?= lang('browse'); ?>" name="userfile[]" multiple="true" data-show-upload="false"
-                               data-show-preview="false" class="form-control file" accept="image/*">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Sales Load" ?> </label>
+                            <?php echo form_input('sales_load', (isset($_POST['sales_load']) ? $_POST['sales_load'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                        </div>
                     </div>
-                    <div id="img-details"></div>
 
-                    <!-- *******************************************************
-                      ATTACH DOCUMENT
-                    ******************************************************** -->
+                    <!-- ***************************************************
+                    *  ORDER DATE
+                    **************************************************** -->
 
-                    <div class="form-group all">
-                        <?= lang("document", "document") ?>
-                        <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="pick_up_order_document" type="file" data-browse-label="<?= lang('browse'); ?>" name="document" data-show-upload="false"
-                               data-show-preview="false" class="form-control file">
+                    <?php /* if ($Owner || $Admin) { */ "" ?>
+                        <?php /* <div class="col-md-4"> */ ?>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                 <label><?= /* lang("date", "sldate"); */ "Order" ?></label>
+                                <?php echo form_input('order_date', (isset($_POST['order_date']) ? $_POST['order_date'] : ""), 'class="form-control input-tip datetime" id="" autocomplete="off"'); ?>
+                            </div>
+                        </div>
+                    <?php /* } */ "" ?>
+
+                    <!-- ***************************************************
+                    *  SHIP DATE
+                    **************************************************** -->
+
+                    <?php /* if ($Owner || $Admin) { */ "" ?>
+                        <?php /* <div class="col-md-4"> */ ?>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                 <label><?= /* lang("date", "sldate"); */ "Ship" ?></label>
+                                <?php echo form_input('ship_date', (isset($_POST['ship_date']) ? $_POST['ship_date'] : ""), 'class="form-control input-tip datetime" id="" autocomplete="off"'); ?>
+                            </div>
+                        </div>
+                    <?php /* } */ "" ?>
+
+                    <div class="row"></div>
+
+                    <!-- ***************************************************
+                    *  PAY TERMS
+                    **************************************************** -->
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Pay Terms" ?> </label>
+                            <?php echo form_input('pay_terms', (isset($_POST['pay_terms']) ? $_POST['pay_terms'] : $slnumber), 'class="form-control input-tip" id="pay_terms"'); ?>
+                        </div>
+                    </div>
+
+                    <!-- ***************************************************
+                    *  SALE TERMS
+                    **************************************************** -->
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Sale Terms" ?> </label>
+                            <?php echo form_input('sale_terms', (isset($_POST['sale_terms']) ? $_POST['sale_terms'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                        </div>
+                    </div>
+
+                    <div class="row"></div>
+                    <hr>
+
+                    <!-- ***************************************************
+                    *  CUST PO
+                    **************************************************** -->
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Cust PO" ?> </label>
+                            <?php echo form_input('customer_PO', (isset($_POST['customer_PO']) ? $_POST['customer_PO'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                        </div>
+                    </div>
+
+                    <!-- ***************************************************
+                    *  DELIVERY
+                    **************************************************** -->
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Delivery" ?> </label>
+                            <?php echo form_input('delivery', (isset($_POST['delivery']) ? $_POST['delivery'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                        </div>
+                    </div>
+
+                    <!-- ***************************************************
+                    *  VIA
+                    **************************************************** -->
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Via" ?> </label>
+                            <?php echo form_input('via', (isset($_POST['via']) ? $_POST['via'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                        </div>
+                    </div>
+
+                    <!-- ***************************************************
+                    *  SALESPERSON
+                    **************************************************** -->
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Salesperson" ?> </label>
+                            <?php echo form_input('salesperson', (isset($_POST['salesperson']) ? $_POST['salesperson'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                        </div>
+                    </div>
+
+                    <!-- ***************************************************
+                    *  CARRIER
+                    **************************************************** -->
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Carrier" ?> </label>
+                            <?php echo form_input('carrier', (isset($_POST['carrier']) ? $_POST['carrier'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                        </div>
+                    </div>
+
+                    <!-- ***************************************************
+                    *  TRAILER LIC
+                    **************************************************** -->
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Trailer Lic" ?> </label>
+                            <?php echo form_input('trailer_lic', (isset($_POST['trailer_lic']) ? $_POST['trailer_lic'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                        </div>
+                    </div>
+
+                    <!-- ***************************************************
+                    *  BROKER
+                    **************************************************** -->
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Broker" ?> </label>
+                            <?php echo form_input('broker', (isset($_POST['broker']) ? $_POST['broker'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                        </div>
+                    </div>
+
+                    <!-- ***************************************************
+                    *  ST
+                    **************************************************** -->
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "St" ?> </label>
+                            <?php echo form_input('state', (isset($_POST['state']) ? $_POST['state'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                        </div>
+                    </div>
+
+                    <div class="row"></div>
+
+                    <!-- ***************************************************
+                    *  QUANTITY
+                    **************************************************** -->
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Quantity" ?> </label>
+                            <?php echo form_input('qty', (isset($_POST['qty']) ? $_POST['qty'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                        </div>
+                    </div>
+
+                    <!-- ***************************************************
+                    *  PALLETS
+                    **************************************************** -->
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Pallets" ?> </label>
+                            <?php echo form_input('pallets', (isset($_POST['pallets']) ? $_POST['pallets'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                        </div>
+                    </div>
+
+                    <!-- ***************************************************
+                    *  WEIGHT
+                    **************************************************** -->
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Weight" ?> </label>
+                            <?php echo form_input('weight', (isset($_POST['weight']) ? $_POST['weight'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                        </div>
+                    </div>
+
+                    <div class="row"></div>
+                    <hr>
+
+                    <!--********************************************************
+                    * SALE ITEMS
+                    *********************************************************-->
+
+                    <!-- TABLE CONTENT - ITEMS LIST -->
+
+                    <label>Sale Items</label>
+
+                    <div class="box-content">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <?php /* <p class="introtext"><?= lang('list_results'); ?></p> */ ?>
+
+                                <div class="table-responsive">
+                                    <table id="ViewSaleItemsInPickUpTable" class="table table-bordered table-condensed table-hover table-striped">
+
+                                      <!-- Table Header Row -->
+
+                                        <thead>
+                                        <tr class="primary">
+
+                                          <th style="min-width:30px; max-width:30px; width: 30px; text-align: center;">
+                                              <input class="checkbox checkth" type="checkbox" name="check"/>
+                                          </th>
+                                          <th style="width:50%; text-align: center;">Product</th>
+                                          <th style="width:50%; text-align: center;">Quantity</th>
+
+                                          <?php /*
+                                          // UNHIDE ACTIONS COLUMN
+                                          <th style="width:20px; text-align:center;"><?= lang("actions") ?></th>
+                                          */ ?>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td colspan="11" class="dataTables_empty"><?= lang('loading_data_from_server'); ?></td>
+                                        </tr>
+                                        </tbody>
+
+                                        <!-- Table Footer Row - Filter -->
+
+                                        <tfoot class="dtFilter">
+
+                                        <tr class="active">
+
+                                          <th style="min-width:30px; max-width:30px; width: 30px; text-align: center;">
+                                              <input class="checkbox checkft" type="checkbox" name="check"/>
+                                          </th>
+                                          <th style="text-align: center;"></th>
+                                          <th style="text-align: center;"></th>
+
+                                          <?php /*
+                                          // UNHIDE ACTIONS COLUMN
+                                          <th style="width:20px; text-align:center;"><?= lang("actions") ?></th>
+                                          */ ?>
+
+                                        </tr>
+                                        </tfoot>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <br>
+                    <div class="row"></div>
+                    <hr>
+
+                    <label>Add Pick Up Order Items</label>
+                    <br>
+                    <div class="row"></div>
 
                     <!-- *******************************************************
-                      + BUTTON - ADD SUPPLY ORDER ITEM
+                      + BUTTON - ADD PICK UP ORDER ITEM
                     ******************************************************** -->
 
                     <div class="form-group all">
                         <div class="input-group wide-tip">
                             <div class="input-group-addon" style="padding-left: 10px; padding-right: 10px;">
                                 <i class="fa fa-2x fa-barcode addIcon"></i></a></div>
-                            <?php echo form_input('add_item', '', 'readonly="true" class="form-control input-lg" id="add_item" placeholder="' . lang("add_product_to_order") . '"'); ?>
+                            <?php echo form_input('add_item', '', 'readonly="true" class="form-control input-lg" id="add_item" placeholder="Add items to this pick up order"'); ?>
                             <?php if ($Owner || $Admin || $GP['products-add']) { ?>
                             <div class="input-group-addon" style="padding-left: 10px; padding-right: 10px;">
                                 <?php /*
@@ -182,12 +502,12 @@
                     <br>
 
                     <!-- *******************************************************
-                      TABLE - SUPPLY ORDER ITEMS
+                      TABLE - PICK UP ORDER ITEMS
                     ******************************************************** -->
 
                     <div class="col-md-12">
                         <div class="control-group table-group">
-                            <label class="table-label"><?= lang("order_items"); ?> *</label>
+                            <label class="table-label"><?= /* lang("order_items"); */ "Pick Up Order Items" ?> *</label>
 
                             <div class="controls table-controls">
                                 <table id="Pick_Up_OrderTable" class="table items table-striped table-bordered table-condensed table-hover sortable_table">
@@ -204,13 +524,19 @@
                                           TABLE - COLUMN - PRODUCT
                                         ************************************ -->
 
-                                        <th class="col-md-4" style="width: 70% !important;">Product</th>
+                                        <th class="col-md-4" style="width: 49% !important;">Item Description</th>
 
                                         <!-- ***********************************
                                           TABLE - COLUMN - QUANTITY
                                         ************************************ -->
 
-                                        <th class="col-md-4" style="width: 20% !important;">Quantity</th>
+                                        <th class="col-md-4" style="width: 25% !important;">Quantity</th>
+
+                                        <!-- ***********************************
+                                          TABLE - COLUMN - PRICE
+                                        ************************************ -->
+
+                                        <th class="col-md-4" style="width: 25% !important;">Price</th>
 
                                         <!-- ***********************************
                                           TABLE - COLUMN - DELETE BUTTON
@@ -237,15 +563,19 @@
 
                     <br>
 
+                    <br>
+                    <div class="row"></div>
+                    <hr>
+
                     <!-- *******************************************************
                       BUTTON - FORM SUBMIT
                     ******************************************************** -->
 
                     <div class="form-group">
-                        <!-- SEND SUPPLY ORDER - BUTTON -->
+                        <!-- SEND PICK UP ORDER - BUTTON -->
                         <?php /* echo form_submit('add_product', $this->lang->line("add_product"), 'class="btn btn-primary"'); */ ?>
                         <?php echo form_submit('add_product', "Reset", 'class="btn btn-danger" id="pick_up_order_items-reset_button"'); ?>
-                        <?php echo form_submit('add_product', "Send Order to Supplier", 'class="btn btn-primary"'); ?>
+                        <?php echo form_submit('add_product', "Save Pick Up Order", 'class="btn btn-primary"'); ?>
                     </div>
 
                 </div>
@@ -260,7 +590,7 @@
 
 <!-- ***************************************************************************
 
-  MODAL - FORM - ADD SUPPLY ORDER ITEM
+  MODAL - FORM - ADD PICK UP ORDER ITEM
 
 **************************************************************************** -->
 
@@ -271,7 +601,7 @@
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"><i
                             class="fa fa-2x">&times;</i></span><span class="sr-only"><?=lang('close');?></span></button>
                 <?php /* <h4 class="modal-title" id="mModalLabel"><?= lang('add_product_manually') ?></h4> */ ?>
-                <h4 class="modal-title" id="mModalLabel"><?= "Add Product To Order" ?></h4>
+                <h4 class="modal-title" id="mModalLabel"><?= "Add Pick Up Order Item" ?></h4>
             </div>
             <div class="modal-body" id="pr_popover_content">
 
@@ -282,25 +612,13 @@
                 <form class="form-horizontal" role="form">
 
                     <!-- *******************************************************
-                      PRODUCT - INPUT
+                      ITEM DESCRIPTION - INPUT
                     ******************************************************** -->
 
                     <div class="form-group">
-                        <?php /* <label for="mcode" class="col-sm-4 control-label"><?= lang('product_code') ?> *</label> */ ?>
-                        <label for="mcode" class="col-sm-4 control-label"><?= "Product" ?> *</label>
-
+                        <label class="col-sm-4 control-label"><?= /* lang('quantity') */ "Item Description" ?> *</label>
                         <div class="col-sm-8">
-
-                          <div class="form-group">
-                              <?php
-                              $prod[''] = "";
-                              foreach ($products as $product) {
-                                  $prod[$product->id] = $product->name;
-                              }
-                              echo form_dropdown('product', $prod, (isset($_POST['product']) ? $_POST['product'] : ($product ? $product->product_id : '')), 'class="form-control select" id="pick_up_order_product_id" placeholder="' . lang("select") . " " . lang("product") . '" required="required" style="width:100%"')
-                              ?>
-                          </div>
-
+                            <input type="number" min="0" class="form-control" id="pick_up_order_item_description" required>
                         </div>
                     </div>
 
@@ -311,7 +629,18 @@
                     <div class="form-group">
                         <label for="mquantity" class="col-sm-4 control-label"><?= lang('quantity') ?> *</label>
                         <div class="col-sm-8">
-                            <input type="number" min="0" class="form-control" id="pick_up_order_product_qty" required>
+                            <input type="number" min="0" class="form-control" id="pick_up_order_item_qty" required>
+                        </div>
+                    </div>
+
+                    <!-- *******************************************************
+                      PRICE - INPUT
+                    ******************************************************** -->
+
+                    <div class="form-group">
+                        <label for="mquantity" class="col-sm-4 control-label"><?= /* lang('quantity') */ "Price" ?> *</label>
+                        <div class="col-sm-8">
+                            <input type="number" min="0" class="form-control" id="pick_up_order_item_price" required>
                         </div>
                     </div>
 
@@ -326,7 +655,7 @@
 
 <!-- ***************************************************************************
 
-  LOGIC HANDLERS - ADD SUPPLY ORDER ITEMS
+  LOGIC HANDLERS - ADD PICK UP ORDER ITEMS
 
 **************************************************************************** -->
 
@@ -396,7 +725,7 @@
         }
 
         // *********************************************************************
-        // POPULATE TABLE - SUPPLY ORDER ITEMS
+        // POPULATE TABLE - PICK UP ORDER ITEMS
         // *********************************************************************
 
         loadPickUpOrderItems();
@@ -419,6 +748,8 @@
                 var product_id = item.row.product_id;
                 var product_name = item.row.product_name;
                 var product_quantity = item.row.product_quantity;
+                var product_price = item.row.product_price;
+                // var product_price = 1000;
 
                 // later
                 // on qty input:
@@ -442,6 +773,10 @@
                         `<td align="center">
                             <input name="product_quantity[]" style="text-align: center; width: 100%;" readonly type="number" class="rid" value="${product_quantity}">
                         </td>`;
+                    tr_html +=
+                        `<td align="center">
+                            <input name="product_price[]" style="text-align: center; width: 100%;" readonly type="number" class="rid" value="${product_price}">
+                        </td>`;
                     tr_html += `
                         <td class="text-center">
                             <i
@@ -462,6 +797,9 @@
                 newTr.html(tr_html);
                 newTr.prependTo('#Pick_Up_OrderTable');
 
+                console.log("Order Items after last added:");
+                console.log(currentOrderItems);
+
               })
             }
 
@@ -475,12 +813,19 @@
             event.preventDefault();
 
             var createdAt = new Date().getTime();
-            var pick_up_order_product_id = $('#pick_up_order_product_id').val();
-            var pick_up_order_product_qty = $('#pick_up_order_product_qty').val();
+            var pick_up_order_product_id = $('#pick_up_order_item_description').val();
+            var pick_up_order_item_description = $('#pick_up_order_item_description').val();
+            var pick_up_order_item_qty = $('#pick_up_order_item_qty').val();
+            var pick_up_order_item_price = $('#pick_up_order_item_price').val();
 
-            if (pick_up_order_product_id && pick_up_order_product_qty) {
+            // console.log(pick_up_order_product_id);
+            // console.log(pick_up_order_item_qty);
+            // console.log(pick_up_order_item_price);
+
+            if (pick_up_order_product_id && pick_up_order_item_qty && pick_up_order_item_price) {
 
                 var currentOrderItems2 = JSON.parse(localStorage.getItem('form-add_pick_up_order-items'));
+                // console.log(currentOrderItems2);
 
                 var rowCount = localStorage.getItem('form-add_pick_up_order-items_rows_count');
                 if (rowCount === null || rowCount === undefined) {
@@ -492,12 +837,12 @@
 
                 var productsList = <?php echo json_encode($products); ?>;
 
-                let prodName = "";
-                productsList.map(prod => {
-                  if (prod.id.toString() === pick_up_order_product_id.toString()) {
-                    prodName = prod.name;
-                  }
-                })
+                // let prodName = "";
+                // productsList.map(prod => {
+                //   if (prod.id.toString() === pick_up_order_product_id.toString()) {
+                //     prodName = prod.name;
+                //   }
+                // })
 
                 var orderItem = {
                     item_id: rowCount,
@@ -505,8 +850,9 @@
                     row: {
                       row_no: rowCount,
                       product_id: pick_up_order_product_id,
-                      product_name: prodName,
-                      product_quantity: pick_up_order_product_qty,
+                      product_name: pick_up_order_item_description,
+                      product_quantity: pick_up_order_item_qty,
+                      product_price: pick_up_order_item_price,
                     },
                     options: false,
                 };
@@ -521,7 +867,7 @@
 
             $('#addPickUpOrderProductModal').modal('hide');
 
-            $('#pick_up_order_product_qty').val('');
+            $('#pick_up_order_item_qty').val('');
             return false;
         });
 

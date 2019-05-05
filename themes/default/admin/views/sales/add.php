@@ -376,11 +376,13 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <?= lang("customer", "slcustomer"); ?>
-                                            <div class="input-group">
+                                            <?= "" /* lang("customer", "slcustomer"); */ ?>
+                                            <label><?= /* lang("customer", "slcustomer"); */ "Bill To" ?> *</label>
+                                            <!-- <div class="input-group"> -->
                                                 <?php
                                                 echo form_input('customer', (isset($_POST['customer']) ? $_POST['customer'] : ""), 'id="slcustomer" data-placeholder="' . lang("select") . ' ' . lang("customer") . '" required="required" class="form-control input-tip" style="width:100%;"');
                                                 ?>
+                                                <!--
                                                 <div class="input-group-addon no-print" style="padding: 2px 8px; border-left: 0;">
                                                     <a href="#" id="toogle-customer-read-attr" class="external">
                                                         <i class="fa fa-pencil" id="addIcon" style="font-size: 1.2em;"></i>
@@ -391,16 +393,42 @@
                                                         <i class="fa fa-eye" id="addIcon" style="font-size: 1.2em;"></i>
                                                     </a>
                                                 </div>
-                                                <?php if ($Owner || $Admin || $GP['customers-add']) { ?>
+                                                <?php "" /* if ($Owner || $Admin || $GP['customers-add']) { */ ?>
                                                 <div class="input-group-addon no-print" style="padding: 2px 8px;">
-                                                    <a href="<?= admin_url('customers/add'); ?>" id="add-customer"class="external" data-toggle="modal" data-target="#myModal">
+                                                    <a href="<?= "" /* admin_url('customers/add'); */ ?>" id="add-customer"class="external" data-toggle="modal" data-target="#myModal*/ ">
                                                         <i class="fa fa-plus-circle" id="addIcon"  style="font-size: 1.2em;"></i>
                                                     </a>
                                                 </div>
-                                                <?php } ?>
-                                            </div>
+                                                <?php "" /* } */ ?>
+                                                -->
+                                            <!-- </div> -->
                                         </div>
                                     </div>
+
+
+                                    <!-- *******************************************
+                                    *  SHIPPING - SHIP TO
+                                    ******************************************** -->
+
+                                    <div class="col-md-4">
+                                        <?php /* <label for="mcode" class="col-sm-4 control-label"><?= lang('product_code') ?> *</label> */ ?>
+
+                                        <label><?= "Ship To" ?></label>
+                                        <?php /* <label for="mcode" class="col-sm-4 control-label"><?= "Product" ?> *</label> */ ?>
+
+                                          <div class="form-group">
+                                              <?php
+                                              $cstmer[''] = "";
+                                              foreach ($customers as $customer) {
+                                                  $cstmer[$customer->id] = $customer->company . " - " . $customer->address;
+                                              }
+                                              // echo form_dropdown('customer_id', $cstmer, (isset($_POST['customer_id']) ? $_POST['customer_id'] : ($customer ? $customer->customer_id : '')), 'class="form-control select" id="sale_customer_id" placeholder="' . lang("select") . " " . lang("customer") . '" required="required" style="width:100%"')
+                                              echo form_dropdown('ship_to_customer_id', $cstmer, (isset($_POST['ship_to_customer_id']) ? $_POST['ship_to_customer_id'] : ($customer ? $customer->customer_id : '')), 'class="form-control select" id="sale_customer_id" placeholder="Select Customer" required="required" style="width:100%"')
+                                              ?>
+                                          </div>
+
+                                    </div>
+
 
                                 </div>
                             </div>
@@ -582,14 +610,14 @@
                         <?php } ?>
 
                         <!-- ***************************************************
-                        *  SHIPPING
+                        *  SHIPPING COSTS
                         **************************************************** -->
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <?= lang("shipping", "slshipping"); ?>
-                                <?php echo form_input('shipping', '', 'class="form-control input-tip" id="slshipping"'); ?>
-
+                                <?= "" /* lang("shipping", "slshipping"); */ ?>
+                                <label><?= "Shipping Cost" ?></label>
+                                <?php echo form_input('shipping', '', 'class="form-control input-tip" type="number" id="slshipping"'); ?>
                             </div>
                         </div>
 
@@ -612,9 +640,22 @@
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <?= lang("sale_status", "slsale_status"); ?>
-                                <?php $sst = array('completed' => lang('completed'), 'pending' => lang('pending'));
-                                echo form_dropdown('sale_status', $sst, '', 'class="form-control input-tip" required="required" id="slsale_status"'); ?>
+                                <?php $sst = array('pending' => lang('pending'), 'completed' => lang('completed'));
+                                echo form_dropdown('sale_status', $sst, '', 'class="form-control input-tip" required="required" id="slsale_status" disabled'); ?>
 
+                            </div>
+                        </div>
+
+                        <!-- ***************************************************
+                        *  SALES TERMS
+                        **************************************************** -->
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?= "" /* lang("payment_term", "slpayment_term"); */ ?>
+                                <label><?= /* lang("payment_term", "slpayment_term"); */ "Sales Terms" ?></label>
+                                <?php "" /* echo form_input('sales_term', '', 'class="form-control tip" data-trigger="focus" data-placement="top" title="' . lang('payment_term_tip') . '" id="slpayment_term"'); */ ?>
+                                <?php echo form_input('sales_terms', '', 'class="form-control tip" data-trigger="focus" data-placement="top" title="Sales Term" id="slsales_terms"'); ?>
                             </div>
                         </div>
 
@@ -1243,6 +1284,12 @@
     // document.getElementById('#quantity_1556660855776').readonly = true;
 
     $(document).ready(function () {
+
+      // $("#quantity_1556660855776").attr("disabled", true);
+      $("#quantity_1556660855776").prop("disabled", "disabled");
+      $("#quantity_1556660855776").prop("disabled", true);
+      // $("#slwarehouse").attr("disabled", true);
+      // $("#slwarehouse").attr("readonly", true);
 
         // $('#check').change(function() {
         //     $("#1556660855776").prop("hidden", true);

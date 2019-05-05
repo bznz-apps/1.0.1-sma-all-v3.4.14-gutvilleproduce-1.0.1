@@ -963,47 +963,47 @@ class Suppliers extends MY_Controller
       // get supply orders table row or records length
       // add ++
 
-      $default_starter_supply_order_number = 1000;
-      $supply_orders_count_total_rows = $this->db->count_all_results('NEW_supply_orders_count');
-      $new_supply_order_number = 1;
-      $last_supply_order_number = 0;
+      $default_starter_no = 1000;
+      $count_total_rows = $this->db->count_all_results('NEW_supply_orders_count');
+      $new_no = 1;
+      $last_no = 0;
 
       // CHECK IF TABLE 'NEW_supply_orders_count' IS EMPTY OR HAS RESULTS
 
-      if ($supply_orders_count_total_rows == 0) {
+      if ($count_total_rows == 0) {
 
           // IF EMPTY, INIT SUPPLY ORDER NUMBER AND CREATE RECORD
 
           $supply_orders_count_data = array(
-              'starter_supply_order_number' => $default_starter_supply_order_number,
-              'last_supply_order_number' => $default_starter_supply_order_number,
+              'starter_no' => $default_starter_no,
+              'last_no' => $default_starter_no,
           );
           $this->db->insert('NEW_supply_orders_count', $supply_orders_count_data);
-          $new_supply_order_number = $default_starter_supply_order_number;
+          $new_no = $default_starter_no;
 
           // TEST
-          // $this->session->set_flashdata('message', 'Result: ' . $supply_orders_count_total_rows);
+          // $this->session->set_flashdata('message', 'Result: ' . $count_total_rows);
           // admin_redirect('suppliers/addSupplyOrder_view');
 
       } else {
 
         // IF RECORD FOUND, GET LAST SUPPLY ORDER NUMBER SAVED AND UPDATE +1
 
-        $last_supply_order_number = $this->db->get('NEW_supply_orders_count')->row()->last_supply_order_number;
-        $new_supply_order_number = $last_supply_order_number + 1;
+        $last_no = $this->db->get('NEW_supply_orders_count')->row()->last_no;
+        $new_no = $last_no + 1;
         $dataForSuppyOrderCount = array(
-            'last_supply_order_number' => $new_supply_order_number,
+            'last_no' => $new_no,
         );
-        $this->db->update('NEW_supply_orders_count', $dataForSuppyOrderCount, array('starter_supply_order_number' => $default_starter_supply_order_number));
+        $this->db->update('NEW_supply_orders_count', $dataForSuppyOrderCount, array('starter_no' => $default_starter_no));
 
         // get last row...
-        // $last_supply_order_number = $this->db->order_by('last_supply_order_number',"desc")
+        // $last_no = $this->db->order_by('last_no',"desc")
         //             ->limit(1)
-        //             ->get('last_supply_order_number')
+        //             ->get('last_no')
         //             ->row();
 
         // TEST
-        // $this->session->set_flashdata('message', 'Result: ' . $new_supply_order_number);
+        // $this->session->set_flashdata('message', 'Result: ' . $new_no);
         // admin_redirect('suppliers/addSupplyOrder_view');
 
       }
@@ -1014,7 +1014,7 @@ class Suppliers extends MY_Controller
 
       $dataToInsert = array(
           'supplier_id' => $this->input->post('supplier'),
-          'supply_order_number' => $new_supply_order_number,
+          'supply_order_number' => $new_no,
           'message_to_supplier' => $this->input->post('msgToSupplier'),
           'message_to_receiving' => $this->input->post('msgToReceiving'),
           'created_at' => date('Y-m-d H:i:s'),

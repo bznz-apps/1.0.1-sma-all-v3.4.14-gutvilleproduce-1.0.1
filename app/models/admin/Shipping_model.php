@@ -69,27 +69,38 @@ class Shipping_model extends CI_Model
     // BILLS OF LADING
     // *************************************************************************
 
-    public function addRack($data)
+    public function addBOL($data)
     {
-        if ($this->db->insert('NEW_racks', $data)) {
+        if ($this->db->insert('NEW_bills_of_lading', $data)) {
             $insert_id = $this->db->insert_id();
             return  $insert_id;
         }
         return false;
     }
 
-    public function getRackByID($id)
+    public function addBOLItems($items)
     {
-        $q = $this->db->get_where('NEW_racks', array('id' => $id), 1);
+        if (!empty($items)) {
+            foreach ($items as $item) {
+              $this->db->insert('NEW_bill_of_lading_item', $item);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public function getBOLByID($id)
+    {
+        $q = $this->db->get_where('NEW_bills_of_lading', array('id' => $id), 1);
         if ($q->num_rows() > 0) {
             return $q->row();
         }
         return FALSE;
     }
 
-    public function getAllRacks()
+    public function getAllBOL()
     {
-        $q = $this->db->get('NEW_racks');
+        $q = $this->db->get('NEW_bills_of_lading');
         if ($q->num_rows() > 0) {
             foreach (($q->result()) as $row) {
                 $data[] = $row;
@@ -99,13 +110,13 @@ class Shipping_model extends CI_Model
         return FALSE;
     }
 
-    public function editRack($id)
+    public function editBOL($id)
     {
     }
 
-    public function deleteRack($id)
+    public function deleteBOL($id)
     {
-        if ($this->db->delete('NEW_racks', array('id' => $id))) {
+        if ($this->db->delete('NEW_bills_of_lading', array('id' => $id))) {
             return true;
         }
         return FALSE;

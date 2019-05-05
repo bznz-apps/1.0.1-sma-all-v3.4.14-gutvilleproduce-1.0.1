@@ -861,4 +861,20 @@ class Sales_model extends CI_Model
         $this->site->syncQuantity(null, null, null, $product_id);
     }
 
+    // *************************************************************************
+    // ADDED FUNCTIONS
+    // *************************************************************************
+
+    public function getAllSales()
+    {
+        $q = $this->db->get('sales');
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return FALSE;
+    }
+
 }

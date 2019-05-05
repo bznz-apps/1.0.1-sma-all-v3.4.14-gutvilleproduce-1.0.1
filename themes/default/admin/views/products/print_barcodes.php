@@ -26,7 +26,8 @@
                 <div class="well well-sm no-print">
                     <div class="form-group">
                         <?= lang("add_product", "add_item"); ?>
-                        <?php echo form_input('add_item', '', 'class="form-control" id="add_item" placeholder="' . $this->lang->line("add_item") . '"'); ?>
+                        <?php "" /* echo form_input('add_item', '', 'class="form-control" id="add_item" placeholder="' . $this->lang->line("add_item") . '"'); */ ?>
+                        <?php echo form_input('add_item', '', 'class="form-control" id="add_item" placeholder="Add product code"'); ?>
                     </div>
                     <?= admin_form_open("products/print_barcodes", 'id="barcode-print-form" data-toggle="validator"'); ?>
                     <div class="controls table-controls">

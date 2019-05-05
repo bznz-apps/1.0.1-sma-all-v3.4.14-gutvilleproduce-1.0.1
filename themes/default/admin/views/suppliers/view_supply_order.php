@@ -61,6 +61,8 @@ console.log($('#x_supply_order_id').val());
                 $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
             },
             'fnRowCallback': function (nRow, aData, iDisplayIndex) {
+                addRowItem(aData);
+
                 var oSettings = oTable.fnSettings();
                 nRow.id = aData[0];
                 nRow.className = "supply_order_link";
@@ -151,6 +153,21 @@ console.log($('#x_supply_order_id').val());
 
         // console.log("oTable is:");
         // console.log(oTable);
+
+        // Each Row Item is an Array of Values
+        // See them below:
+        let rowItems = [];
+        function addRowItem(rowItem) {
+            if (rowItem && rowItem.length > 0) {
+                rowItems.push(rowItem);
+                // rowItem.map(item => {
+                //     console.log("item");
+                //     console.log(item);
+                // })
+            }
+        };
+        console.log("rowItems are:");
+        console.log(rowItems);
 
     });
 </script>

@@ -20,6 +20,7 @@ class Sales extends MY_Controller
         $this->load->admin_model('sales_model');
         $this->load->admin_model('products_model');
         $this->load->admin_model('warehouses_model');
+        $this->load->admin_model('companies_model');
         $this->digital_upload_path = 'files/';
         $this->upload_path = 'assets/uploads/';
         $this->thumbs_path = 'assets/uploads/thumbs/';
@@ -412,6 +413,10 @@ class Sales extends MY_Controller
             } else {
                 $date = date('Y-m-d H:i:s');
             }
+
+            $ship_to_customer_id = $this->input->post('ship_to_customer_id');
+            $sales_terms = $this->input->post('sales_terms');
+
             $warehouse_id = $this->input->post('warehouse');
             $customer_id = $this->input->post('customer');
             $biller_id = $this->input->post('biller');
@@ -428,6 +433,8 @@ class Sales extends MY_Controller
             $note = $this->sma->clear_tags($this->input->post('note'));
             $staff_note = $this->sma->clear_tags($this->input->post('staff_note'));
             $quote_id = $this->input->post('quote_id') ? $this->input->post('quote_id') : null;
+
+            // SALE ITEMS - PRODUCTS
 
             $total = 0;
             $product_tax = 0;
@@ -552,6 +559,8 @@ class Sales extends MY_Controller
                 'paid' => 0,
                 'created_by' => $this->session->userdata('user_id'),
                 'hash' => hash('sha256', microtime() . mt_rand()),
+                'ship_to_customer_id' => $ship_to_customer_id,
+                'sales_terms' => $sales_terms,
             );
             if ($this->Settings->indian_gst) {
                 $data['cgst'] = $total_cgst;
@@ -788,6 +797,7 @@ class Sales extends MY_Controller
             // echo '<pre>'; print_r($palletsMoreInfo); echo '</pre>';
 
             $this->data['palletsMoreInfo'] = $palletsMoreInfo;
+            $this->data['customers'] = $this->companies_model->getAllCustomerCompanies();
 
             $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('sales'), 'page' => lang('sales')), array('link' => '#', 'page' => lang('add_sale')));
             $meta = array('page_title' => lang('add_sale'), 'bc' => $bc);
@@ -2772,6 +2782,40 @@ class Sales extends MY_Controller
 
             $this->load->view($this->theme.'sales/packaging', $this->data);
 
+    }
+
+    // *************************************************************************
+    // NEW UPDATES - GUTVILLE PRODUCE
+    // *************************************************************************
+
+    function handleGetSaleItems_logic($sale_id = null) {
+        $this->sma->checkPermissions('index');
+        $this->load->library('datatables');
+        // Query
+        $this->datatables
+        ->select($this->db->dbprefix('sale_items') . ".id as id, product_id, quantity")
+        ->from("sale_items")
+        ->where('sale_id', $sale_id)
+        ->add_column(
+            "Actions",
+            "<div class=\"text-center\">
+                <a href='#' class='tip po' title='<b>"
+                  . $this->lang->line("delete_supplier")
+                  . "</b>' data-content=\"<p>"
+                  . lang('r_u_sure')
+                  . "</p><a class='btn btn-danger po-delete' href='"
+                  . admin_url('warehouses/handleDeleteSaleItem_logic/$1')
+                  . "'>" . lang('i_m_sure')
+                  . "</a> <button class='btn po-close'>"
+                  . lang('no')
+                  . "</button>\"  rel='popover'>
+                  <i class=\"fa fa-trash-o\"></i>
+                </a>
+            </div>",
+            "id"
+        );
+
+        echo $this->datatables->generate();
     }
 
 }

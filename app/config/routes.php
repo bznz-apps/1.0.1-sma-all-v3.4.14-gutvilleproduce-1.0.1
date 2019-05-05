@@ -57,11 +57,11 @@ $route['admin/products/(:num)'] = 'admin/products/index/$1';
 $route['admin/purchases/(:num)'] = 'admin/purchases/index/$1';
 $route['admin/quotes/(:num)'] = 'admin/quotes/index/$1';
 // Sample Admin Routes
-$route['admin/sample1/(:num)'] = 'admin/sample1/index/$1';
-$route['admin/sample2/(:num)'] = 'admin/sample2/index/$1';
-$route['admin/sample3/(:num)'] = 'admin/sample3/index/$1';
-$route['admin/sample4/(:num)'] = 'admin/sample4/index/$1';
-$route['admin/sample5/(:num)'] = 'admin/sample5/index/$1';
+// $route['admin/sample1/(:num)'] = 'admin/sample1/index/$1';
+// $route['admin/sample2/(:num)'] = 'admin/sample2/index/$1';
+// $route['admin/sample3/(:num)'] = 'admin/sample3/index/$1';
+// $route['admin/sample4/(:num)'] = 'admin/sample4/index/$1';
+// $route['admin/sample5/(:num)'] = 'admin/sample5/index/$1';
 // New Admin Modules
 // $route['admin/suppliers/(:num)'] = 'admin/suppliers/index/$1';
 // $route['admin/receiving/(:num)'] = 'admin/receiving/index/$1';

@@ -239,23 +239,24 @@ class Quality extends MY_Controller
 
   function viewInspection_view($id) {
 
-    $inspection_report = $this->quality_model->getQualityReportByID($id);
+      $inspection_report = $this->quality_model->getQualityReportByID($id);
 
-    // echo '<pre>'; print_r($palletsWithItems); echo '</pre>';
+      // echo '<pre>'; print_r($palletsWithItems); echo '</pre>';
 
-    $this->data['inspection_id'] = $id;
-    $this->data['inspection_created_at'] = $inspection_report->created_at;
-    $this->data['inspection_date'] = $inspection_report->inspection_date;
-    $this->data['inspection_no'] = $inspection_report->inspection_no;
-    $this->data['inspection_receiving_id'] = $inspection_report->receiving_id;
-    $this->data['inspection_lot_n'] = $inspection_report->lot_n;
-    $this->data['inspection_grower_shipper'] = $inspection_report->grower_shipper;
-    $this->data['inspection_name'] = $inspection_report->inspection_name;
+      $this->data['inspection_id'] = $id;
+      $this->data['inspection_created_at'] = $inspection_report->created_at;
+      $this->data['inspection_date'] = $inspection_report->inspection_date;
+      $this->data['inspection_no'] = $inspection_report->inspection_no;
+      $this->data['inspection_receiving_id'] = $inspection_report->receiving_id;
+      $this->data['inspection_lot_n'] = $inspection_report->lot_n;
+      $this->data['inspection_grower_shipper'] = $inspection_report->grower_shipper;
+      $this->data['inspection_name'] = $inspection_report->inspection_name;
 
-    $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('quality/getInspections_view'), 'page' => "Inspections"), array('link' => '#', 'page' => "Inspection No " . $inspection_report->inspection_no));
-    $meta = array('page_title' => "Inspection No " . $inspection_report->inspection_no, 'bc' => $bc);
+      $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('quality/getInspections_view'), 'page' => "Inspections"), array('link' => '#', 'page' => "Inspection No " . $inspection_report->inspection_no));
+      $meta = array('page_title' => "Inspection No " . $inspection_report->inspection_no, 'bc' => $bc);
 
-    $this->page_construct('quality/view_inspection', $meta, $this->data);
+      $this->page_construct('quality/view_inspection', $meta, $this->data);
+
   }
 
   function handleGetInspectionItems_logic($inspection_id = null) {
