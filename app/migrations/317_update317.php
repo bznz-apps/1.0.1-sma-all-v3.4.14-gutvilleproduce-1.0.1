@@ -580,6 +580,11 @@ class Migration_Update317 extends CI_Migration {
             'constraint' => 11,
             'null' => TRUE,
           ),
+          'sale_id' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => TRUE,
+          ),
           'description' => array(
             'type' => 'TEXT',
             'null' => TRUE
@@ -587,6 +592,11 @@ class Migration_Update317 extends CI_Migration {
           'quantity' => array(
             'type' => 'INT',
             'constraint' => 11,
+          ),
+          'status' => array(
+            'type' => 'ENUM("available","unavailable")',
+            'default' => 'available',
+            'null' => TRUE,
           ),
           // 'quantity' => array(
           //   'name' => 'quantity',
