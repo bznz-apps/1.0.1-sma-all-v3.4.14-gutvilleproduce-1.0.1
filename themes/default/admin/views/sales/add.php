@@ -1336,9 +1336,55 @@
             $('#mquantity').val("");
         });
 
+        // *********************************************************************
+        //  HANDLE SELECTING PRODUCT QTY FROM PALLET ITEMS
+        // *********************************************************************
+
         $(document).on('change', '#mquantity', function(e) {
-            console.log("ProductID: " + $('#mproduct_id').val());
-            console.log("PalletID: " + $('#mpallet_id').val());
+            // console.log("ProductID: " + $('#mproduct_id').val());
+            // console.log("PalletID: " + $('#mpallet_id').val());
+
+            let palletIdVal = $('#mpallet_id').val();
+            let prodIdVal = $('#mproduct_id').val();
+            let prodQtyVal = $('#mquantity').val();
+
+            $.ajax({
+                // url : 'http://voicebunny.comeze.com/index.php',
+                // url : '<?= admin_url() ?>' + 'sales/isPalletProdQtyAvailable/' + palletIdVal,
+                url : '<?= admin_url() ?>' + 'sales/getAvailableProdQtyFromPallet/' + palletIdVal + "/" + prodIdVal + "/" + prodQtyVal,
+                type : 'GET',
+                data : { palletIdVal },
+                // line below works with type 'POST'
+                // and data can be accessed on controller as: $prodId = $this->input->post('prod_id');
+                // data : 'prod_id=' + prodIdVal + '&prod_qty=' + prodQtyVal,
+                dataType:'json',
+                success : function(data) {
+                    console.log("ajax data - getAvailableProdQtyFromPallet");
+                    alert('Data: '+ JSON.stringify(data));
+                    // alert('Data: '+ JSON.stringify(data.aaData));
+                    console.log(data);
+                    // console.log(data.aaData);
+                    // $('#Add_BOL_Items_Table tbody').empty();
+                    // loadSaleItems(data.aaData)
+
+                    let availableProdQty = data;
+
+                },
+                error : function(request,error)
+                {
+                    alert("Request: " + JSON.stringify(request));
+                    // alert("Error: " + JSON.stringify(error));
+                }
+            });
+
+            // get prod qty available from pallet_id
+            // make sure we only get back pallet items with status "available"
+            // make sure to also get tne prod qty already added in this order
+            // from the prod qty available, rest prod qty already added in this order, and rest prod qty selected in this from
+            // then make sure to alert the user about it...
+
+            // -----------------------------------------------------------------
+            // -----------------------------------------------------------------
 
             // parseInt($(this).val());
 
@@ -1355,6 +1401,9 @@
             //     $(this).val("");
             // };
 
+            // -----------------------------------------------------------------
+            // -----------------------------------------------------------------
+
             let selectedProductId = $('#mproduct_id').val();
             let selectedPalletId = $('#mpallet_id').val();
 
@@ -1365,19 +1414,23 @@
             palletsList.map(pallet => {
                 if (pallet.pallet_data.id.toString() === selectedPalletId.toString()) {
                     // prodName = pallet.name;
-                    console.log(pallet);
-                    palletData = pallet;
+                    // console.log(pallet);
+                    // palletData = pallet;
 
                     pallet.pallet_items.map(palletItem => {
                         if (palletItem.product_id.toString() === selectedProductId.toString()) {
                             palletProdQty += parseInt(palletItem.quantity);
-                            console.log(palletProdQty);
+                            // console.log(palletProdQty);
                         }
                     })
 
                 }
                 // console.log(pallet);
             });
+
+            // -----------------------------------------------------------------
+            // GET PROD QTY SELCECTED, AND CHECK PROD QTY ALREADY ADDED TO ORDER
+            // -----------------------------------------------------------------
 
             // get order items
             // if order item prod id is equal to the selected prod id
@@ -1393,8 +1446,8 @@
             // localStorage.clear();
 
             var orderItems = JSON.parse(localStorage.getItem('form-add_sale-items'));
-            console.log("orderItems after qty change");
-            console.log(orderItems);
+            // console.log("orderItems after qty change");
+            // console.log(orderItems);
 
             if (orderItems === null || orderItems === undefined) {
               if ($(this).val() > palletProdQty) {
@@ -1402,7 +1455,6 @@
                   $(this).val("");
               }
             }
-
 
             if (orderItems !== null || orderItems !== undefined) {
                 let totalProdQtyFromSamePallet = 0;
@@ -1423,13 +1475,17 @@
                     $(this).val("");
                 }
 
-                console.log("totalProdQtyFromSamePallet");
-                console.log(totalProdQtyFromSamePallet);
-                console.log("palletProdQtyLeft");
-                console.log(palletProdQtyLeft);
+                // console.log("totalProdQtyFromSamePallet");
+                // console.log(totalProdQtyFromSamePallet);
+                // console.log("palletProdQtyLeft");
+                // console.log(palletProdQtyLeft);
             }
 
         });
+
+        // *********************************************************************
+        //  HANDLE ADDING AN ITEM TO THIS SALE
+        // *********************************************************************
 
         $('#addItemManually').on("click",function(e) {
 
@@ -1453,8 +1509,6 @@
             // get order items, with pallet info
             // if undefined, create a new array and add  a new object...
             // { prodId, qty, palletId }
-
-            console.log("Product Id, Pallet Id, Qty");
 
             let prodId = $('#mproduct_id').val();
             let qty = $('#mquantity').val();
@@ -1485,7 +1539,7 @@
             }
 
             if (prodIdHasVal === true && qtyHasVal === true && palletIdHasVal === true) {
-                console.log(prodId + " - " + qty + " - " + palletId);
+                console.log("ProductID: " + prodId + " - PalletID: " + qty + " - Qty: " + palletId);
 
                 let orderItem = { prodId, qty, palletId };
 

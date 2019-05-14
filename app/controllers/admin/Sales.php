@@ -2818,4 +2818,20 @@ class Sales extends MY_Controller
         echo $this->datatables->generate();
     }
 
+    public function getAvailableProdQtyFromPallet($palletId, $prodId, $prodQty)
+    {
+        $palletItems = $this->warehouses_model->getAllPalletItemsByPalletID($palletId);
+        // echo json_encode($palletItems);
+
+        $availableProdQty = 0;
+
+        foreach ($palletItems as $palletItem) {
+            if ($palletItem->product_id == $prodId && $palletItem->status == "available") {
+                $availableProdQty += $palletItem->quantity;
+            }
+        }
+
+        echo json_encode($availableProdQty);
+    }
+
 }
