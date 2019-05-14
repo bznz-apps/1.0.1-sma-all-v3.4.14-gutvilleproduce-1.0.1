@@ -1456,7 +1456,7 @@
         //  HANDLE ADDING AN ITEM TO THIS SALE - MODAL FORM SUBMIT
         // *********************************************************************
 
-        $('#addItemManually').on("click",function(e) {
+        $('#addItemManually').on("click", function(e) {
 
             // -----------------------------------------------------------------
             // Make sure all required fields are not empty
@@ -1502,19 +1502,21 @@
                 // data : 'prod_id=' + prodIdVal + '&prod_qty=' + prodQtyVal,
                 dataType:'json',
                 success : function(data) {
-                    console.log("ajax data - getAvailableProdQtyFromPallet");
-                    alert('Data: '+ JSON.stringify(data));
+                    console.log("ajax data - getAvailableProdQtyFromPallet x");
+                    alert('Data: '+ JSON.stringify(data)); // data is equal to the n of prod qty available
                     // alert('Data: '+ JSON.stringify(data.aaData));
-                    console.log(data);
+                    // console.log(data);
                     // console.log(data.aaData);
-                    // $('#Add_BOL_Items_Table tbody').empty();
-                    // loadSaleItems(data.aaData)
+                    // console.log(JSON.stringify(data));
 
-                    let availableProdQty = data;
+                    let availablePalletProdQty = data;
+                    addProdQtyFromPallet(availablePalletProdQty);
 
                     // we just got the available prod qty from pallet
                     // get prod qty already added to this sale order from this same prodId and palletId
                     // palletAvailableProdQty - prodQtyFromThisPallerAlreadyInTHeOrder - prodQty in this form
+
+                    // call function and pass the available product from this pallet
 
                 },
                 error : function(request,error)
@@ -1525,67 +1527,143 @@
             });
 
             // -----------------------------------------------------------------
+            // Get localStorage items, see if we already added same prodId from same palletId to this sale items
+            // -----------------------------------------------------------------
+            // -----------------------------------------------------------------
+            // GET PROD QTY SELCECTED, AND CHECK PROD QTY ALREADY ADDED TO ORDER
+            // -----------------------------------------------------------------
+
+            function addProdQtyFromPallet(availablePalletProdQty) {
+
+                // get order items
+                // if order item prod id is equal to the selected prod id
+                // check order id prod qty
+                // loop through order items and for every prod id with same pallet id
+                // add an object with orderItems { prodId, palletId, qty } and sum qty
+                // total prod qty from the same pallet
+                // get that qty and rest it to the palletProdQty here...
+                // if selected prod qty is > than palletProdQty - current order items qty (same prod id on same pallet id)
+                // then send message that pallet has X real num in total, but order already have selected some prds from this pallet
+                // remove order items or add less items from this pallet or chose another pallet...
+
+                // localStorage.clear();
+
+                var orderItems = JSON.parse(localStorage.getItem('form-add_sale-items'));
+                // console.log("orderItems after qty change");
+                // console.log(orderItems);
+
+                // see if qty input is > availablePalletProdQty
+                if (orderItems === null || orderItems === undefined) {
+                    if ($('#mquantity').val() > availablePalletProdQty) {
+                        alert("Product quantity selected is " + $('#mquantity').val() + ", product quantity on pallet is " + availablePalletProdQty + ". Product quantity selected exceeds the product quantity on pallet with code " + palletData.pallet_data.code + ", found in rack name " + palletData.rack_name + ", on warehouse " + palletData.warehouse_name + ".");
+                        $('#mquantity').val("");
+                    }
+                }
+
+                if (orderItems !== null || orderItems !== undefined) {
+                    let totalProdQtyFromSamePallet = 0;
+                    orderItems.map(orderItem => {
+                        if (orderItem.prodId.toString() === prodIdVal.toString()
+                        && orderItem.palletId.toString() === palletIdVal.toString()) {
+                            totalProdQtyFromSamePallet += parseInt(orderItem.qty);
+                        }
+                    });
+                    let palletProdQtyLeft = parseInt(availablePalletProdQty) - parseInt(totalProdQtyFromSamePallet);
+                    if ($('#mquantity').val() > palletProdQtyLeft) {
+                    // qty you want to add exceeds qty available on pallet
+                        // alert("Product quantity selected is " + $('#mquantity').val() + ", but you already added " + totalProdQtyFromSamePallet + " products from this pallet to this sale. Product quantity left on this pallet is " + palletProdQtyLeft + ". Add same product quantity or less from this pallet or select another pallet with enough product quantity.");
+                        if (totalProdQtyFromSamePallet > 0) {
+                            // You already added products from this pallet
+                            // You are trying to add more products from this pallet
+                            // but qty left is less than the qty you want to add
+                            alert("Product quantity selected is " + $('#mquantity').val() + ", but you already added " + totalProdQtyFromSamePallet + " products from this pallet to this sale. Product quantity left on this pallet is " + palletProdQtyLeft + ". Add same product quantity or less from this pallet or select another pallet with enough product quantity.");
+                        } else {
+                            // You havent add products from this pallet but
+                            // qty left is less than the qty you want to add
+                            alert("Product quantity selected is " + $('#mquantity').val() + ". Product quantity available on this pallet is " + palletProdQtyLeft + ". Select another pallet with enough product quantity or in case this pallet still has available items add equal or less product quantity.");
+                        }
+                        $('#mquantity').val("");
+
+                    } else {
+
+                        addSaleItem();
+
+                    };
+
+                    // console.log("totalProdQtyFromSamePallet");
+                    // console.log(totalProdQtyFromSamePallet);
+                    // console.log("palletProdQtyLeft");
+                    // console.log(palletProdQtyLeft);
+                }
+
+            }
+
+            // -----------------------------------------------------------------
             // Add new sale item to localStorage
             // -----------------------------------------------------------------
 
-            // Make sure all values are not empty and contain numbers
+            function addSaleItem() {
 
-            // get order items, with pallet info
-            // if undefined, create a new array and add  a new object...
-            // { prodId, qty, palletId }
+                // Make sure all values are not empty and contain numbers
 
-            let prodId = $('#mproduct_id').val();
-            let qty = $('#mquantity').val();
-            let palletId = $('#mpallet_id').val();
+                // get order items, with pallet info
+                // if undefined, create a new array and add  a new object...
+                // { prodId, qty, palletId }
 
-            let prodIdHasVal = false;
-            let qtyHasVal = false;
-            let palletIdHasVal = false;
+                let prodId = $('#mproduct_id').val();
+                let qty = $('#mquantity').val();
+                let palletId = $('#mpallet_id').val();
 
-            function isNumber(n) {
-              return !isNaN(parseFloat(n)) && isFinite(n);
-            }
+                let prodIdHasVal = false;
+                let qtyHasVal = false;
+                let palletIdHasVal = false;
 
-            if (prodId !== "" || prodId !== undefined || prodId !== null) {
-                if (isNumber(prodId)) {
-                    prodIdHasVal = true;
-                }
-            }
-            if (qty !== "" || qty !== undefined || qty !== null) {
-                if (isNumber(qty)) {
-                    qtyHasVal = true;
-                }
-            }
-            if (palletId !== "" || palletId !== undefined || palletId !== null) {
-                if (isNumber(palletId)) {
-                    palletIdHasVal = true;
-                }
-            }
-
-            if (prodIdHasVal === true && qtyHasVal === true && palletIdHasVal === true) {
-                console.log("ProductID: " + prodId + " - PalletID: " + qty + " - Qty: " + palletId);
-
-                let orderItem = { prodId, qty, palletId };
-
-                var orderItems = JSON.parse(localStorage.getItem('form-add_sale-items'));
-                console.log("orderItems");
-                console.log(orderItems);
-
-                if (orderItems === null || orderItems === undefined) {
-                    orderItems = [];
+                function isNumber(n) {
+                  return !isNaN(parseFloat(n)) && isFinite(n);
                 }
 
-                let updatedOrderItems = [];
-                updatedOrderItems.push(...orderItems);
-                updatedOrderItems.push(orderItem);
+                if (prodId !== "" || prodId !== undefined || prodId !== null) {
+                    if (isNumber(prodId)) {
+                        prodIdHasVal = true;
+                    }
+                }
+                if (qty !== "" || qty !== undefined || qty !== null) {
+                    if (isNumber(qty)) {
+                        qtyHasVal = true;
+                    }
+                }
+                if (palletId !== "" || palletId !== undefined || palletId !== null) {
+                    if (isNumber(palletId)) {
+                        palletIdHasVal = true;
+                    }
+                }
 
-                localStorage.setItem('form-add_sale-items', JSON.stringify(updatedOrderItems));
+                if (prodIdHasVal === true && qtyHasVal === true && palletIdHasVal === true) {
+                    console.log("ProductID: " + prodId + " - PalletID: " + qty + " - Qty: " + palletId);
 
-                console.log("orderItems");
-                console.log(orderItems);
+                    let orderItem = { prodId, qty, palletId };
 
-                // later, when removing item from table, remove it from this localStorage as well..
-            }
+                    var orderItems = JSON.parse(localStorage.getItem('form-add_sale-items'));
+                    console.log("orderItems");
+                    console.log(orderItems);
+
+                    if (orderItems === null || orderItems === undefined) {
+                        orderItems = [];
+                    }
+
+                    let updatedOrderItems = [];
+                    updatedOrderItems.push(...orderItems);
+                    updatedOrderItems.push(orderItem);
+
+                    localStorage.setItem('form-add_sale-items', JSON.stringify(updatedOrderItems));
+
+                    console.log("orderItems");
+                    console.log(orderItems);
+
+                    // later, when removing item from table, remove it from this localStorage as well..
+                };
+
+            };
 
         });
 
