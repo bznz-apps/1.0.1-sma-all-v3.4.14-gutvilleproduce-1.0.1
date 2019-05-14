@@ -38,7 +38,8 @@
             }
         }).fnSetFilteringDelay().dtFilter([
             {column_number: 1, filter_default_label: "[<?=lang('date');?> (yyyy-mm-dd)]", filter_type: "text", data: []},
-            {column_number: 2, filter_default_label: "[<?=lang('reference_no');?>]", filter_type: "text", data: []},
+            // {column_number: 2, filter_default_label: "[<?=lang('reference_no');?>]", filter_type: "text", data: []},
+            {column_number: 2, filter_default_label: "[<?= /* lang('reference_no'); */ "Customer PO" ?>]", filter_type: "text", data: []},
             {column_number: 3, filter_default_label: "[<?=lang('biller');?>]", filter_type: "text", data: []},
             {column_number: 4, filter_default_label: "[<?=lang('customer');?>]", filter_type: "text", data: []},
             {column_number: 5, filter_default_label: "[<?=lang('sale_status');?>]", filter_type: "text", data: []},
@@ -307,7 +308,7 @@
                                 <input class="checkbox checkft" type="checkbox" name="check"/>
                             </th>
                             <th><?= lang("date"); ?></th>
-                            <th><?= lang("reference_no"); ?></th>
+                            <th><?= /* lang("reference_no"); */ "Customer PO" ?></th>
                             <th><?= lang("biller"); ?></th>
                             <th><?= lang("customer"); ?></th>
                             <th><?= lang("sale_status"); ?></th>
