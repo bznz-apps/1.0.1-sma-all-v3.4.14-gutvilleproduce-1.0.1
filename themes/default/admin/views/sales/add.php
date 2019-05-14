@@ -1489,6 +1489,8 @@
 
         $('#addItemManually').on("click",function(e) {
 
+            console.log("ADD ITEM MANUALLY");
+
             if (
                $('#mproduct_id').val() === "" || $('#mproduct_id').val() === null || $('#mproduct_id').val() === undefined
             || $('#mcode').val() === "" || $('#mcode').val() === null || $('#mcode').val() === undefined
