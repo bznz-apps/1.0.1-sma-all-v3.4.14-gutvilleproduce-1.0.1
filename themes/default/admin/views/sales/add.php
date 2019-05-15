@@ -1397,6 +1397,59 @@
             //     // console.log(pallet);
             // });
 
+            // -----------------------------------------------------------------
+            // Get available prod qty from pallet
+            // -----------------------------------------------------------------
+
+            // get prod qty available from pallet_id
+            // make sure we only get back pallet items with status "available"
+            // make sure to also get tne prod qty already added in this order
+            // from the prod qty available, rest prod qty already added in this order, and rest prod qty selected in this from
+            // then make sure to alert the user about it...
+
+            let palletIdVal = $('#mpallet_id').val();
+            let prodIdVal = $('#mproduct_id').val();
+            let prodQtyVal = $('#mquantity').val();
+
+            $.ajax({
+                // url : 'http://voicebunny.comeze.com/index.php',
+                // url : '<?= admin_url() ?>' + 'sales/isPalletProdQtyAvailable/' + palletIdVal,
+                url : '<?= admin_url() ?>' + 'sales/getAvailableProdQtyFromPallet/' + palletIdVal + "/" + prodIdVal + "/" + prodQtyVal,
+                type : 'GET',
+                data : { palletIdVal },
+                // line below works with type 'POST'
+                // and data can be accessed on controller as: $prodId = $this->input->post('prod_id');
+                // data : 'prod_id=' + prodIdVal + '&prod_qty=' + prodQtyVal,
+                dataType:'json',
+                success : function(data) {
+
+                    console.log("ajax data - getAvailableProdQtyFromPallet");
+                    // console.log(data);
+                    // console.log(data.aaData);
+                    // console.log(JSON.stringify(data));
+
+                    // alert('Data: '+ JSON.stringify(data)); // data is equal to the n of prod qty available
+                    // alert('Data: '+ JSON.stringify(data.aaData));
+
+                    let availablePalletProdQty;
+                    // availablePalletProdQty = JSON.stringify(data);
+                    availablePalletProdQty = parseInt(data);
+                    addProdQtyFromPallet(availablePalletProdQty);
+
+                    // we just got the available prod qty from pallet
+                    // get prod qty already added to this sale order from this same prodId and palletId
+                    // palletAvailableProdQty - prodQtyFromThisPallerAlreadyInTHeOrder - prodQty in this form
+
+                    // call function and pass the available product from this pallet
+
+                },
+                error : function(request,error)
+                {
+                    alert("Request: " + JSON.stringify(request));
+                    // alert("Error: " + JSON.stringify(error));
+                }
+            });
+
             // // -----------------------------------------------------------------
             // // GET PROD QTY SELCECTED, AND CHECK PROD QTY ALREADY ADDED TO ORDER
             // // -----------------------------------------------------------------
@@ -1448,83 +1501,11 @@
             //     // console.log(totalProdQtyFromSamePallet);
             //     // console.log("palletProdQtyLeft");
             //     // console.log(palletProdQtyLeft);
-            // }
+            // };
 
-        });
 
-        // *********************************************************************
-        //  HANDLE ADDING AN ITEM TO THIS SALE - MODAL FORM SUBMIT
-        // *********************************************************************
 
-        $('#addItemManually').on("click", function(e) {
 
-            // -----------------------------------------------------------------
-            // Make sure all required fields are not empty
-            // -----------------------------------------------------------------
-
-            if (
-               $('#mproduct_id').val() === "" || $('#mproduct_id').val() === null || $('#mproduct_id').val() === undefined
-            || $('#mcode').val() === "" || $('#mcode').val() === null || $('#mcode').val() === undefined
-            || $('#mname').val() === "" || $('#mname').val() === null || $('#mname').val() === undefined
-            || $('#mpallet_id').val() === "" || $('#mpallet_id').val() === null || $('#mpallet_id').val() === undefined
-            || $('#mtax').val() === "" || $('#mtax').val() === null || $('#mtax').val() === undefined
-            || $('#mquantity').val() === "" || $('#mquantity').val() === null || $('#mquantity').val() === undefined
-            || $('#munit').val() === "" || $('#munit').val() === null || $('#munit').val() === undefined
-            || $('#mprice').val() === "" || $('#mprice').val() === null || $('#mprice').val() === undefined
-            ) {
-                alert("The field labels marked with * are required input fields.")
-                e.preventDefault();
-                return false;
-            };
-
-            // -----------------------------------------------------------------
-            // Get available prod qty from pallet
-            // -----------------------------------------------------------------
-
-            // get prod qty available from pallet_id
-            // make sure we only get back pallet items with status "available"
-            // make sure to also get tne prod qty already added in this order
-            // from the prod qty available, rest prod qty already added in this order, and rest prod qty selected in this from
-            // then make sure to alert the user about it...
-
-            let palletIdVal = $('#mpallet_id').val();
-            let prodIdVal = $('#mproduct_id').val();
-            let prodQtyVal = $('#mquantity').val();
-
-            $.ajax({
-                // url : 'http://voicebunny.comeze.com/index.php',
-                // url : '<?= admin_url() ?>' + 'sales/isPalletProdQtyAvailable/' + palletIdVal,
-                url : '<?= admin_url() ?>' + 'sales/getAvailableProdQtyFromPallet/' + palletIdVal + "/" + prodIdVal + "/" + prodQtyVal,
-                type : 'GET',
-                data : { palletIdVal },
-                // line below works with type 'POST'
-                // and data can be accessed on controller as: $prodId = $this->input->post('prod_id');
-                // data : 'prod_id=' + prodIdVal + '&prod_qty=' + prodQtyVal,
-                dataType:'json',
-                success : function(data) {
-                    console.log("ajax data - getAvailableProdQtyFromPallet x");
-                    alert('Data: '+ JSON.stringify(data)); // data is equal to the n of prod qty available
-                    // alert('Data: '+ JSON.stringify(data.aaData));
-                    // console.log(data);
-                    // console.log(data.aaData);
-                    console.log(JSON.stringify(data));
-
-                    let availablePalletProdQty = JSON.stringify(data);
-                    // addProdQtyFromPallet(availablePalletProdQty);
-
-                    // we just got the available prod qty from pallet
-                    // get prod qty already added to this sale order from this same prodId and palletId
-                    // palletAvailableProdQty - prodQtyFromThisPallerAlreadyInTHeOrder - prodQty in this form
-
-                    // call function and pass the available product from this pallet
-
-                },
-                error : function(request,error)
-                {
-                    alert("Request: " + JSON.stringify(request));
-                    // alert("Error: " + JSON.stringify(error));
-                }
-            });
 
             // -----------------------------------------------------------------
             // Get localStorage items, see if we already added same prodId from same palletId to this sale items
@@ -1600,74 +1581,106 @@
 
             }
 
+
+
+
+
+        });
+
+        // *********************************************************************
+        //  HANDLE ADDING AN ITEM TO THIS SALE - MODAL FORM SUBMIT
+        // *********************************************************************
+
+        $('#addItemManually').on("click", function(e) {
+
+            // -----------------------------------------------------------------
+            // Make sure all required fields are not empty
+            // -----------------------------------------------------------------
+
+            if (
+               $('#mproduct_id').val() === "" || $('#mproduct_id').val() === null || $('#mproduct_id').val() === undefined
+            || $('#mcode').val() === "" || $('#mcode').val() === null || $('#mcode').val() === undefined
+            || $('#mname').val() === "" || $('#mname').val() === null || $('#mname').val() === undefined
+            || $('#mpallet_id').val() === "" || $('#mpallet_id').val() === null || $('#mpallet_id').val() === undefined
+            || $('#mtax').val() === "" || $('#mtax').val() === null || $('#mtax').val() === undefined
+            || $('#mquantity').val() === "" || $('#mquantity').val() === null || $('#mquantity').val() === undefined
+            || $('#munit').val() === "" || $('#munit').val() === null || $('#munit').val() === undefined
+            || $('#mprice').val() === "" || $('#mprice').val() === null || $('#mprice').val() === undefined
+            ) {
+                alert("The field labels marked with * are required input fields.")
+                e.preventDefault();
+                return false;
+            };
+
             // -----------------------------------------------------------------
             // Add new sale item to localStorage
             // -----------------------------------------------------------------
 
-            // function addSaleItem() {
-            //
-            //     console.log("addSaleItem");
-            //
-            //     // Make sure all values are not empty and contain numbers
-            //
-            //     // get order items, with pallet info
-            //     // if undefined, create a new array and add  a new object...
-            //     // { prodId, qty, palletId }
-            //
-            //     let prodId = $('#mproduct_id').val();
-            //     let qty = $('#mquantity').val();
-            //     let palletId = $('#mpallet_id').val();
-            //
-            //     let prodIdHasVal = false;
-            //     let qtyHasVal = false;
-            //     let palletIdHasVal = false;
-            //
-            //     function isNumber(n) {
-            //       return !isNaN(parseFloat(n)) && isFinite(n);
-            //     }
-            //
-            //     if (prodId !== "" || prodId !== undefined || prodId !== null) {
-            //         if (isNumber(prodId)) {
-            //             prodIdHasVal = true;
-            //         }
-            //     }
-            //     if (qty !== "" || qty !== undefined || qty !== null) {
-            //         if (isNumber(qty)) {
-            //             qtyHasVal = true;
-            //         }
-            //     }
-            //     if (palletId !== "" || palletId !== undefined || palletId !== null) {
-            //         if (isNumber(palletId)) {
-            //             palletIdHasVal = true;
-            //         }
-            //     }
-            //
-            //     if (prodIdHasVal === true && qtyHasVal === true && palletIdHasVal === true) {
-            //         console.log("ProductID: " + prodId + " - PalletID: " + qty + " - Qty: " + palletId);
-            //
-            //         let orderItem = { prodId, qty, palletId };
-            //
-            //         var orderItems = JSON.parse(localStorage.getItem('form-add_sale-items'));
-            //         console.log("orderItems");
-            //         console.log(orderItems);
-            //
-            //         if (orderItems === null || orderItems === undefined) {
-            //             orderItems = [];
-            //         }
-            //
-            //         let updatedOrderItems = [];
-            //         updatedOrderItems.push(...orderItems);
-            //         updatedOrderItems.push(orderItem);
-            //
-            //         localStorage.setItem('form-add_sale-items', JSON.stringify(updatedOrderItems));
-            //
-            //         console.log("orderItems");
-            //         console.log(orderItems);
-            //
-            //         // later, when removing item from table, remove it from this localStorage as well..
-            //     };
-            //
-            // };
+            function addSaleItem() {
+
+                console.log("addSaleItem");
+
+                // Make sure all values are not empty and contain numbers
+
+                // get order items, with pallet info
+                // if undefined, create a new array and add  a new object...
+                // { prodId, qty, palletId }
+
+                let prodId = $('#mproduct_id').val();
+                let qty = $('#mquantity').val();
+                let palletId = $('#mpallet_id').val();
+
+                let prodIdHasVal = false;
+                let qtyHasVal = false;
+                let palletIdHasVal = false;
+
+                function isNumber(n) {
+                  return !isNaN(parseFloat(n)) && isFinite(n);
+                }
+
+                if (prodId !== "" || prodId !== undefined || prodId !== null) {
+                    if (isNumber(prodId)) {
+                        prodIdHasVal = true;
+                    }
+                }
+                if (qty !== "" || qty !== undefined || qty !== null) {
+                    if (isNumber(qty)) {
+                        qtyHasVal = true;
+                    }
+                }
+                if (palletId !== "" || palletId !== undefined || palletId !== null) {
+                    if (isNumber(palletId)) {
+                        palletIdHasVal = true;
+                    }
+                }
+
+                if (prodIdHasVal === true && qtyHasVal === true && palletIdHasVal === true) {
+                    console.log("ProductID: " + prodId + " - PalletID: " + qty + " - Qty: " + palletId);
+
+                    let orderItem = { prodId, qty, palletId };
+
+                    var orderItems = JSON.parse(localStorage.getItem('form-add_sale-items'));
+                    console.log("orderItems");
+                    console.log(orderItems);
+
+                    if (orderItems === null || orderItems === undefined) {
+                        orderItems = [];
+                    }
+
+                    let updatedOrderItems = [];
+                    updatedOrderItems.push(...orderItems);
+                    updatedOrderItems.push(orderItem);
+
+                    localStorage.setItem('form-add_sale-items', JSON.stringify(updatedOrderItems));
+
+                    console.log("orderItems");
+                    console.log(orderItems);
+
+                    // later, when removing item from table, remove it from this localStorage as well..
+                };
+
+            };
+            addSaleItem();
 
         });
 
