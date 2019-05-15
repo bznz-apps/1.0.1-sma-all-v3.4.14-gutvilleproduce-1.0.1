@@ -1507,10 +1507,10 @@
                     // alert('Data: '+ JSON.stringify(data.aaData));
                     // console.log(data);
                     // console.log(data.aaData);
-                    // console.log(JSON.stringify(data));
+                    console.log(JSON.stringify(data));
 
-                    let availablePalletProdQty = data;
-                    addProdQtyFromPallet(availablePalletProdQty);
+                    let availablePalletProdQty = JSON.stringify(data);
+                    // addProdQtyFromPallet(availablePalletProdQty);
 
                     // we just got the available prod qty from pallet
                     // get prod qty already added to this sale order from this same prodId and palletId
@@ -1534,6 +1534,8 @@
             // -----------------------------------------------------------------
 
             function addProdQtyFromPallet(availablePalletProdQty) {
+
+                console.log("addProdQtyFromPallet");
 
                 // get order items
                 // if order item prod id is equal to the selected prod id
@@ -1586,7 +1588,7 @@
 
                     } else {
 
-                        addSaleItem();
+                        // addSaleItem();
 
                     };
 
@@ -1602,68 +1604,70 @@
             // Add new sale item to localStorage
             // -----------------------------------------------------------------
 
-            function addSaleItem() {
-
-                // Make sure all values are not empty and contain numbers
-
-                // get order items, with pallet info
-                // if undefined, create a new array and add  a new object...
-                // { prodId, qty, palletId }
-
-                let prodId = $('#mproduct_id').val();
-                let qty = $('#mquantity').val();
-                let palletId = $('#mpallet_id').val();
-
-                let prodIdHasVal = false;
-                let qtyHasVal = false;
-                let palletIdHasVal = false;
-
-                function isNumber(n) {
-                  return !isNaN(parseFloat(n)) && isFinite(n);
-                }
-
-                if (prodId !== "" || prodId !== undefined || prodId !== null) {
-                    if (isNumber(prodId)) {
-                        prodIdHasVal = true;
-                    }
-                }
-                if (qty !== "" || qty !== undefined || qty !== null) {
-                    if (isNumber(qty)) {
-                        qtyHasVal = true;
-                    }
-                }
-                if (palletId !== "" || palletId !== undefined || palletId !== null) {
-                    if (isNumber(palletId)) {
-                        palletIdHasVal = true;
-                    }
-                }
-
-                if (prodIdHasVal === true && qtyHasVal === true && palletIdHasVal === true) {
-                    console.log("ProductID: " + prodId + " - PalletID: " + qty + " - Qty: " + palletId);
-
-                    let orderItem = { prodId, qty, palletId };
-
-                    var orderItems = JSON.parse(localStorage.getItem('form-add_sale-items'));
-                    console.log("orderItems");
-                    console.log(orderItems);
-
-                    if (orderItems === null || orderItems === undefined) {
-                        orderItems = [];
-                    }
-
-                    let updatedOrderItems = [];
-                    updatedOrderItems.push(...orderItems);
-                    updatedOrderItems.push(orderItem);
-
-                    localStorage.setItem('form-add_sale-items', JSON.stringify(updatedOrderItems));
-
-                    console.log("orderItems");
-                    console.log(orderItems);
-
-                    // later, when removing item from table, remove it from this localStorage as well..
-                };
-
-            };
+            // function addSaleItem() {
+            //
+            //     console.log("addSaleItem");
+            //
+            //     // Make sure all values are not empty and contain numbers
+            //
+            //     // get order items, with pallet info
+            //     // if undefined, create a new array and add  a new object...
+            //     // { prodId, qty, palletId }
+            //
+            //     let prodId = $('#mproduct_id').val();
+            //     let qty = $('#mquantity').val();
+            //     let palletId = $('#mpallet_id').val();
+            //
+            //     let prodIdHasVal = false;
+            //     let qtyHasVal = false;
+            //     let palletIdHasVal = false;
+            //
+            //     function isNumber(n) {
+            //       return !isNaN(parseFloat(n)) && isFinite(n);
+            //     }
+            //
+            //     if (prodId !== "" || prodId !== undefined || prodId !== null) {
+            //         if (isNumber(prodId)) {
+            //             prodIdHasVal = true;
+            //         }
+            //     }
+            //     if (qty !== "" || qty !== undefined || qty !== null) {
+            //         if (isNumber(qty)) {
+            //             qtyHasVal = true;
+            //         }
+            //     }
+            //     if (palletId !== "" || palletId !== undefined || palletId !== null) {
+            //         if (isNumber(palletId)) {
+            //             palletIdHasVal = true;
+            //         }
+            //     }
+            //
+            //     if (prodIdHasVal === true && qtyHasVal === true && palletIdHasVal === true) {
+            //         console.log("ProductID: " + prodId + " - PalletID: " + qty + " - Qty: " + palletId);
+            //
+            //         let orderItem = { prodId, qty, palletId };
+            //
+            //         var orderItems = JSON.parse(localStorage.getItem('form-add_sale-items'));
+            //         console.log("orderItems");
+            //         console.log(orderItems);
+            //
+            //         if (orderItems === null || orderItems === undefined) {
+            //             orderItems = [];
+            //         }
+            //
+            //         let updatedOrderItems = [];
+            //         updatedOrderItems.push(...orderItems);
+            //         updatedOrderItems.push(orderItem);
+            //
+            //         localStorage.setItem('form-add_sale-items', JSON.stringify(updatedOrderItems));
+            //
+            //         console.log("orderItems");
+            //         console.log(orderItems);
+            //
+            //         // later, when removing item from table, remove it from this localStorage as well..
+            //     };
+            //
+            // };
 
         });
 
