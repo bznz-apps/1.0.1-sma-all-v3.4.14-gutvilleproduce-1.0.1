@@ -172,6 +172,33 @@
                     </div>
 
                     <!-- *******************************************************
+                      PALLET CODE
+                    ******************************************************** -->
+
+                    <div class="form-group all">
+                        <label><?= "Pallet Code *" /* lang("product_code", "code") */ ?></label>
+                        <div class="input-group">
+                            <?= form_input('code', (isset($_POST['code']) ? $_POST['code'] : ''), 'class="form-control" id="pallet_code"') ?>
+                            <span class="input-group-addon pointer" id="random_num" style="padding: 1px 10px;">
+                                <i class="fa fa-random"></i>
+                            </span>
+                        </div>
+                        <span class="help-block"><?= lang('you_scan_your_barcode_too') ?></span>
+                    </div>
+
+                    <!-- *******************************************************
+                      BARCODE SYMBOLOGY
+                    ******************************************************** -->
+
+                    <div class="form-group all">
+                        <?= lang("barcode_symbology", "barcode_symbology") . " (Default is Code128)" ?>
+                        <?php
+                        $bs = array('code25' => 'Code25', 'code39' => 'Code39', 'code128' => 'Code128', 'ean8' => 'EAN8', 'ean13' => 'EAN13', 'upca' => 'UPC-A', 'upce' => 'UPC-E');
+                        echo form_dropdown('barcode_symbology', $bs, (isset($_POST['barcode_symbology']) ? $_POST['barcode_symbology'] : ($product ? $product->barcode_symbology : 'code128')), 'class="form-control select" id="pallet_barcode_symbology" required="required" style="width:100%;"');
+                        ?>
+                    </div>
+
+                    <!-- *******************************************************
                       PALLET NOTES
                     ******************************************************** -->
 
@@ -193,7 +220,7 @@
                         <label><?= "Add Image" ?></label>
                         <br>
                         <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="pallet_image" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
+                        <input id="input_pallet_image" type="file" data-browse-label="<?= lang('browse'); ?>" name="input_pallet_image" data-show-upload="false"
                                data-show-preview="false" accept="image/*" class="form-control file">
                     </div>
 

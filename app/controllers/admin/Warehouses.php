@@ -64,18 +64,33 @@ class Warehouses extends MY_Controller
 
   function handleAddPallet_logic()
   {
+
+
       // ***********************************************************************
       // CHECK PERMISSIONS
       // ***********************************************************************
+
+      $this->sma->checkPermissions();
+      // $this->load->helper('security');
+      // $warehouses = $this->site->getAllWarehouses();
+
+      // Needed for image upload, added below at the image upload block of code
+      // $this->load->library('upload');
 
       // ***********************************************************************
       // FORM VALIDATION RULES
       // ***********************************************************************
 
       // $this->form_validation->set_message('is_natural_no_zero', lang("no_zero_required"));
+      $this->form_validation->set_rules('code', 'code', 'required');
+      $this->form_validation->set_rules('barcode_symbology', 'barcode_symbology', 'required');
       $this->form_validation->set_rules('warehouse_id', 'warehouse_id', 'required');
       // $this->form_validation->set_rules('rack_id', 'rack_id', 'required');
       // $this->form_validation->set_rules('receiving_id', 'receiving_id', 'required');
+
+      $this->form_validation->set_rules('pallet_image', lang("pallet_image"), 'xss_clean');
+      // $this->form_validation->set_rules('digital_file', lang("digital_file"), 'xss_clean');
+      // $this->form_validation->set_rules('userfile', lang("product_gallery_images"), 'xss_clean');
 
       // ***********************************************************************
       // RUN FORM VALIDATION
@@ -100,6 +115,62 @@ class Warehouses extends MY_Controller
         admin_redirect('warehouses/addPallet_view');
       }
 
+      /* *****************************************************************
+        IMAGE UPLOAD
+      ***************************************************************** */
+
+      $this->load->library('upload');
+
+      if ($_FILES['input_pallet_image']['size'] > 0) {
+
+          $config['upload_path'] = $this->upload_path;
+          $config['allowed_types'] = $this->image_types;
+          $config['max_size'] = $this->allowed_file_size;
+          $config['max_width'] = $this->Settings->iwidth;
+          $config['max_height'] = $this->Settings->iheight;
+          $config['overwrite'] = FALSE;
+          $config['max_filename'] = 25;
+          $config['encrypt_name'] = TRUE;
+          $this->upload->initialize($config);
+          if (!$this->upload->do_upload('input_pallet_image')) {
+              $error = $this->upload->display_errors();
+              $this->session->set_flashdata('error', $error);
+              admin_redirect('warehouses/addPallet_view');
+          }
+          $photo = $this->upload->file_name;
+          $data['image'] = $photo;
+          $this->load->library('image_lib');
+          $config['image_library'] = 'gd2';
+          $config['source_image'] = $this->upload_path . $photo;
+          $config['new_image'] = $this->thumbs_path . $photo;
+          $config['maintain_ratio'] = TRUE;
+          $config['width'] = $this->Settings->twidth;
+          $config['height'] = $this->Settings->theight;
+          $this->image_lib->clear();
+          $this->image_lib->initialize($config);
+          if (!$this->image_lib->resize()) {
+              echo $this->image_lib->display_errors();
+          }
+          if ($this->Settings->watermark) {
+              $this->image_lib->clear();
+              $wm['source_image'] = $this->upload_path . $photo;
+              $wm['wm_text'] = 'Copyright ' . date('Y') . ' - ' . $this->Settings->site_name;
+              $wm['wm_type'] = 'text';
+              $wm['wm_font_path'] = 'system/fonts/texb.ttf';
+              $wm['quality'] = '100';
+              $wm['wm_font_size'] = '16';
+              $wm['wm_font_color'] = '999999';
+              $wm['wm_shadow_color'] = 'CCCCCC';
+              $wm['wm_vrt_alignment'] = 'top';
+              $wm['wm_hor_alignment'] = 'left';
+              $wm['wm_padding'] = '10';
+              $this->image_lib->initialize($wm);
+              $this->image_lib->watermark();
+          }
+          $this->image_lib->clear();
+          $config = NULL;
+      }
+
       // ***********************************************************************
       // MODEL DATABASE OPERATION RESULTS
       // ***********************************************************************
@@ -114,6 +185,8 @@ class Warehouses extends MY_Controller
       //  - loop through each row, and if our product item id found there, udpate qty
 
       $dataToInsert = array(
+          'code' => $this->input->post('code'),
+          'barcode_symbology' => $this->input->post('barcode_symbology'),
           'warehouse_id' => $this->input->post('warehouse_id'),
           'rack_id' => $this->input->post('rack_id'),
           'receiving_report_id' => $this->input->post('receiving_id'),

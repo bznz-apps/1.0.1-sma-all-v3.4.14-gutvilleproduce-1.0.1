@@ -641,7 +641,7 @@
                             <div class="form-group">
                                 <?= lang("sale_status", "slsale_status"); ?>
                                 <?php $sst = array('pending' => lang('pending'), 'completed' => lang('completed'));
-                                echo form_dropdown('sale_status', $sst, '', 'class="form-control input-tip" required="required" id="slsale_status" disabled'); ?>
+                                echo form_dropdown('sale_status', $sst, '', 'id="sale_form-sale_status" class="form-control input-tip" required="required" id="slsale_status" disabled'); ?>
 
                             </div>
                         </div>
@@ -680,7 +680,7 @@
                             <div class="form-group">
                                 <?= lang("payment_status", "slpayment_status"); ?>
                                 <?php $pst = array('pending' => lang('pending'), 'due' => lang('due'), 'partial' => lang('partial'), 'paid' => lang('paid'));
-                                echo form_dropdown('payment_status', $pst, '', 'class="form-control input-tip" required="required" id="slpayment_status"'); ?>
+                                echo form_dropdown('payment_status', $pst, '', 'class="form-control input-tip" required="required" id="slpayment_status" disabled'); ?>
 
                             </div>
                         </div>
@@ -1285,6 +1285,19 @@
 
     $(document).ready(function () {
 
+      $(document).on('click', '#add_sale', function(e) {
+          // sate_status dropdown is disabled by default, which means user cannot select a value
+          // and when submitting the form, its value wont be sent to the controller
+          // so when submitting the sale we set the sale_status enabled again to send its value to the controller
+          $('#slsale_status').prop('disabled', false);
+          $('#slpayment_status').prop('disabled', false);
+          
+      });
+
+      $(document).on('click', '#reset', function(e) {
+          localStorage.removeItem('form-add_sale-items');
+      });
+
       // $("#quantity_1556660855776").attr("disabled", true);
       $("#quantity_1556660855776").prop("disabled", "disabled");
       $("#quantity_1556660855776").prop("disabled", true);
@@ -1517,6 +1530,7 @@
             function addProdQtyFromPallet(availablePalletProdQty) {
 
                 console.log("addProdQtyFromPallet");
+                console.log(availablePalletProdQty);
 
                 // get order items
                 // if order item prod id is equal to the selected prod id
@@ -1538,7 +1552,8 @@
                 // see if qty input is > availablePalletProdQty
                 if (orderItems === null || orderItems === undefined) {
                     if ($('#mquantity').val() > availablePalletProdQty) {
-                        alert("Product quantity selected is " + $('#mquantity').val() + ", product quantity on pallet is " + availablePalletProdQty + ". Product quantity selected exceeds the product quantity on pallet with code " + palletData.pallet_data.code + ", found in rack name " + palletData.rack_name + ", on warehouse " + palletData.warehouse_name + ".");
+                        // alert("Product quantity selected is " + $('#mquantity').val() + ", product quantity on pallet is " + availablePalletProdQty + ". Product quantity selected exceeds the product quantity on pallet with code " + palletData.pallet_data.code + ", found in rack name " + palletData.rack_name + ", on warehouse " + palletData.warehouse_name + ".");
+                        alert("Product quantity selected is " + $('#mquantity').val() + ", product quantity on pallet is " + availablePalletProdQty + ". Product quantity selected exceeds the product quantity on pallet.");
                         $('#mquantity').val("");
                     }
                 }
@@ -1686,3 +1701,6 @@
 
     });
 </script>
+
+
+<!-- sale_form-sale_status -->

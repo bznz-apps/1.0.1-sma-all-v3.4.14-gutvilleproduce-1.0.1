@@ -102,7 +102,13 @@ if (!empty($variants)) {
                         </div>
                         <span class="help-block"><?= lang('you_scan_your_barcode_too') ?></span>
                     </div>
-
+                    <div class="form-group all">
+                        <?= lang("barcode_symbology", "barcode_symbology") . " (Default is Code128)" ?>
+                        <?php
+                        $bs = array('code25' => 'Code25', 'code39' => 'Code39', 'code128' => 'Code128', 'ean8' => 'EAN8', 'ean13' => 'EAN13', 'upca' => 'UPC-A', 'upce' => 'UPC-E');
+                        echo form_dropdown('barcode_symbology', $bs, (isset($_POST['barcode_symbology']) ? $_POST['barcode_symbology'] : ($product ? $product->barcode_symbology : 'code128')), 'class="form-control select" id="barcode_symbology" required="required" style="width:100%;"');
+                        ?>
+                    </div>
                     <div class="form-group all">
                         <?= lang('slug', 'slug'); ?>
                         <?= form_input('slug', set_value('slug'), 'class="form-control tip" id="slug" required="required"'); ?>
@@ -116,14 +122,6 @@ if (!empty($variants)) {
                     <div class="form-group standard_combo">
                         <?= lang('weight', 'weight'); ?>
                         <?= form_input('weight', set_value('weight'), 'class="form-control tip" id="weight"'); ?>
-                    </div>
-                    <div class="form-group all">
-                        <?= lang("barcode_symbology", "barcode_symbology") ?>
-                        <?php
-                        $bs = array('code25' => 'Code25', 'code39' => 'Code39', 'code128' => 'Code128', 'ean8' => 'EAN8', 'ean13' => 'EAN13', 'upca' => 'UPC-A', 'upce' => 'UPC-E');
-                        echo form_dropdown('barcode_symbology', $bs, (isset($_POST['barcode_symbology']) ? $_POST['barcode_symbology'] : ($product ? $product->barcode_symbology : 'code128')), 'class="form-control select" id="barcode_symbology" required="required" style="width:100%;"');
-                        ?>
-
                     </div>
                     <div class="form-group all">
                         <?= lang("brand", "brand") ?>
@@ -180,7 +178,7 @@ if (!empty($variants)) {
                         <?= form_input('price', (isset($_POST['price']) ? $_POST['price'] : ($product ? $this->sma->formatDecimal($product->price) : '')), 'class="form-control tip" id="price" required="required"') ?>
                     </div>
 
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <input type="checkbox" class="checkbox" value="1" name="promotion" id="promotion" <?= $this->input->post('promotion') ? 'checked="checked"' : ''; ?>>
                         <label for="promotion" class="padding05">
                             <?= lang('promotion'); ?>
@@ -202,7 +200,7 @@ if (!empty($variants)) {
                                 <?= form_input('end_date', set_value('end_date'), 'class="form-control tip date" id="end_date"'); ?>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <?php if ($Settings->invoice_view == 2) { ?>
                         <div class="form-group">
@@ -325,9 +323,9 @@ if (!empty($variants)) {
                                     foreach ($warehouses as $warehouse) {
                                         //$whs[$warehouse->id] = $warehouse->name;
                                         echo '<div class="col-md-6 col-sm-6 col-xs-6" style="padding-bottom:15px;">' . $warehouse->name . '<br><div class="form-group">' . form_hidden('wh_' . $warehouse->id, $warehouse->id) . form_input('wh_qty_' . $warehouse->id, (isset($_POST['wh_qty_' . $warehouse->id]) ? $_POST['wh_qty_' . $warehouse->id] : (isset($warehouse->quantity) ? $warehouse->quantity : '')), 'class="form-control wh" id="wh_qty_' . $warehouse->id . '" placeholder="' . lang('quantity') . '"') . '</div>';
-                                        if ($Settings->racks) {
-                                            echo '<div class="form-group">' . form_input('rack_' . $warehouse->id, (isset($_POST['rack_' . $warehouse->id]) ? $_POST['rack_' . $warehouse->id] : (isset($warehouse->rack) ? $warehouse->rack : '')), 'class="form-control wh" id="rack_' . $warehouse->id . '" placeholder="' . lang('rack') . '"') . '</div>';
-                                        }
+                                        // if ($Settings->racks) {
+                                        //     echo '<div class="form-group">' . form_input('rack_' . $warehouse->id, (isset($_POST['rack_' . $warehouse->id]) ? $_POST['rack_' . $warehouse->id] : (isset($warehouse->rack) ? $warehouse->rack : '')), 'class="form-control wh" id="rack_' . $warehouse->id . '" placeholder="' . lang('rack') . '"') . '</div>';
+                                        // }
                                         echo '</div>';
                                     }
                                     echo '</div><div class="clearfix"></div></div></div></div>';
@@ -336,9 +334,9 @@ if (!empty($variants)) {
                                     foreach ($warehouses as $warehouse) {
                                         //$whs[$warehouse->id] = $warehouse->name;
                                         echo '<div class="col-md-6 col-sm-6 col-xs-6" style="padding-bottom:15px;">' . $warehouse->name . '<br><div class="form-group">' . form_hidden('wh_' . $warehouse->id, $warehouse->id) . form_input('wh_qty_' . $warehouse->id, (isset($_POST['wh_qty_' . $warehouse->id]) ? $_POST['wh_qty_' . $warehouse->id] : ''), 'class="form-control" id="wh_qty_' . $warehouse->id . '" placeholder="' . lang('quantity') . '"') . '</div>';
-                                        if ($Settings->racks) {
-                                            echo '<div class="form-group">' . form_input('rack_' . $warehouse->id, (isset($_POST['rack_' . $warehouse->id]) ? $_POST['rack_' . $warehouse->id] : ''), 'class="form-control" id="rack_' . $warehouse->id . '" placeholder="' . lang('rack') . '"') . '</div>';
-                                        }
+                                        // if ($Settings->racks) {
+                                        //     echo '<div class="form-group">' . form_input('rack_' . $warehouse->id, (isset($_POST['rack_' . $warehouse->id]) ? $_POST['rack_' . $warehouse->id] : ''), 'class="form-control" id="rack_' . $warehouse->id . '" placeholder="' . lang('rack') . '"') . '</div>';
+                                        // }
                                         echo '</div>';
                                     }
                                     echo '<div class="clearfix"></div></div></div></div>';
@@ -421,7 +419,7 @@ if (!empty($variants)) {
                 </div>
 
                 <div class="col-md-12">
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <input name="featured" type="checkbox" class="checkbox" id="featured" value="1" <?= isset($_POST['featured']) ? 'checked="checked"' : '' ?>/>
                         <label for="featured" class="padding05"><?= lang('featured') ?></label>
                     </div>
@@ -482,7 +480,7 @@ if (!empty($variants)) {
                             </div>
                         </div>
 
-                    </div>
+                    </div> -->
 
                     <div class="form-group all">
                         <?= lang("product_details", "product_details") ?>
