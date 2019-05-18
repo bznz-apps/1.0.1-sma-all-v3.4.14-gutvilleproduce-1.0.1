@@ -5,8 +5,11 @@
     <div class="container">
         <div class="alert alert-info margin-bottom-no">
             <p>
-                <strong>Shop module is not complete item but add-on to Stock Manager Advance and is available separately.</strong><br>
-                This is joint demo for main item (Stock Manager Advance) and add-ons (POS & Shop Module). Please check the item page on codecanyon.net for more info about what's not included in the item and you must read the page there before purchase. Thank you
+                Demo Ecommerce Shop that would help you to sell your products from your site.
+                <!--
+                  <strong>Shop module is not complete item but add-on to Stock Manager Advance and is available separately.</strong><br>
+                  This is joint demo for main item (Stock Manager Advance) and add-ons (POS & Shop Module). Please check the item page on codecanyon.net for more info about what's not included in the item and you must read the page there before purchase. Thank you
+                -->
             </p>
         </div>
     </div>
@@ -19,11 +22,11 @@
             <div class="col-md-6 col-sm-12">
                 <div class="title-footer"><span><?= lang('about_us'); ?></span></div>
                 <p>
-                    <?= $shop_settings->description; ?> <a href="<?= site_url('page/'.$shop_settings->about_link); ?>"><?= lang('read_more'); ?></a>
+                    <?= "Demo Ecommerce Shop that would help you to sell your products from your site." /* $shop_settings->description; */ ?> <a href="<?= site_url('page/'.$shop_settings->about_link); ?>"><?= lang('read_more'); ?></a>
                 </p>
                 <p>
                     <i class="fa fa-phone"></i> <span class="margin-left-md"><?= $shop_settings->phone; ?></span>
-                    <i class="fa fa-envelope margin-left-xl"></i> <span class="margin-left-md"><?= $shop_settings->email; ?></span>
+                    <i class="fa fa-envelope margin-left-xl"></i> <span class="margin-left-md"><?= "info@mail.com" /* $shop_settings->email; */ ?></span>
                 </p>
                 <ul class="list-inline">
                     <li><a href="<?= site_url('page/'.$shop_settings->privacy_link); ?>"><?= lang('privacy_policy'); ?></a></li>
@@ -44,13 +47,13 @@
                 <p><?= $shop_settings->follow_text; ?></p>
                 <ul class="follow-us">
                     <?php if (!empty($shop_settings->facebook)) { ?>
-                    <li><a target="_blank" href="<?= $shop_settings->facebook; ?>"><i class="fa fa-facebook"></i></a></li>
+                    <li><a target="_blank" href="<?= "https://www.facebook.com" /* $shop_settings->facebook; */ ?>"><i class="fa fa-facebook"></i></a></li>
                     <?php } if (!empty($shop_settings->twitter)) { ?>
-                    <li><a target="_blank" href="<?= $shop_settings->twitter; ?>"><i class="fa fa-twitter"></i></a></li>
+                    <li><a target="_blank" href="<?= "https://www.twitter.com" /* $shop_settings->twitter; */ ?>"><i class="fa fa-twitter"></i></a></li>
                     <?php } if (!empty($shop_settings->google_plus)) { ?>
-                    <li><a target="_blank" href="<?= $shop_settings->google_plus; ?>"><i class="fa fa-google-plus"></i></a></li>
+                    <li><a target="_blank" href="<?= "https://www.gmail.com" /* $shop_settings->google_plus; */ ?>"><i class="fa fa-google-plus"></i></a></li>
                     <?php } if (!empty($shop_settings->instagram)) { ?>
-                    <li><a target="_blank" href="<?= $shop_settings->instagram; ?>"><i class="fa fa-instagram"></i></a></li>
+                    <li><a target="_blank" href="<?= "https://www.instagram.com" /* $shop_settings->instagram; */ ?>"><i class="fa fa-instagram"></i></a></li>
                     <?php } ?>
                 </ul>
             </div>
@@ -60,7 +63,7 @@
     <div class="footer-bottom">
         <div class="container">
             <div class="copyright line-height-lg">
-                &copy; <?= date('Y'); ?> <?= $shop_settings->shop_name; ?>. <?= lang('all_rights_reserved'); ?>
+                &copy; <?= date('Y'); ?> <?= "MyBzNz" /* $shop_settings->shop_name; */ ?>. <?= lang('all_rights_reserved'); ?>
             </div>
             <ul class="list-inline pull-right line-height-md">
                 <li class="padding-x-no text-size-lg">

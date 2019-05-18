@@ -484,39 +484,39 @@
 
                                 <!-- SIDEBAR - Products - Quantity Adjustments --->
 
-                                <!-- <li id="products_quantity_adjustments">
+                                <li id="products_quantity_adjustments">
                                     <a class="submenu" href="<?= admin_url('products/quantity_adjustments'); ?>">
                                         <i class="fa fa-filter"></i>
                                         <span class="text"> <?= lang('quantity_adjustments'); ?></span>
                                     </a>
-                                </li> -->
+                                </li>
 
                                 <!-- SIDEBAR - Products - Add Adjustment -->
 
-                                <!-- <li id="products_add_adjustment">
+                                <li id="products_add_adjustment">
                                     <a class="submenu" href="<?= admin_url('products/add_adjustment'); ?>">
                                         <i class="fa fa-filter"></i>
                                         <span class="text"> <?= lang('add_adjustment'); ?></span>
                                     </a>
-                                </li> -->
+                                </li>
 
                                 <!-- SIDEBAR - Products - Stock Counts ---->
 
-                                <!-- <li id="products_stock_counts">
+                                <li id="products_stock_counts">
                                     <a class="submenu" href="<?= admin_url('products/stock_counts'); ?>">
                                         <i class="fa fa-list-ol"></i>
                                         <span class="text"> <?= lang('stock_counts'); ?></span>
                                     </a>
-                                </li> -->
+                                </li>
 
                                 <!-- SIDEBAR - Products - Count Stock ----->
 
-                                <!-- <li id="products_count_stock">
+                                <li id="products_count_stock">
                                     <a class="submenu" href="<?= admin_url('products/count_stock'); ?>">
                                         <i class="fa fa-plus-circle"></i>
                                         <span class="text"> <?= lang('count_stock'); ?></span>
                                     </a>
-                                </li> -->
+                                </li>
 
                             </ul>
                         </li>
@@ -535,13 +535,13 @@
                                 <li id="products_index">
                                     <a class="submenu" href="<?= admin_url('suppliers/getSupplyOrders_view'); ?>">
                                         <i class="fa fa-barcode"></i>
-                                        <span class="text"> List of Supply Orders </span>
+                                        <span class="text"> List Supply Orders </span>
                                     </a>
                                 </li>
 
                                 <li id="products_index">
                                     <a class="submenu" href="<?= admin_url('suppliers/addSupplyOrder_view'); ?>">
-                                        <i class="fa fa-barcode"></i>
+                                        <i class="fa fa-plus-circle"></i>
                                         <span class="text"> Add Supply Order </span>
                                     </a>
                                 </li>
@@ -577,14 +577,14 @@
                                 <li id="products_index">
                                     <a class="submenu" href="<?= admin_url('receiving/getReceivings_view'); ?>">
                                         <i class="fa fa-barcode"></i>
-                                        <span class="text"> Lista de Recibos </span>
+                                        <span class="text"> List Receivings </span>
                                     </a>
                                 </li>
 
                                 <li id="products_index">
                                     <a class="submenu" href="<?= admin_url('receiving/addReceiving_view'); ?>">
-                                        <i class="fa fa-barcode"></i>
-                                        <span class="text"> Agregar Recibo </span>
+                                        <i class="fa fa-plus-circle"></i>
+                                        <span class="text"> Add Receiving </span>
                                     </a>
                                 </li>
 
@@ -609,13 +609,13 @@
                                 <li id="products_index">
                                     <a class="submenu" href="<?= admin_url('warehouses/getPallets_view'); ?>">
                                         <i class="fa fa-barcode"></i>
-                                        <span class="text"> List of Pallets </span>
+                                        <span class="text"> List Pallets </span>
                                     </a>
                                 </li>
 
                                 <li id="products_index">
                                     <a class="submenu" href="<?= admin_url('warehouses/addPallet_view'); ?>">
-                                        <i class="fa fa-barcode"></i>
+                                        <i class="fa fa-plus-circle"></i>
                                         <span class="text"> Add Pallet </span>
                                     </a>
                                 </li>
@@ -644,13 +644,13 @@
                                 <li id="products_index">
                                     <a class="submenu" href="<?= admin_url('quality/getInspections_view'); ?>">
                                         <i class="fa fa-barcode"></i>
-                                        <span class="text"> List of Inspections </span>
+                                        <span class="text"> List Inspections </span>
                                     </a>
                                 </li>
 
                                 <li id="products_index">
                                     <a class="submenu" href="<?= admin_url('quality/addInspection_view'); ?>">
-                                        <i class="fa fa-barcode"></i>
+                                        <i class="fa fa-plus-circle"></i>
                                         <span class="text"> Add Inspection </span>
                                     </a>
                                 </li>
@@ -718,7 +718,7 @@
 
                                 <li id="products_index">
                                     <a class="submenu" href="<?= admin_url('warehouses/addPallet_view'); ?>">
-                                        <i class="fa fa-barcode"></i>
+                                        <i class="fa fa-plus-circle"></i>
                                         <span class="text"> Add Pallet </span>
                                     </a>
                                 </li>
@@ -739,7 +739,7 @@
 
                                 <li id="products_index">
                                     <a class="submenu" href="<?= admin_url('warehouses/addRack_view'); ?>">
-                                        <i class="fa fa-barcode"></i>
+                                        <i class="fa fa-plus-circle"></i>
                                         <span class="text"> Add Rack </span>
                                     </a>
                                 </li>
@@ -1031,13 +1031,13 @@
                                                         <li id="products_index">
                                                             <a class="submenu" href="<?= admin_url('shipping/getPickUpOrders_view'); ?>">
                                                                 <i class="fa fa-barcode"></i>
-                                                                <span class="text"> Pick Up Orders </span>
+                                                                <span class="text"> List Pick Up Orders </span>
                                                             </a>
                                                         </li>
 
                                                         <li id="products_index">
                                                             <a class="submenu" href="<?= admin_url('shipping/addPickUpOrder_view'); ?>">
-                                                                <i class="fa fa-barcode"></i>
+                                                                <i class="fa fa-plus-circle"></i>
                                                                 <span class="text"> Add Pick Up Order </span>
                                                             </a>
                                                         </li>
@@ -1045,13 +1045,13 @@
                                                         <li id="products_index">
                                                             <a class="submenu" href="<?= admin_url('shipping/getBillsOfLading_view'); ?>">
                                                                 <i class="fa fa-barcode"></i>
-                                                                <span class="text"> Bills of Lading </span>
+                                                                <span class="text"> List Bills of Lading </span>
                                                             </a>
                                                         </li>
 
                                                         <li id="products_index">
                                                             <a class="submenu" href="<?= admin_url('shipping/addBillOfLading_view'); ?>">
-                                                                <i class="fa fa-barcode"></i>
+                                                                <i class="fa fa-plus-circle"></i>
                                                                 <span class="text"> Add Bill of Lading </span>
                                                             </a>
                                                         </li>
