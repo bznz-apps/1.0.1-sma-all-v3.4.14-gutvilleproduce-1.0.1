@@ -71,7 +71,7 @@
                     <div class="form-group all">
                         <?php /* <label for="mcode" class="col-sm-4 control-label"><?= lang('product_code') ?> *</label> */ ?>
 
-                        <label><?= "Supply Order Number *" ?></label>
+                        <label><?= "Supply Order Number" ?></label>
                         <?php /* <label for="mcode" class="col-sm-4 control-label"><?= "Product" ?> *</label> */ ?>
 
                           <div class="form-group">
@@ -95,7 +95,7 @@
 
                     <div class="form-group all">
                         <div class="form-group">
-                            <label> <?= /* lang("reference_no", "slref"); */ "Manifest Ref No *" ?> </label>
+                            <label> <?= /* lang("reference_no", "slref"); */ "Manifest Ref No" ?> </label>
                             <?php echo form_input('manifest_ref_no', (isset($_POST['manifest_ref_no']) ? $_POST['manifest_ref_no'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
                         </div>
                     </div>

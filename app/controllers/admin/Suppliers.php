@@ -963,7 +963,7 @@ class Suppliers extends MY_Controller
       // get supply orders table row or records length
       // add ++
 
-      $default_starter_no = 1000;
+      $default_starter_no = 1;
       $count_total_rows = $this->db->count_all_results('NEW_supply_orders_count');
       $new_no = 1;
       $last_no = 0;

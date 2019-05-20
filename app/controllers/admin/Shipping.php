@@ -78,7 +78,7 @@ class Shipping extends MY_Controller
 
       // AUTOINCREMENT
 
-      $default_starter_no = 1000;
+      $default_starter_no = 1;
       $count_total_rows = $this->db->count_all_results('NEW_pickup_orders_count');
       $new_no = 1;
       $last_no = 0;
@@ -382,7 +382,7 @@ class Shipping extends MY_Controller
       // AUTOINCREMENT
       // ***********************************************************************
 
-      $default_starter_no = 1000;
+      $default_starter_no = 1;
       $count_total_rows = $this->db->count_all_results('NEW_bills_of_lading_count');
       $new_no = 1;
       $last_no = 0;

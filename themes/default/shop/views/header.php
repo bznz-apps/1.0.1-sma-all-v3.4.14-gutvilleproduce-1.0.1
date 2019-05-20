@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript">if (parent.frames.length !== 0) { top.location = '<?= site_url(); ?>'; }</script>
-    <title><?= $page_title; ?></title>
+    <title><?= "MyBzNz" /* $page_title; */ ?></title>
     <meta name="description" content="<?= $page_desc; ?>">
     <link rel="shortcut icon" href="<?= $assets; ?>images/icon.png">
     <link href="<?= $assets; ?>css/libs.min.css" rel="stylesheet">

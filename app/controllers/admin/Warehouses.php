@@ -122,7 +122,6 @@ class Warehouses extends MY_Controller
       $this->load->library('upload');
 
       if ($_FILES['input_pallet_image']['size'] > 0) {
-
           $config['upload_path'] = $this->upload_path;
           $config['allowed_types'] = $this->image_types;
           $config['max_size'] = $this->allowed_file_size;
@@ -191,7 +190,8 @@ class Warehouses extends MY_Controller
           'rack_id' => $this->input->post('rack_id'),
           'receiving_report_id' => $this->input->post('receiving_id'),
           'description' => $this->input->post('pallet_note'),
-          'image' => $this->input->post('pallet_image'),
+          // 'image' => $data->image,
+          'image' => $photo,
           'created_at' => date('Y-m-d H:i:s'),
       );
 
@@ -466,14 +466,20 @@ class Warehouses extends MY_Controller
           admin_redirect('warehouses/addRack_view');
       }
 
+      // $rack_name =
+      //     $this->input->post('rack_column')
+      //   . $this->input->post('rack_row')
+      //   . " "
+      //   . "Z"
+      //   . $this->input->post('rack_z_index')
+      //   . " "
+      //   . $this->input->post('rack_floor_level');
+
       $rack_name =
           $this->input->post('rack_column')
+        . "-"
         . $this->input->post('rack_row')
-        . " "
-        . "Z"
-        . $this->input->post('rack_z_index')
-        . " "
-        . $this->input->post('rack_floor_level');
+        . $this->input->post('rack_z_index');
 
       $dataToInsert = array(
           'warehouse_id' => $this->input->post('rack_warehouse'),

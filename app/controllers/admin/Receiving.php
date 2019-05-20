@@ -99,8 +99,8 @@ class Receiving extends MY_Controller
       // FORM VALIDATION RULES
 
       $this->form_validation->set_rules('warehouse_id', 'warehouse_id', 'required');
-      $this->form_validation->set_rules('supply_order', 'supply_order', 'required');
-      $this->form_validation->set_rules('manifest_ref_no', 'manifest_ref_no', 'required');
+      // $this->form_validation->set_rules('supply_order', 'supply_order', 'required');
+      // $this->form_validation->set_rules('manifest_ref_no', 'manifest_ref_no', 'required');
 
       // RUN FORM VALIDATION
 
@@ -118,7 +118,7 @@ class Receiving extends MY_Controller
 
       // INCREMENTING: RECEIVING REPORT NUMBER
 
-      $default_starter_no = 1000;
+      $default_starter_no = 1;
       $count_total_rows = $this->db->count_all_results('NEW_receiving_reports_count');
       $new_no = 1;
       $last_no = 0;

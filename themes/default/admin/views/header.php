@@ -689,7 +689,7 @@
 
                                 <li id="system_settings_warehouses">
                                     <a href="<?= admin_url('system_settings/warehouses') ?>">
-                                        <i class="fa fa-building-o"></i><span class="text"> <?= /* lang('warehouses'); */ "List of Warehouses" ?></span>
+                                        <i class="fa fa-building-o"></i><span class="text"> <?= /* lang('warehouses'); */ "List Warehouses" ?></span>
                                     </a>
                                 </li>
 
