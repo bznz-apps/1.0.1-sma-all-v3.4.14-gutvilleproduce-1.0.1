@@ -144,7 +144,7 @@ console.log($('#x_supply_order_id').val());
           <?php /*
           <i class="fa-fw fa fa-barcode"></i><?= lang('products') . ' (' . ($warehouse_id ? $warehouse->name : lang('all_warehouses')) . ')'.($supplier ? ' ('.lang('supplier').': '.($supplier->company && $supplier->company != '-' ? $supplier->company : $supplier->name).')' : ''); ?>
           */ ?>
-          <i class="fa-fw fa fa-barcode"></i> Rack <?php echo $rack_column . "" . $rack_row . " Z" . $rack_z_index . " Floor " . $rack_floor_level; ?>
+          <i class="fa-fw fa fa-barcode"></i> Rack <?php echo $rack_column . "-" . $rack_row . "" . $rack_z_index . " - Floor Level " . $rack_floor_level; ?>
         </h2>
 
         <!-- View - Header - Right Side Menu Items -->
@@ -238,7 +238,7 @@ console.log($('#x_supply_order_id').val());
             <?php /*
             <i class="fa-fw fa fa-barcode"></i><?= lang('products') . ' (' . ($warehouse_id ? $warehouse->name : lang('all_warehouses')) . ')'.($supplier ? ' ('.lang('supplier').': '.($supplier->company && $supplier->company != '-' ? $supplier->company : $supplier->name).')' : ''); ?>
             */ ?>
-            Rack <?php echo $rack_column . "" . $rack_row . " Z" . $rack_z_index . " Floor " . $rack_floor_level; ?> - List of Items
+            Rack <?php "" /* echo $rack_column . "-" . $rack_row . "" . $rack_z_index . " - Floor Level " . $rack_floor_level; */ ?> Items
 
         </h2>
     </div>

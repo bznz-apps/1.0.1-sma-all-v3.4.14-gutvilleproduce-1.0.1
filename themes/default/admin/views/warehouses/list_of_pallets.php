@@ -37,7 +37,9 @@
 
             "aoColumns": [
                 {"bSortable": false, "mRender": checkbox},
-                null, null, null, null, null, null, null, null, null, null
+                null, null, null, null, null, null, null,
+                {"bSortable": false,"mRender": img_hl},
+                null, null
             ]
 
         })
