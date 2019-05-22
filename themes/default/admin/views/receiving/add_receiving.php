@@ -1,5 +1,34 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
+<script type="text/javascript">
+    $(document).ready(function () {
+      
+        $('#supply_order_number').val("");
+
+        $.ajax({
+            url : '<?= admin_url() ?>' + 'receiving/getNextReportNo',
+            type : 'GET',
+            data : {},
+            dataType:'json',
+            success : function(data) {
+                let nextNo = parseInt(data);
+                $('#receiving_form_input-receiving_report_no').val(nextNo);
+            },
+            error : function(request, error)
+            {
+                // alert("Request: " + JSON.stringify(request));
+                alert("Error: " + JSON.stringify(error));
+            }
+        });
+
+        // ON EVERY FORM INPUT CHANGE, SAVE NEW VALUES TO localStorage
+
+        $(document).on('change', '#receiving_form_input-receiving_report_no', function(e) {
+        });
+
+    });
+</script>
+
 <div class="box">
 
     <!-- ***********************************************************************
@@ -41,6 +70,19 @@
 
                 <div class="col-md-12">
 
+                  <!-- ***************************************************
+                  *  REFERENCE NO
+                  **************************************************** -->
+
+                  <div class="form-group all">
+                      <div class="form-group">
+                          <label> <?= /* lang("reference_no", "slref"); */ "Receiving Report No *" ?> </label>
+                          <?php echo form_input('receiving_report_no', (isset($_POST['receiving_report_no']) ? $_POST['receiving_report_no'] : ""), 'class="form-control input-tip" id="receiving_form_input-receiving_report_no"'); ?>
+                      </div>
+                  </div>
+
+                  <!-- <br> -->
+
                   <!-- *******************************************************
                     SELECT WAREHOUSE
                   ******************************************************** -->
@@ -81,7 +123,7 @@
                                   $supp_ord[$supply_order->id] = $supply_order->supply_order_number;
                               }
                               // echo form_dropdown('supply_order', $supp_ord, (isset($_POST['supply_order']) ? $_POST['supply_order'] : ($supply_order ? $supply_order->supplier_id : '')), 'class="form-control select" id="supply_order_number" placeholder="' . lang("select") . " " . lang("supplier") . '" required="required" style="width:100%"')
-                              echo form_dropdown('supply_order', $supp_ord, (isset($_POST['supply_order']) ? $_POST['supply_order'] : ($supply_order ? $supply_order->supplier_id : '')), 'class="form-control select" id="supply_order_number" placeholder="' . lang("select") . " " . "Select Supply Order Number" . '" required="required" style="width:100%"')
+                              echo form_dropdown('supply_order', $supp_ord, (isset($_POST['supply_order']) ? $_POST['supply_order'] : ($supply_order ? $supply_order->supplier_id : '')), 'class="form-control select" id="supply_order_number" placeholder="' . lang("select") . " " . " Supply Order Number" . '" required="required" style="width:100%"')
                               ?>
                           </div>
 

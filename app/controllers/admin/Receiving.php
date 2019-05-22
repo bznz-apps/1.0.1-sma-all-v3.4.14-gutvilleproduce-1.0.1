@@ -75,6 +75,45 @@ class Receiving extends MY_Controller
     // *************************************************************************
     ////////////////////////////////////////////////////////////////////////////
 
+    function getNextReportNo()
+    {
+        // INCREMENTING: RECEIVING REPORT NUMBER
+
+        $default_starter_no = 1;
+        $count_total_rows = $this->db->count_all_results('NEW_receiving_reports_count');
+        $new_no = 1;
+        $last_no = 0;
+
+        // CHECK IF TABLE 'NEW_receiving_reports_count' IS EMPTY OR HAS RESULTS
+
+        if ($count_total_rows == 0) {
+
+            // IF EMPTY, INIT RECEIVING REPORT NUMBER AND CREATE RECORD
+
+            $receiving_reports_count_data = array(
+                'starter_no' => $default_starter_no,
+                'last_no' => $default_starter_no,
+            );
+            $this->db->insert('NEW_receiving_reports_count', $receiving_reports_count_data);
+            $new_no = $default_starter_no;
+
+        } else {
+
+          // IF RECORD FOUND, GET LAST RECEIVING REPORT NUMBER SAVED AND UPDATE +1
+
+          $last_no = $this->db->get('NEW_receiving_reports_count')->row()->last_no;
+          $new_no = $last_no + 1;
+          // $dataForReceivingReportsCount = array(
+          //     'last_no' => $new_no,
+          // );
+          // // $this->db->update('NEW_receiving_reports_count', $dataForReceivingReportsCount, array('starter_no' => $default_starter_no));
+          // $this->db->update('NEW_receiving_reports_count', array('last_no' => $new_no));
+
+        }
+
+        echo json_encode($new_no);
+    }
+
     // ---------------------------------------------------------------------------
     // RECEIVING - ADD
     // ---------------------------------------------------------------------------
@@ -98,6 +137,7 @@ class Receiving extends MY_Controller
 
       // FORM VALIDATION RULES
 
+      $this->form_validation->set_rules('receiving_report_no', 'receiving_report_no', 'required');
       $this->form_validation->set_rules('warehouse_id', 'warehouse_id', 'required');
       // $this->form_validation->set_rules('supply_order', 'supply_order', 'required');
       // $this->form_validation->set_rules('manifest_ref_no', 'manifest_ref_no', 'required');
@@ -116,43 +156,56 @@ class Receiving extends MY_Controller
       //   admin_redirect('receiving/addManifest_view');
       // }
 
-      // INCREMENTING: RECEIVING REPORT NUMBER
+      // // INCREMENTING: RECEIVING REPORT NUMBER
+      //
+      // $default_starter_no = 1;
+      // $count_total_rows = $this->db->count_all_results('NEW_receiving_reports_count');
+      // $new_no = 1;
+      // $last_no = 0;
+      //
+      // // CHECK IF TABLE 'NEW_receiving_reports_count' IS EMPTY OR HAS RESULTS
+      //
+      // if ($count_total_rows == 0) {
+      //
+      //     // IF EMPTY, INIT RECEIVING REPORT NUMBER AND CREATE RECORD
+      //
+      //     $receiving_reports_count_data = array(
+      //         'starter_no' => $default_starter_no,
+      //         'last_no' => $default_starter_no,
+      //     );
+      //     $this->db->insert('NEW_receiving_reports_count', $receiving_reports_count_data);
+      //     $new_no = $default_starter_no;
+      //
+      // } else {
+      //
+      //   // IF RECORD FOUND, GET LAST RECEIVING REPORT NUMBER SAVED AND UPDATE +1
+      //
+      //   $last_no = $this->db->get('NEW_receiving_reports_count')->row()->last_no;
+      //   $new_no = $last_no + 1;
+      //   $dataForReceivingReportsCount = array(
+      //       'last_no' => $new_no,
+      //   );
+      //   $this->db->update('NEW_receiving_reports_count', $dataForReceivingReportsCount, array('starter_no' => $default_starter_no));
+      //
+      // }
 
-      $default_starter_no = 1;
-      $count_total_rows = $this->db->count_all_results('NEW_receiving_reports_count');
-      $new_no = 1;
-      $last_no = 0;
+      // IF LAST_NO FOUND ------------------------------------------------------
 
-      // CHECK IF TABLE 'NEW_receiving_reports_count' IS EMPTY OR HAS RESULTS
+      $report_no = $this->input->post('receiving_report_no');
 
-      if ($count_total_rows == 0) {
+      $last_no = $this->db->get('NEW_receiving_reports_count')->row()->last_no;
 
-          // IF EMPTY, INIT RECEIVING REPORT NUMBER AND CREATE RECORD
-
-          $receiving_reports_count_data = array(
-              'starter_no' => $default_starter_no,
-              'last_no' => $default_starter_no,
-          );
-          $this->db->insert('NEW_receiving_reports_count', $receiving_reports_count_data);
-          $new_no = $default_starter_no;
-
-      } else {
-
-        // IF RECORD FOUND, GET LAST RECEIVING REPORT NUMBER SAVED AND UPDATE +1
-
-        $last_no = $this->db->get('NEW_receiving_reports_count')->row()->last_no;
-        $new_no = $last_no + 1;
-        $dataForReceivingReportsCount = array(
-            'last_no' => $new_no,
-        );
-        $this->db->update('NEW_receiving_reports_count', $dataForReceivingReportsCount, array('starter_no' => $default_starter_no));
-
+      if ($last_no == NULL || $report_no > $last_no) {
+          $this->db->update('NEW_receiving_reports_count', array('last_no' => $report_no));
       }
+
+      // -----------------------------------------------------------------------
 
       // MODEL DATABASE OPERATION RESULTS
 
       $dataToInsert = array(
-          'receiving_report_number' => $new_no,
+          // 'receiving_report_number' => $new_no,
+          'receiving_report_number' => $this->input->post('receiving_report_no'),
           'warehouse_id' => $this->input->post('warehouse_id'),
           'supply_order_id' => $this->input->post('supply_order'),
           'manifest_ref_no' => $this->input->post('manifest_ref_no'),
