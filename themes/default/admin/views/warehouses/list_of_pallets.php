@@ -38,7 +38,7 @@
             "aoColumns": [
                 {"bSortable": false, "mRender": checkbox},
                 null, null, null, null, null, null, null,
-                {"bSortable": false,"mRender": img_hl},
+                {"bSortable": false,"mRender": img_hl}, // use this object to render the image
                 null, null
             ]
 
@@ -220,8 +220,9 @@
 
           var itemID = $(this)[0].id;
 
-          // NAVIGATE ONLY IF CLICKED COLUMN WAS NOT THE LAST COLUMN
-          if (clickedColumn !== totalColumns-1) {
+          // NAVIGATE ONLY IF CLICKED COLUMN WAS NOT THE LAST COLUMN THAT HAS ACTIONS
+          // AND IF THE CLICKED COLUMN IS NOT THE ONE THAT HAS IMAGE OR ATTACHMENT
+          if (clickedColumn !== totalColumns-1 && clickedColumn !== totalColumns-2 && clickedColumn !== totalColumns-3) {
             // ROW MUST HAVE A RECORD ID VALUE IN ITS CONTENT
             if (itemID !== "") {
               // PREVIEW ITEMID

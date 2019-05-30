@@ -1,5 +1,36 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        // Start inputs with empty values here
+        // $('#').val("");
+
+        // Populate text input with a single value
+        $.ajax({
+            url : '<?= admin_url() ?>' + 'shipping/getNextBOLReportNo',
+            type : 'GET',
+            data : {},
+            dataType:'json',
+            success : function(data) {
+                let nextNo = parseInt(data);
+                $('#bol_form_input-bol_no').val(nextNo);
+            },
+            error : function(request, error)
+            {
+                // alert("Request: " + JSON.stringify(request));
+                alert("Error: " + JSON.stringify(error));
+            }
+        });
+
+        // ON EVERY FORM INPUT CHANGE, SAVE NEW VALUES TO localStorage
+
+        $(document).on('change', '#bol_form_input-bol_no', function(e) {
+        });
+
+    });
+</script>
+
 <script>
 
     // Default DataTables Code, Leave as is... Starts here --->
@@ -204,6 +235,22 @@
                   <?php /*
                   </div>
                   */ ?>
+
+                  <!-- ***************************************************
+                  *  REPORT NO
+                  **************************************************** -->
+
+                  <div class="col-md-4">
+                  <div class="form-group all">
+                      <div class="form-group">
+                          <label> <?= /* lang("reference_no", "slref"); */ "Bill of Lading No *" ?> </label>
+                          <?php echo form_input('bill_of_lading_no', (isset($_POST['bill_of_lading_no']) ? $_POST['bill_of_lading_no'] : ""), 'class="form-control input-tip" id="bol_form_input-bol_no"'); ?>
+                      </div>
+                  </div>
+                  </div>
+
+                  <div class="row"></div>
+                  <hr>
 
                     <!-- *******************************************************
                       SELECT SALE
@@ -497,12 +544,12 @@
                       IMAGE - DRIVER SIGNATURE
                     ******************************************************** -->
 
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <?php /* <?= lang("product_image", "product_image") ?> */ ?>
-                        <label><?= "Driver Signature" ?></label>
+                        <label><?= "Driver Signature (Upload Image)" ?></label>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="driver_signature_img" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
+                        <?= "(Optional) This field is not required." ?>
+                        <input id="driver_signature_img" type="file" data-browse-label="<?= lang('browse'); ?>" name="driver_signature_img" data-show-upload="false"
                                data-show-preview="false" accept="image/*" class="form-control file">
                     </div>
 
@@ -510,25 +557,29 @@
                       IMAGE - DRIVER LICENSE COPY
                     ******************************************************** -->
 
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <?php /* <?= lang("product_image", "product_image") ?> */ ?>
-                        <label><?= "Driver License Copy" ?></label>
+                        <label><?= "Driver License (Upload Image)" ?></label>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="driver_license_copy" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
+                        <?= "(Optional) This field is not required." ?>
+                        <input id="driver_license_copy" type="file" data-browse-label="<?= lang('browse'); ?>" name="driver_license_copy" data-show-upload="false"
                                data-show-preview="false" accept="image/*" class="form-control file">
                     </div>
+
+
+                    <div class="row"></div>
+                    <br>
 
                     <!-- *******************************************************
                       IMAGE - TEM RECORDER COPY
                     ******************************************************** -->
 
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <?php /* <?= lang("product_image", "product_image") ?> */ ?>
-                        <label><?= "Temp Recorder Copy" ?></label>
+                        <label><?= "Temp Recorder (Upload Image)" ?></label>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="temp_recorder_copy" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
+                        <?= "(Optional) This field is not required." ?>
+                        <input id="temp_recorder_copy" type="file" data-browse-label="<?= lang('browse'); ?>" name="temp_recorder_copy" data-show-upload="false"
                                data-show-preview="false" accept="image/*" class="form-control file">
                     </div>
 
@@ -536,17 +587,20 @@
                       ATTACH DOCUMENT
                     ******************************************************** -->
 
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <?= "" /* lang("document", "document") */ ?>
-                        <label><?= "Attachments" ?></label>
+                        <label><?= "Attach Document" ?></label>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <?= "(Optional) This field is not required." ?>
                         <input id="attachments" type="file" data-browse-label="<?= lang('browse'); ?>" name="document" data-show-upload="false"
                                data-show-preview="false" class="form-control file">
                     </div>
 
                     <div class="row"></div>
+                    <br>
                     <hr>
+
+                    <br>
 
                     <!-- *******************************************************
                       TABLE - SALE ITEMS
@@ -616,17 +670,21 @@
                     <div class="row"></div>
                     <hr>
 
+                    <br>
+
                     <!-- /////////////////////////////////////////////////// -->
 
                     <!-- *******************************************************
                       BUTTON - FORM SUBMIT
                     ******************************************************** -->
 
+                    <div class="col-md-12">
                     <div class="form-group">
                         <!-- SEND PICK UP ORDER - BUTTON -->
                         <?php /* echo form_submit('add_product', $this->lang->line("add_product"), 'class="btn btn-primary"'); */ ?>
                         <?php echo form_submit('add_product', "Reset", 'class="btn btn-danger" id="bill_of_lading_items-reset_button"'); ?>
-                        <?php echo form_submit('add_product', "Save Bill of Lading", 'class="btn btn-primary"'); ?>
+                        <?php echo form_submit('add_product', "Add Bill of Lading", 'class="btn btn-primary"'); ?>
+                    </div>
                     </div>
 
                 </div>

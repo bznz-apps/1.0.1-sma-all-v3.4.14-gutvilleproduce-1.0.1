@@ -500,258 +500,42 @@ class Suppliers extends MY_Controller
     //
     // *************************************************************************
 
-    function getSupplyOrders_view()
+    // ---------------------------------------------------------------------------
+    // SUPPLY ORDER - GENERATE NEXT REPORT NO
+    // ---------------------------------------------------------------------------
+
+    function getNextReportNo()
     {
-      $this->page_construct('suppliers/list_of_supply_orders', $meta, $this->data);
-    }
+        // INCREMENTING REPORT NUMBER
 
-    function handleGetSupplyOrders_logic()
-    {
-        $this->sma->checkPermissions('index');
+        $default_starter_no = 1;
+        $count_total_rows = $this->db->count_all_results('NEW_supply_orders_count');
+        $new_no = 1;
+        $last_no = 0;
 
-        // Using the datatables library instead of using models
-        $this->load->library('datatables');
+        // CHECK IF TABLE 'NEW_supply_orders_count' IS EMPTY OR HAS RESULTS
 
-        // Query
-        $this->datatables
+        if ($count_total_rows == 0) {
 
-          // DOCUMENTATION *****************************************************
-          // USE THIS TO SELECT ALL FIELDS FROM ONE TABLE
+            // IF EMPTY, INIT REPORT NUMBER AND CREATE RECORD
 
-          // SIMPLE, NO JOINS, NO NOTHING, NO CONCATENATION
-          //   ->select("id, supply_order_number, supplier_id, created_at")
-          //   ->from("NEW_supply_orders")
-          //   // ->where('group_name', 'supplier')
-
-          // DOCUMENTATION *****************************************************
-          // USE THIS TO UNDERSTAND THE CONCAT PART
-          // SYNTAX IS CORRECT BUT WONT WORK CAUSE 'select HAS TO BE IN 1 SINGLE LINE
-
-          // ->select(
-          //     $this->db->dbprefix('NEW_supply_orders')  . ".id as id,
-          //     supply_order_number,
-          //     CONCAT(
-          //         " . $this->db->dbprefix('companies') . ".company,
-          //         ' - ',
-          //         " . $this->db->dbprefix('companies') . ".name)
-          //         as supplier_id,
-          //     created_at",
-          //     // true
-          // )
-          // ->join('companies', 'companies.id=NEW_supply_orders.supplier_id', 'left')
-          // ->from("NEW_supply_orders")
-          //
-          // ANOTHER LOOK:
-          //
-          // CONCAT(
-          //       " . $this->db->dbprefix('companies') . ".company,
-          //       ' - ',
-          //       " . $this->db->dbprefix('companies') . ".name
-          // ) as supplier_id,
-
-          // DOCUMENTATION *****************************************************
-          // IF USE THE CODE ABOVE, THERE WILL BE AN ERROR ON THE DATATABLE LOAD
-          // USE BELOW WHERE THE 'select' TAKES ONE LINE
-
-          // ->select($this->db->dbprefix('NEW_supply_orders')  . ".id as id, supply_order_number, CONCAT(" . $this->db->dbprefix('companies') . ".company, ' - ', " . $this->db->dbprefix('companies') . ".name) as supplier_id, created_at", false)
-          // ->join('companies', 'companies.id=NEW_supply_orders.supplier_id', 'left')
-          // ->from("NEW_supply_orders")
-
-          // DOCUMENTATION *****************************************************
-          // USE CODE BELOW WHERE THE 'select' TAKES ONE LINE AND WE DONT CONCATENATE VALUES
-          // ->select($this->db->dbprefix('NEW_supply_orders') . ".id as id, supply_order_number, " . $this->db->dbprefix('companies') . ".company as supplier_id, " . "created_at")
-          ->select($this->db->dbprefix('NEW_supply_orders') . ".id as id, created_at, supply_order_number, " . $this->db->dbprefix('companies') . ".company as supplier_id")
-          ->join('companies', 'companies.id=NEW_supply_orders.supplier_id', 'left')
-          ->from("NEW_supply_orders")
-
-            /*
-            ->add_column(
-              "Actions","<div class=\"text-center\"><a class=\"tip\" title='" . $this->lang->line("list_products") . "' href='" . admin_url('products?supplier=$1') . "'><i class=\"fa fa-list\"></i></a> <a class=\"tip\" title='" . $this->lang->line("list_users") . "' href='" . admin_url('suppliers/users/$1') . "' data-toggle='modal' data-target='#myModal'><i class=\"fa fa-users\"></i></a> <a class=\"tip\" title='" . $this->lang->line("add_user") . "' href='" . admin_url('suppliers/add_user/$1') . "' data-toggle='modal' data-target='#myModal'><i class=\"fa fa-plus-circle\"></i></a> <a class=\"tip\" title='" . $this->lang->line("edit_supplier") . "' href='" . admin_url('suppliers/edit/$1') . "' data-toggle='modal' data-target='#myModal'><i class=\"fa fa-edit\"></i></a> <a href='#' class='tip po' title='<b>" . $this->lang->line("delete_supplier") . "</b>' data-content=\"<p>" . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('suppliers/delete/$1') . "'>" . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'><i class=\"fa fa-trash-o\"></i></a></div>", "id");
-            */
-
-            // ->add_column(
-            //     "Actions",
-            //     "<div class=\"text-center\">
-            //
-            //         <a class=\"tip\" title='" . $this->lang->line("list_products") . "' href='" . admin_url('products?supplier=$1') . "'>
-            //           <i class=\"fa fa-list\"></i>
-            //         </a>
-            //         <a class=\"tip\" title='" . $this->lang->line("list_users") . "' href='" . admin_url('suppliers/users/$1') . "' data-toggle='modal' data-target='#myModal'>
-            //           <i class=\"fa fa-users\"></i>
-            //         </a>
-            //         <a class=\"tip\" title='" . $this->lang->line("add_user") . "' href='" . admin_url('suppliers/add_user/$1') . "' data-toggle='modal' data-target='#myModal'>
-            //           <i class=\"fa fa-plus-circle\"></i>
-            //         </a>
-            //         <a class=\"tip\" title='" . $this->lang->line("edit_supplier") . "' href='" . admin_url('suppliers/edit/$1') . "' data-toggle='modal' data-target='#myModal'>
-            //           <i class=\"fa fa-edit\"></i>
-            //         </a>
-            //
-            //         <a href='#' class='tip po' title='<b>" . $this->lang->line("delete_supplier") . "</b>' data-content=\"<p>" . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('suppliers/deleteSupplyOrder/$1') . "'>" . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'>
-            //           <i class=\"fa fa-trash-o\"></i>
-            //         </a>
-            //
-            //     </div>",
-            //     "id"
-            //   );
-
-            ->add_column(
-                "Actions",
-                "<div class=\"text-center\">
-
-                    <a href='#' class='tip po' title='<b>"
-                      // . $this->lang->line("delete_supplier")
-                      . "Delete Supply Order"
-                      . "</b>' data-content=\"<p>"
-                      . lang('r_u_sure')
-                      . "</p><a class='btn btn-danger po-delete' href='"
-                      . admin_url('suppliers/deleteSupplyOrder/$1')
-                      . "'>" . lang('i_m_sure')
-                      . "</a> <button class='btn po-close'>"
-                      . lang('no')
-                      . "</button>\"  rel='popover'>
-                      <i class=\"fa fa-trash-o\"></i>
-                    </a>
-
-                </div>",
-                "id"
+            $countData = array(
+                'starter_no' => $default_starter_no,
+                'last_no' => $default_starter_no,
             );
+            $this->db->insert('NEW_supply_orders_count', $countData);
+            $new_no = $default_starter_no;
 
-              // EDIT ICON ACTION
-              // <a
-              //   class=\"tip\" title='" . $this->lang->line("edit_supplier") . "'
-              //   href='" . admin_url('suppliers/edit/$1') . "'
-              //   data-toggle='modal'
-              //   data-target='#myModal'>
-              //       <i class=\"fa fa-edit\"></i>
-              // </a>
+        } else {
 
-              // MORE ICON ACTIONS EXAMPLES
-              // ->add_column(
-              //   "Actions",
-              //   "<div class=\"text-center\">
-              //       <a class=\"tip\" title='"
-              //           . $this->lang->line("list_products")
-              //           . "' href='" . admin_url('products?supplier=$1')
-              //           . "'><i class=\"fa fa-list\"></i></a>
-              //           <a class=\"tip\" title='" . $this->lang->line("list_users") . "' href='" . admin_url('suppliers/users/$1') . "' data-toggle='modal' data-target='#myModal'>
-              //               <i class=\"fa fa-users\"></i>
-              //           </a>
-              //           <a class=\"tip\" title='" . $this->lang->line("add_user") . "' href='" . admin_url('suppliers/add_user/$1') . "' data-toggle='modal' data-target='#myModal'><i class=\"fa fa-plus-circle\"></i></a> <a class=\"tip\" title='" . $this->lang->line("edit_supplier") . "' href='" . admin_url('suppliers/edit/$1') . "' data-toggle='modal' data-target='#myModal'><i class=\"fa fa-edit\"></i></a> <a href='#' class='tip po' title='<b>" . $this->lang->line("delete_supplier") . "</b>' data-content=\"<p>" . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('suppliers/delete/$1') . "'>" . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'><i class=\"fa fa-trash-o\"></i></a></div>", "id");
+          // IF RECORD FOUND, GET LAST REPORT NUMBER SAVED AND UPDATE +1
 
-        //->unset_column('id');
-        echo $this->datatables->generate();
-    }
+          $last_no = $this->db->get('NEW_supply_orders_count')->row()->last_no;
+          $new_no = $last_no + 1;
 
-    function viewSupplyOrder_view($id) {
+        }
 
-      echo "Preview Supply Order ID: " . $id;
-
-      // $this->data['products'] = $this->site->getAllProducts();
-
-
-      // $this->data === select * from 'NEW_supply_orders' where id === $id
-
-      // echo $this->data;
-
-      // echo '<pre>'; print_r($this->data); echo '</pre>';
-
-      // GET ALL FIELDS ABOUT THIS RECORD ID
-      // - PASS THEM AS $this->data
-      // $supply_order = $this->db->get_where("NEW_supply_orders", array('id' => $id));
-      $supply_order = $this->suppliers_model->getSupplyOrderByID($id);
-      // echo '<pre>'; print_r($supply_order); echo '</pre>';
-
-      $supplier_company_data = $this->companies_model->getCompanyByID($supply_order->supplier_id);
-      $supplier_company = $supplier_company_data->company;
-      $supplier_company_salesperson = $supplier_company_data->name;
-
-      $this->data['supply_order'] = $supply_order;
-      $this->data['supply_order_id'] = $id;
-      $this->data['supply_order_number'] = $supply_order->supply_order_number;
-      $this->data['created_at'] = $supply_order->created_at;
-      $this->data['supplier_id'] = $supply_order->supplier_id;
-      $this->data['supplier_company'] = $supplier_company;
-      $this->data['message_to_supplier'] = $supply_order->message_to_supplier;
-      $this->data['message_to_receiver'] = $supply_order->message_to_receiver;
-      $this->data['image'] = $supply_order->image;
-      $this->data['attachment'] = $supply_order->attachment;
-
-      $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('suppliers/getSupplyOrders_view'), 'page' => "Supply Orders"), array('link' => '#', 'page' => "Supply Order " . $supply_order->supply_order_number));
-      $meta = array('page_title' => "Supply Order " . $supply_order->supply_order_number, 'bc' => $bc);
-
-      $this->page_construct('suppliers/view_supply_order', $meta, $this->data);
-    }
-
-      function handleGetSupplyOrderItems_logic($supply_order_id = null) {
-
-        $this->sma->checkPermissions('index');
-        $this->load->library('datatables');
-        // Query
-        $this->datatables
-
-        // *********************************************************************
-
-        // IDEALLY THIS SHOULD WORK, BUT FOR SOME REASON IT IS NOT FINDING THE 'product' TABLE AT:
-        // $this->db->dbprefix('product'):
-
-        // ->select($this->db->dbprefix('NEW_supply_order_items') . ".id as id, " . $this->db->dbprefix('products') . ".id as product_id, " . "quantity")
-        // ->join('products', 'products.id=NEW_supply_order_items.product_id', 'left')
-        // ->from("NEW_supply_order_items")
-        // // ->where('supply_order_id', $supply_order_id)
-
-        // ---------------------------------------------------------------------
-
-        // WORKS IF YOU CHANGE 'products' TABLE FOR THE 'sales' TABLE
-
-        // ->select($this->db->dbprefix('NEW_supply_order_items') . ".id as id, " . $this->db->dbprefix('sales') . ".id as product_id, " . "quantity")
-        // ->join('sales', 'sales.id=NEW_supply_order_items.product_id', 'left')
-        // ->from("NEW_supply_order_items")
-        // // ->where('supply_order_id', $supply_order_id)
-
-        // ---------------------------------------------------------------------
-
-        // MY SOLUTION IS TO PASS JUST THE 'product_id' AS SAVED IN THE TABLE
-        // THEN THERE IN THE TABLE REPLACE WITH PRODUCT NAME, DOING ANOTHER REQUEST
-        // THIS IS TO KEEP WITH THIS PATTERN, CAUSE IT MIGHT WORK IN OTHER TABLES
-
-        ->select($this->db->dbprefix('NEW_supply_order_items') . ".id as id, product_id, quantity")
-        ->from("NEW_supply_order_items")
-        ->where('supply_order_id', $supply_order_id)
-
-        // *********************************************************************
-
-
-        ->add_column(
-            "Actions",
-            "<div class=\"text-center\">
-                <a href='#' class='tip po' title='<b>"
-                  . $this->lang->line("delete_supplier")
-                  . "</b>' data-content=\"<p>"
-                  . lang('r_u_sure')
-                  . "</p><a class='btn btn-danger po-delete' href='"
-                  . admin_url('suppliers/deleteSupplyOrder/$1')
-                  . "'>" . lang('i_m_sure')
-                  . "</a> <button class='btn po-close'>"
-                  . lang('no')
-                  . "</button>\"  rel='popover'>
-                  <i class=\"fa fa-trash-o\"></i>
-                </a>
-            </div>",
-            "id"
-        );
-
-
-        // if ($supply_order_id == 63) {
-          echo $this->datatables->generate();
-        // }
-
-    }
-
-    function editSupplyOrder_view($id) {
-      echo "Edit Supply Order ID: " . $id;
-    }
-    function handleEditSupplyOrder_logic($id) {
-      echo "Edit Supply Order ID: " . $id;
+        echo json_encode($new_no);
     }
 
     function addSupplyOrder_view()
@@ -789,8 +573,6 @@ class Suppliers extends MY_Controller
       // }
 
     }
-
-    ////////////////////////////////////////////////////////////////////////////
 
     function handleAddSupplyOrder_logic()
     {
@@ -935,77 +717,171 @@ class Suppliers extends MY_Controller
       // ***********************************************************************
       // SUPPLY ORDER INCREMENT LOGIC
       // ***********************************************************************
-
-      // test insert
-
-      // echo $this->suppliers_model->addSupplyOrder($dataToInsert);
-
-      // add check to see if values are empty
-
-      // BEDORE WRITING TO THE DATABASE OR BEFORE SENDING THIS ARRAY TO THE
-      // DATABASE, MAKE SURE ALL ARRAY ELEMENTS CONTAIN VALUES AND THAT THEY ARE
-      // NOT EMPTY, OTHERWSIE THE MODEL WONT INSERT THE NEW DATA TO THE DB TABLE
-      // OK this wasnt the case, i had msgToSupplier instead of msg_to_supplier
-
-      // DOCUMENTATION
-      //  $dataToInsert = array(
-      //      'supplier_id' => $this->input->post('supplier'),
-      //  );
       //
-      // Look at:
-      // 'supplier_id' => $this->input->post('supplier'),
+      // // test insert
       //
-      // 'supplier_id' is the database table field name
-      // 'supplier' is the input name at $this->input->post('supplier')
+      // // echo $this->suppliers_model->addSupplyOrder($dataToInsert);
+      //
+      // // add check to see if values are empty
+      //
+      // // BEDORE WRITING TO THE DATABASE OR BEFORE SENDING THIS ARRAY TO THE
+      // // DATABASE, MAKE SURE ALL ARRAY ELEMENTS CONTAIN VALUES AND THAT THEY ARE
+      // // NOT EMPTY, OTHERWSIE THE MODEL WONT INSERT THE NEW DATA TO THE DB TABLE
+      // // OK this wasnt the case, i had msgToSupplier instead of msg_to_supplier
+      //
+      // // DOCUMENTATION
+      // //  $dataToInsert = array(
+      // //      'supplier_id' => $this->input->post('supplier'),
+      // //  );
+      // //
+      // // Look at:
+      // // 'supplier_id' => $this->input->post('supplier'),
+      // //
+      // // 'supplier_id' is the database table field name
+      // // 'supplier' is the input name at $this->input->post('supplier')
+      //
+      // // INCREMENTING: SUPPLY ORDER NUMBER
+      // // get supply_orders-starter_number
+      // // get supply orders table row or records length
+      // // add ++
+      //
+      // $default_starter_no = 1;
+      // $count_total_rows = $this->db->count_all_results('NEW_supply_orders_count');
+      // $new_no = 1;
+      // $last_no = 0;
+      //
+      // // CHECK IF TABLE 'NEW_supply_orders_count' IS EMPTY OR HAS RESULTS
+      //
+      // if ($count_total_rows == 0) {
+      //
+      //     // IF EMPTY, INIT SUPPLY ORDER NUMBER AND CREATE RECORD
+      //
+      //     $countData = array(
+      //         'starter_no' => $default_starter_no,
+      //         'last_no' => $default_starter_no,
+      //     );
+      //     $this->db->insert('NEW_supply_orders_count', $countData);
+      //     $new_no = $default_starter_no;
+      //
+      //     // TEST
+      //     // $this->session->set_flashdata('message', 'Result: ' . $count_total_rows);
+      //     // admin_redirect('suppliers/addSupplyOrder_view');
+      //
+      // } else {
+      //
+      //   // IF RECORD FOUND, GET LAST SUPPLY ORDER NUMBER SAVED AND UPDATE +1
+      //
+      //   $last_no = $this->db->get('NEW_supply_orders_count')->row()->last_no;
+      //   $new_no = $last_no + 1;
+      //   $dataForSuppyOrderCount = array(
+      //       'last_no' => $new_no,
+      //   );
+      //   $this->db->update('NEW_supply_orders_count', $dataForSuppyOrderCount, array('starter_no' => $default_starter_no));
+      //
+      //   // get last row...
+      //   // $last_no = $this->db->order_by('last_no',"desc")
+      //   //             ->limit(1)
+      //   //             ->get('last_no')
+      //   //             ->row();
+      //
+      //   // TEST
+      //   // $this->session->set_flashdata('message', 'Result: ' . $new_no);
+      //   // admin_redirect('suppliers/addSupplyOrder_view');
+      //
+      // }
 
-      // INCREMENTING: SUPPLY ORDER NUMBER
-      // get supply_orders-starter_number
-      // get supply orders table row or records length
-      // add ++
+      // IF LAST_NO FOUND ------------------------------------------------------
 
-      $default_starter_no = 1;
-      $count_total_rows = $this->db->count_all_results('NEW_supply_orders_count');
-      $new_no = 1;
-      $last_no = 0;
+      $report_no = $this->input->post('supply_order_no');
 
-      // CHECK IF TABLE 'NEW_supply_orders_count' IS EMPTY OR HAS RESULTS
+      $last_no = $this->db->get('NEW_supply_orders_count')->row()->last_no;
 
-      if ($count_total_rows == 0) {
+      if ($last_no == NULL || $report_no > $last_no) {
+          $this->db->update('NEW_supply_orders_count', array('last_no' => $report_no));
+      }
 
-          // IF EMPTY, INIT SUPPLY ORDER NUMBER AND CREATE RECORD
+      /* *****************************************************************
+        IMAGE UPLOAD
+      ***************************************************************** */
 
-          $supply_orders_count_data = array(
-              'starter_no' => $default_starter_no,
-              'last_no' => $default_starter_no,
-          );
-          $this->db->insert('NEW_supply_orders_count', $supply_orders_count_data);
-          $new_no = $default_starter_no;
+      // #1 library upload must be included here in the controller
+      // #2 #3 form input name at view inout must be the same here
+      // #4 make sure to pass this $photo variable to the model when saving like:
+      // 'image' => $photo,
 
-          // TEST
-          // $this->session->set_flashdata('message', 'Result: ' . $count_total_rows);
-          // admin_redirect('suppliers/addSupplyOrder_view');
+      $this->load->library('upload'); // #1
 
-      } else {
+      if ($_FILES['supply_order_image']['size'] > 0) { // #2
+          $config['upload_path'] = $this->upload_path;
+          $config['allowed_types'] = $this->image_types;
+          $config['max_size'] = $this->allowed_file_size;
+          $config['max_width'] = $this->Settings->iwidth;
+          $config['max_height'] = $this->Settings->iheight;
+          $config['overwrite'] = FALSE;
+          $config['max_filename'] = 25;
+          $config['encrypt_name'] = TRUE;
+          $this->upload->initialize($config);
+          if (!$this->upload->do_upload('supply_order_image')) { // #3
+              $error = $this->upload->display_errors();
+              $this->session->set_flashdata('error', $error);
+              admin_redirect('suppliers/addSupplyOrder_view');
+          }
+          $photo = $this->upload->file_name; // #4
+          $data['image'] = $photo;
+          $this->load->library('image_lib');
+          $config['image_library'] = 'gd2';
+          $config['source_image'] = $this->upload_path . $photo;
+          $config['new_image'] = $this->thumbs_path . $photo;
+          $config['maintain_ratio'] = TRUE;
+          $config['width'] = $this->Settings->twidth;
+          $config['height'] = $this->Settings->theight;
+          $this->image_lib->clear();
+          $this->image_lib->initialize($config);
+          if (!$this->image_lib->resize()) {
+              echo $this->image_lib->display_errors();
+          }
+          if ($this->Settings->watermark) {
+              $this->image_lib->clear();
+              $wm['source_image'] = $this->upload_path . $photo;
+              $wm['wm_text'] = 'Copyright ' . date('Y') . ' - ' . $this->Settings->site_name;
+              $wm['wm_type'] = 'text';
+              $wm['wm_font_path'] = 'system/fonts/texb.ttf';
+              $wm['quality'] = '100';
+              $wm['wm_font_size'] = '16';
+              $wm['wm_font_color'] = '999999';
+              $wm['wm_shadow_color'] = 'CCCCCC';
+              $wm['wm_vrt_alignment'] = 'top';
+              $wm['wm_hor_alignment'] = 'left';
+              $wm['wm_padding'] = '10';
+              $this->image_lib->initialize($wm);
+              $this->image_lib->watermark();
+          }
+          $this->image_lib->clear();
+          $config = NULL;
+      }
 
-        // IF RECORD FOUND, GET LAST SUPPLY ORDER NUMBER SAVED AND UPDATE +1
+      // ATTACHMENT UPLOAD -----------------------------------------------------
 
-        $last_no = $this->db->get('NEW_supply_orders_count')->row()->last_no;
-        $new_no = $last_no + 1;
-        $dataForSuppyOrderCount = array(
-            'last_no' => $new_no,
-        );
-        $this->db->update('NEW_supply_orders_count', $dataForSuppyOrderCount, array('starter_no' => $default_starter_no));
+      // #1 library upload must be included here in the controller
+      // #2 #3 form input name at view inout must be the same here
+      // #4 make sure to pass this $doc variable to the model when saving like:
+      // 'attachment' => $doc,
 
-        // get last row...
-        // $last_no = $this->db->order_by('last_no',"desc")
-        //             ->limit(1)
-        //             ->get('last_no')
-        //             ->row();
-
-        // TEST
-        // $this->session->set_flashdata('message', 'Result: ' . $new_no);
-        // admin_redirect('suppliers/addSupplyOrder_view');
-
+      if ($_FILES['supply_order_document']['size'] > 0) { // #3
+          $this->load->library('upload'); // #1
+          $config['upload_path'] = $this->digital_upload_path;
+          $config['allowed_types'] = $this->digital_file_types;
+          $config['max_size'] = $this->allowed_file_size;
+          $config['overwrite'] = false;
+          $config['encrypt_name'] = true;
+          $this->upload->initialize($config);
+          if (!$this->upload->do_upload('supply_order_document')) { // #4
+              $error = $this->upload->display_errors();
+              $this->session->set_flashdata('error', $error);
+              redirect($_SERVER["HTTP_REFERER"]);
+          }
+          $doc = $this->upload->file_name; // #4
+          $data['attachment'] = $doc;
       }
 
       // ***********************************************************************
@@ -1013,10 +889,12 @@ class Suppliers extends MY_Controller
       // ***********************************************************************
 
       $dataToInsert = array(
+          'supply_order_number' => $report_no,
           'supplier_id' => $this->input->post('supplier'),
-          'supply_order_number' => $new_no,
           'message_to_supplier' => $this->input->post('msgToSupplier'),
           'message_to_receiving' => $this->input->post('msgToReceiving'),
+          'image' => $photo,
+          'attachment' => $doc,
           'created_at' => date('Y-m-d H:i:s'),
       );
 
@@ -1235,5 +1113,259 @@ class Suppliers extends MY_Controller
 
     }
 
+    function getSupplyOrders_view()
+    {
+      $this->page_construct('suppliers/list_of_supply_orders', $meta, $this->data);
+    }
+
+    function handleGetSupplyOrders_logic()
+    {
+        $this->sma->checkPermissions('index');
+
+        // Using the datatables library instead of using models
+        $this->load->library('datatables');
+
+        // Query
+        $this->datatables
+
+          // DOCUMENTATION *****************************************************
+          // USE THIS TO SELECT ALL FIELDS FROM ONE TABLE
+
+          // SIMPLE, NO JOINS, NO NOTHING, NO CONCATENATION
+          //   ->select("id, supply_order_number, supplier_id, created_at")
+          //   ->from("NEW_supply_orders")
+          //   // ->where('group_name', 'supplier')
+
+          // DOCUMENTATION *****************************************************
+          // USE THIS TO UNDERSTAND THE CONCAT PART
+          // SYNTAX IS CORRECT BUT WONT WORK CAUSE 'select HAS TO BE IN 1 SINGLE LINE
+
+          // ->select(
+          //     $this->db->dbprefix('NEW_supply_orders')  . ".id as id,
+          //     supply_order_number,
+          //     CONCAT(
+          //         " . $this->db->dbprefix('companies') . ".company,
+          //         ' - ',
+          //         " . $this->db->dbprefix('companies') . ".name)
+          //         as supplier_id,
+          //     created_at",
+          //     // true
+          // )
+          // ->join('companies', 'companies.id=NEW_supply_orders.supplier_id', 'left')
+          // ->from("NEW_supply_orders")
+          //
+          // ANOTHER LOOK:
+          //
+          // CONCAT(
+          //       " . $this->db->dbprefix('companies') . ".company,
+          //       ' - ',
+          //       " . $this->db->dbprefix('companies') . ".name
+          // ) as supplier_id,
+
+          // DOCUMENTATION *****************************************************
+          // IF USE THE CODE ABOVE, THERE WILL BE AN ERROR ON THE DATATABLE LOAD
+          // USE BELOW WHERE THE 'select' TAKES ONE LINE
+
+          // ->select($this->db->dbprefix('NEW_supply_orders')  . ".id as id, supply_order_number, CONCAT(" . $this->db->dbprefix('companies') . ".company, ' - ', " . $this->db->dbprefix('companies') . ".name) as supplier_id, created_at", false)
+          // ->join('companies', 'companies.id=NEW_supply_orders.supplier_id', 'left')
+          // ->from("NEW_supply_orders")
+
+          // DOCUMENTATION *****************************************************
+          // USE CODE BELOW WHERE THE 'select' TAKES ONE LINE AND WE DONT CONCATENATE VALUES
+          // ->select($this->db->dbprefix('NEW_supply_orders') . ".id as id, supply_order_number, " . $this->db->dbprefix('companies') . ".company as supplier_id, " . "created_at")
+          ->select($this->db->dbprefix('NEW_supply_orders') . ".id as id, created_at, supply_order_number, " . $this->db->dbprefix('companies') . ".company as supplier_id")
+          ->join('companies', 'companies.id=NEW_supply_orders.supplier_id', 'left')
+          ->from("NEW_supply_orders")
+
+            /*
+            ->add_column(
+              "Actions","<div class=\"text-center\"><a class=\"tip\" title='" . $this->lang->line("list_products") . "' href='" . admin_url('products?supplier=$1') . "'><i class=\"fa fa-list\"></i></a> <a class=\"tip\" title='" . $this->lang->line("list_users") . "' href='" . admin_url('suppliers/users/$1') . "' data-toggle='modal' data-target='#myModal'><i class=\"fa fa-users\"></i></a> <a class=\"tip\" title='" . $this->lang->line("add_user") . "' href='" . admin_url('suppliers/add_user/$1') . "' data-toggle='modal' data-target='#myModal'><i class=\"fa fa-plus-circle\"></i></a> <a class=\"tip\" title='" . $this->lang->line("edit_supplier") . "' href='" . admin_url('suppliers/edit/$1') . "' data-toggle='modal' data-target='#myModal'><i class=\"fa fa-edit\"></i></a> <a href='#' class='tip po' title='<b>" . $this->lang->line("delete_supplier") . "</b>' data-content=\"<p>" . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('suppliers/delete/$1') . "'>" . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'><i class=\"fa fa-trash-o\"></i></a></div>", "id");
+            */
+
+            // ->add_column(
+            //     "Actions",
+            //     "<div class=\"text-center\">
+            //
+            //         <a class=\"tip\" title='" . $this->lang->line("list_products") . "' href='" . admin_url('products?supplier=$1') . "'>
+            //           <i class=\"fa fa-list\"></i>
+            //         </a>
+            //         <a class=\"tip\" title='" . $this->lang->line("list_users") . "' href='" . admin_url('suppliers/users/$1') . "' data-toggle='modal' data-target='#myModal'>
+            //           <i class=\"fa fa-users\"></i>
+            //         </a>
+            //         <a class=\"tip\" title='" . $this->lang->line("add_user") . "' href='" . admin_url('suppliers/add_user/$1') . "' data-toggle='modal' data-target='#myModal'>
+            //           <i class=\"fa fa-plus-circle\"></i>
+            //         </a>
+            //         <a class=\"tip\" title='" . $this->lang->line("edit_supplier") . "' href='" . admin_url('suppliers/edit/$1') . "' data-toggle='modal' data-target='#myModal'>
+            //           <i class=\"fa fa-edit\"></i>
+            //         </a>
+            //
+            //         <a href='#' class='tip po' title='<b>" . $this->lang->line("delete_supplier") . "</b>' data-content=\"<p>" . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('suppliers/deleteSupplyOrder/$1') . "'>" . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'>
+            //           <i class=\"fa fa-trash-o\"></i>
+            //         </a>
+            //
+            //     </div>",
+            //     "id"
+            //   );
+
+            ->add_column(
+                "Actions",
+                "<div class=\"text-center\">
+
+                    <a href='#' class='tip po' title='<b>"
+                      // . $this->lang->line("delete_supplier")
+                      . "Delete Supply Order"
+                      . "</b>' data-content=\"<p>"
+                      . lang('r_u_sure')
+                      . "</p><a class='btn btn-danger po-delete' href='"
+                      . admin_url('suppliers/deleteSupplyOrder/$1')
+                      . "'>" . lang('i_m_sure')
+                      . "</a> <button class='btn po-close'>"
+                      . lang('no')
+                      . "</button>\"  rel='popover'>
+                      <i class=\"fa fa-trash-o\"></i>
+                    </a>
+
+                </div>",
+                "id"
+            );
+
+              // EDIT ICON ACTION
+              // <a
+              //   class=\"tip\" title='" . $this->lang->line("edit_supplier") . "'
+              //   href='" . admin_url('suppliers/edit/$1') . "'
+              //   data-toggle='modal'
+              //   data-target='#myModal'>
+              //       <i class=\"fa fa-edit\"></i>
+              // </a>
+
+              // MORE ICON ACTIONS EXAMPLES
+              // ->add_column(
+              //   "Actions",
+              //   "<div class=\"text-center\">
+              //       <a class=\"tip\" title='"
+              //           . $this->lang->line("list_products")
+              //           . "' href='" . admin_url('products?supplier=$1')
+              //           . "'><i class=\"fa fa-list\"></i></a>
+              //           <a class=\"tip\" title='" . $this->lang->line("list_users") . "' href='" . admin_url('suppliers/users/$1') . "' data-toggle='modal' data-target='#myModal'>
+              //               <i class=\"fa fa-users\"></i>
+              //           </a>
+              //           <a class=\"tip\" title='" . $this->lang->line("add_user") . "' href='" . admin_url('suppliers/add_user/$1') . "' data-toggle='modal' data-target='#myModal'><i class=\"fa fa-plus-circle\"></i></a> <a class=\"tip\" title='" . $this->lang->line("edit_supplier") . "' href='" . admin_url('suppliers/edit/$1') . "' data-toggle='modal' data-target='#myModal'><i class=\"fa fa-edit\"></i></a> <a href='#' class='tip po' title='<b>" . $this->lang->line("delete_supplier") . "</b>' data-content=\"<p>" . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('suppliers/delete/$1') . "'>" . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'><i class=\"fa fa-trash-o\"></i></a></div>", "id");
+
+        //->unset_column('id');
+        echo $this->datatables->generate();
+    }
+
+      function viewSupplyOrder_view($id) {
+
+        echo "Preview Supply Order ID: " . $id;
+
+        // $this->data['products'] = $this->site->getAllProducts();
+
+
+        // $this->data === select * from 'NEW_supply_orders' where id === $id
+
+        // echo $this->data;
+
+        // echo '<pre>'; print_r($this->data); echo '</pre>';
+
+        // GET ALL FIELDS ABOUT THIS RECORD ID
+        // - PASS THEM AS $this->data
+        // $supply_order = $this->db->get_where("NEW_supply_orders", array('id' => $id));
+        $supply_order = $this->suppliers_model->getSupplyOrderByID($id);
+        // echo '<pre>'; print_r($supply_order); echo '</pre>';
+
+        $supplier_company_data = $this->companies_model->getCompanyByID($supply_order->supplier_id);
+        $supplier_company = $supplier_company_data->company;
+        $supplier_company_salesperson = $supplier_company_data->name;
+
+        $this->data['supply_order'] = $supply_order;
+        $this->data['supply_order_id'] = $id;
+        $this->data['supply_order_number'] = $supply_order->supply_order_number;
+        $this->data['created_at'] = $supply_order->created_at;
+        $this->data['supplier_id'] = $supply_order->supplier_id;
+        $this->data['supplier_company'] = $supplier_company;
+        $this->data['message_to_supplier'] = $supply_order->message_to_supplier;
+        $this->data['message_to_receiver'] = $supply_order->message_to_receiver;
+        $this->data['image'] = $supply_order->image;
+        $this->data['attachment'] = $supply_order->attachment;
+
+        $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('suppliers/getSupplyOrders_view'), 'page' => "Supply Orders"), array('link' => '#', 'page' => "Supply Order " . $supply_order->supply_order_number));
+        $meta = array('page_title' => "Supply Order " . $supply_order->supply_order_number, 'bc' => $bc);
+
+        $this->page_construct('suppliers/view_supply_order', $meta, $this->data);
+      }
+
+      function handleGetSupplyOrderItems_logic($supply_order_id = null) {
+
+        $this->sma->checkPermissions('index');
+        $this->load->library('datatables');
+        // Query
+        $this->datatables
+
+        // *********************************************************************
+
+        // IDEALLY THIS SHOULD WORK, BUT FOR SOME REASON IT IS NOT FINDING THE 'product' TABLE AT:
+        // $this->db->dbprefix('product'):
+
+        // ->select($this->db->dbprefix('NEW_supply_order_items') . ".id as id, " . $this->db->dbprefix('products') . ".id as product_id, " . "quantity")
+        // ->join('products', 'products.id=NEW_supply_order_items.product_id', 'left')
+        // ->from("NEW_supply_order_items")
+        // // ->where('supply_order_id', $supply_order_id)
+
+        // ---------------------------------------------------------------------
+
+        // WORKS IF YOU CHANGE 'products' TABLE FOR THE 'sales' TABLE
+
+        // ->select($this->db->dbprefix('NEW_supply_order_items') . ".id as id, " . $this->db->dbprefix('sales') . ".id as product_id, " . "quantity")
+        // ->join('sales', 'sales.id=NEW_supply_order_items.product_id', 'left')
+        // ->from("NEW_supply_order_items")
+        // // ->where('supply_order_id', $supply_order_id)
+
+        // ---------------------------------------------------------------------
+
+        // MY SOLUTION IS TO PASS JUST THE 'product_id' AS SAVED IN THE TABLE
+        // THEN THERE IN THE TABLE REPLACE WITH PRODUCT NAME, DOING ANOTHER REQUEST
+        // THIS IS TO KEEP WITH THIS PATTERN, CAUSE IT MIGHT WORK IN OTHER TABLES
+
+        ->select($this->db->dbprefix('NEW_supply_order_items') . ".id as id, product_id, quantity")
+        ->from("NEW_supply_order_items")
+        ->where('supply_order_id', $supply_order_id)
+
+        // *********************************************************************
+
+
+        ->add_column(
+            "Actions",
+            "<div class=\"text-center\">
+                <a href='#' class='tip po' title='<b>"
+                  . $this->lang->line("delete_supplier")
+                  . "</b>' data-content=\"<p>"
+                  . lang('r_u_sure')
+                  . "</p><a class='btn btn-danger po-delete' href='"
+                  . admin_url('suppliers/deleteSupplyOrder/$1')
+                  . "'>" . lang('i_m_sure')
+                  . "</a> <button class='btn po-close'>"
+                  . lang('no')
+                  . "</button>\"  rel='popover'>
+                  <i class=\"fa fa-trash-o\"></i>
+                </a>
+            </div>",
+            "id"
+        );
+
+
+        // if ($supply_order_id == 63) {
+          echo $this->datatables->generate();
+        // }
+
+    }
+
+    function editSupplyOrder_view($id) {
+      echo "Edit Supply Order ID: " . $id;
+    }
+
+    function handleEditSupplyOrder_logic($id) {
+      echo "Edit Supply Order ID: " . $id;
+    }
+
 }
-//

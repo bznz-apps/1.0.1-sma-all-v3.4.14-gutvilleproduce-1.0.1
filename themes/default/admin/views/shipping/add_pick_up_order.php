@@ -1,5 +1,36 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        // Start inputs with empty values here
+        // $('#').val("");
+
+        // Populate text input with a single value
+        $.ajax({
+            url : '<?= admin_url() ?>' + 'shipping/getNextPickUpOrderReportNo',
+            type : 'GET',
+            data : {},
+            dataType:'json',
+            success : function(data) {
+                let nextNo = parseInt(data);
+                $('#pick_up_order_form_input-pick_up_order_no').val(nextNo);
+            },
+            error : function(request, error)
+            {
+                // alert("Request: " + JSON.stringify(request));
+                alert("Error: " + JSON.stringify(error));
+            }
+        });
+
+        // ON EVERY FORM INPUT CHANGE, SAVE NEW VALUES TO localStorage
+
+        $(document).on('change', '#pick_up_order_form_input-pick_up_order_no', function(e) {
+        });
+
+    });
+</script>
+
 <script>
 
     // Default DataTables Code, Leave as is... Starts here --->
@@ -149,6 +180,22 @@
                   <?php /*
                   </div>
                   */ ?>
+
+                  <!-- ***************************************************
+                  *  REPORT NO
+                  **************************************************** -->
+
+                  <div class="col-md-4">
+                  <div class="form-group all">
+                      <div class="form-group">
+                          <label> <?= /* lang("reference_no", "slref"); */ "Pick Up Order No *" ?> </label>
+                          <?php echo form_input('pick_up_order_no', (isset($_POST['pick_up_order_no']) ? $_POST['pick_up_order_no'] : ""), 'class="form-control input-tip" id="pick_up_order_form_input-pick_up_order_no"'); ?>
+                      </div>
+                  </div>
+                  </div>
+
+                  <div class="row"></div>
+                  <hr>
 
                     <!-- *******************************************************
                       SELECT SALE
@@ -407,12 +454,11 @@
 
                     <!-- TABLE CONTENT - ITEMS LIST -->
 
-                    <label>Sale Items</label>
-
                     <div class="box-content">
                         <div class="row">
-                            <div class="col-lg-12">
+                            <div class="col-md-12">
                                 <?php /* <p class="introtext"><?= lang('list_results'); ?></p> */ ?>
+                                <label>Sale Items</label>
 
                                 <div class="table-responsive">
                                     <table id="ViewSaleItemsInPickUpTable" class="table table-bordered table-condensed table-hover table-striped">
@@ -467,18 +513,21 @@
                         </div>
                     </div>
 
-                    <br>
+                    <!-- <br> -->
                     <div class="row"></div>
                     <hr>
 
-                    <label>Add Pick Up Order Items</label>
                     <br>
-                    <div class="row"></div>
+
+                    <!-- <label>Add Pick Up Order Items</label>
+                    <br>
+                    <div class="row"></div> -->
 
                     <!-- *******************************************************
                       + BUTTON - ADD PICK UP ORDER ITEM
                     ******************************************************** -->
 
+                    <div class="col-md-4">
                     <div class="form-group all">
                         <div class="input-group wide-tip">
                             <div class="input-group-addon" style="padding-left: 10px; padding-right: 10px;">
@@ -497,7 +546,7 @@
                             <?php } ?>
                         </div>
                     </div>
-                    <div class="clearfix"></div>
+                    </div>
 
                     <br>
 
@@ -561,21 +610,22 @@
                         </div>
                     </div>
 
-                    <br>
-
-                    <br>
                     <div class="row"></div>
                     <hr>
+
+                    <br>
 
                     <!-- *******************************************************
                       BUTTON - FORM SUBMIT
                     ******************************************************** -->
 
+                    <div class="col-md-12">
                     <div class="form-group">
                         <!-- SEND PICK UP ORDER - BUTTON -->
                         <?php /* echo form_submit('add_product', $this->lang->line("add_product"), 'class="btn btn-primary"'); */ ?>
                         <?php echo form_submit('add_product', "Reset", 'class="btn btn-danger" id="pick_up_order_items-reset_button"'); ?>
-                        <?php echo form_submit('add_product', "Save Pick Up Order", 'class="btn btn-primary"'); ?>
+                        <?php echo form_submit('add_product', "Add Pick Up Order", 'class="btn btn-primary"'); ?>
+                    </div>
                     </div>
 
                 </div>

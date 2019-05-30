@@ -70,6 +70,7 @@
                       SELECT WAREHOUSE
                     ******************************************************** -->
 
+                    <div class="col-md-4">
                     <div class="form-group all">
                         <?php /* <label for="mcode" class="col-sm-4 control-label"><?= lang('product_code') ?> *</label> */ ?>
 
@@ -88,47 +89,24 @@
                           </div>
 
                     </div>
-
-                    <!-- ***************************************************
-                    *  COLUMN
-                    **************************************************** -->
-
-                    <div class="form-group">
-                        <label> <?= /* lang("reference_no", "slref"); */ "Column *" ?> </label>
-                        <?php echo form_input('rack_column', (isset($_POST['rack_column']) ? $_POST['rack_column'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
-                    </div>
-
-                    <!-- ***************************************************
-                    *  ROW
-                    **************************************************** -->
-
-                    <div class="form-group">
-                        <label> <?= /* lang("reference_no", "slref"); */ "Row *" ?> </label>
-                        <?php echo form_input('rack_row', (isset($_POST['rack_row']) ? $_POST['rack_row'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
-                    </div>
-
-                    <!-- ***************************************************
-                    *  Z-INDEX
-                    **************************************************** -->
-
-                    <div class="form-group">
-                        <label> <?= /* lang("reference_no", "slref"); */ "Z Index *" ?> </label>
-                        <?php echo form_input('rack_z_index', (isset($_POST['rack_z_index']) ? $_POST['rack_z_index'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
                     </div>
 
                     <!-- ***************************************************
                     *  FLOOR LEVEL
                     **************************************************** -->
 
+                    <div class="col-md-4">
                     <div class="form-group">
                         <label> <?= /* lang("reference_no", "slref"); */ "Floor Level *" ?> </label>
                         <?php echo form_input('rack_floor_level', (isset($_POST['rack_floor_level']) ? $_POST['rack_floor_level'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                    </div>
                     </div>
 
                     <!-- ***************************************************
                     *  RACK USAGE
                     **************************************************** -->
 
+                    <div class="col-md-4">
                     <div class="form-group all">
                         <div class="form-group all">
                             <?php /* <?= lang("product_type", "type") ?> */ ?>
@@ -149,21 +127,62 @@
                             ?>
                         </div>
                     </div>
+                    </div>
 
+                    <br>
 
+                    <!-- ***************************************************
+                    *  COLUMN
+                    **************************************************** -->
+
+                    <div class="col-md-4">
+                    <div class="form-group">
+                        <label> <?= /* lang("reference_no", "slref"); */ "Column *" ?> </label>
+                        <?php echo form_input('rack_column', (isset($_POST['rack_column']) ? $_POST['rack_column'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                    </div>
+                    </div>
+
+                    <!-- ***************************************************
+                    *  ROW
+                    **************************************************** -->
+
+                    <div class="col-md-4">
+                    <div class="form-group">
+                        <label> <?= /* lang("reference_no", "slref"); */ "Row *" ?> </label>
+                        <?php echo form_input('rack_row', (isset($_POST['rack_row']) ? $_POST['rack_row'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                    </div>
+                    </div>
+
+                    <!-- ***************************************************
+                    *  Z-INDEX
+                    **************************************************** -->
+
+                    <div class="col-md-4">
+                    <div class="form-group">
+                        <label> <?= /* lang("reference_no", "slref"); */ "Z Index *" ?> </label>
+                        <?php echo form_input('rack_z_index', (isset($_POST['rack_z_index']) ? $_POST['rack_z_index'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
+                    </div>
+                    </div>
+
+                    <br>
 
                     <!-- *******************************************************
                       RACK COMMENTS
                     ******************************************************** -->
 
+                    <div class="col-md-12">
                     <div class="form-group all">
                         <?php /* <?= lang("product_details", "product_details") ?> */ ?>
                         <label><?= "Add Comment" ?></label>
                         <br>
-                        <?= "\n(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <?= "\n(Optional) This field is not required." ?>
                         <?php /* <?= form_textarea('product_details', (isset($_POST['product_details']) ? $_POST['product_details'] : ($product ? $product->product_details : '')), 'class="form-control" id="details"'); ?> */ ?>
                         <?= form_textarea('rack_comments', (isset($_POST['rack_comments']) ? $_POST['rack_comments'] : ($product ? $product->msgToSupplier : '')), 'class="form-control" id="msgToSupplier"'); ?>
                     </div>
+                    </div>
+
+                    <div class="row"></div>
+                    <hr>
 
                     <br>
 
@@ -171,11 +190,13 @@
                       BUTTON - FORM SUBMIT
                     ******************************************************** -->
 
+                    <div class="col-md-12">
                     <div class="form-group">
                         <!-- SEND SUPPLY ORDER - BUTTON -->
                         <?php /* echo form_submit('add_product', $this->lang->line("add_product"), 'class="btn btn-primary"'); */ ?>
                         <?php echo form_submit('add_product', "Reset", 'class="btn btn-danger" id="rack_items-reset_button"'); ?>
                         <?php echo form_submit('add_product', "Add Rack", 'class="btn btn-primary"'); ?>
+                    </div>
                     </div>
 
                 </div>

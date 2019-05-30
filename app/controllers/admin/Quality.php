@@ -50,6 +50,45 @@ class Quality extends MY_Controller
   //
   // *************************************************************************
 
+
+  // ---------------------------------------------------------------------------
+  // INSPECTION - GENERATE NEXT REPORT NO
+  // ---------------------------------------------------------------------------
+
+  function getNextReportNo()
+  {
+      // INCREMENTING REPORT NUMBER
+
+      $default_starter_no = 1;
+      $count_total_rows = $this->db->count_all_results('NEW_quality_control_reports_count');
+      $new_no = 1;
+      $last_no = 0;
+
+      // CHECK IF TABLE 'NEW_quality_control_reports_count' IS EMPTY OR HAS RESULTS
+
+      if ($count_total_rows == 0) {
+
+          // IF EMPTY, INIT REPORT NUMBER AND CREATE RECORD
+
+          $countData = array(
+              'starter_no' => $default_starter_no,
+              'last_no' => $default_starter_no,
+          );
+          $this->db->insert('NEW_quality_control_reports_count', $countData);
+          $new_no = $default_starter_no;
+
+      } else {
+
+        // IF RECORD FOUND, GET LAST REPORT NUMBER SAVED AND UPDATE +1
+
+        $last_no = $this->db->get('NEW_quality_control_reports_count')->row()->last_no;
+        $new_no = $last_no + 1;
+
+      }
+
+      echo json_encode($new_no);
+  }
+
   // ---------------------------------------------------------------------------
   // QUALITY - ADD
   // ---------------------------------------------------------------------------
@@ -81,31 +120,125 @@ class Quality extends MY_Controller
           admin_redirect('quality/addInspection_view');
       }
 
-      // AUTOINCREMENT
+      // // AUTOINCREMENT
+      //
+      // $default_starter_no = 1;
+      // $count_total_rows = $this->db->count_all_results('NEW_quality_control_reports_count');
+      // $new_no = 1;
+      // $last_no = 0;
+      //
+      // if ($count_total_rows == 0) {
+      //
+      //     $countData = array(
+      //         'starter_no' => $default_starter_no,
+      //         'last_no' => $default_starter_no,
+      //     );
+      //     $this->db->insert('NEW_quality_control_reports_count', $countData);
+      //     $new_no = $default_starter_no;
+      //
+      // } else {
+      //
+      //   $last_no = $this->db->get('NEW_quality_control_reports_count')->row()->last_no;
+      //   $new_no = $last_no + 1;
+      //   $dataForCountNo = array(
+      //       'last_no' => $new_no,
+      //   );
+      //   $this->db->update('NEW_quality_control_reports_count', $dataForCountNo, array('starter_no' => $default_starter_no));
+      //
+      // }
 
-      $default_starter_no = 1;
-      $count_total_rows = $this->db->count_all_results('NEW_quality_control_reports_count');
-      $new_no = 1;
-      $last_no = 0;
+      // IF LAST_NO FOUND ------------------------------------------------------
 
-      if ($count_total_rows == 0) {
+      $report_no = $this->input->post('inspection_report_no');
 
-          $count_data = array(
-              'starter_no' => $default_starter_no,
-              'last_no' => $default_starter_no,
-          );
-          $this->db->insert('NEW_quality_control_reports_count', $count_data);
-          $new_no = $default_starter_no;
+      $last_no = $this->db->get('NEW_quality_control_reports_count')->row()->last_no;
 
-      } else {
+      if ($last_no == NULL || $report_no > $last_no) {
+          $this->db->update('NEW_quality_control_reports_count', array('last_no' => $report_no));
+      }
 
-        $last_no = $this->db->get('NEW_quality_control_reports_count')->row()->last_no;
-        $new_no = $last_no + 1;
-        $dataForCountNo = array(
-            'last_no' => $new_no,
-        );
-        $this->db->update('NEW_quality_control_reports_count', $dataForCountNo, array('starter_no' => $default_starter_no));
+      /* *****************************************************************
+        IMAGE UPLOAD
+      ***************************************************************** */
 
+      // #1 library upload must be included here in the controller
+      // #2 #3 form input name at view inout must be the same here
+      // #4 make sure to pass this $photo variable to the model when saving like:
+      // 'image' => $photo,
+
+      $this->load->library('upload'); // #1
+
+      if ($_FILES['inspection_image']['size'] > 0) { // #2
+          $config['upload_path'] = $this->upload_path;
+          $config['allowed_types'] = $this->image_types;
+          $config['max_size'] = $this->allowed_file_size;
+          $config['max_width'] = $this->Settings->iwidth;
+          $config['max_height'] = $this->Settings->iheight;
+          $config['overwrite'] = FALSE;
+          $config['max_filename'] = 25;
+          $config['encrypt_name'] = TRUE;
+          $this->upload->initialize($config);
+          if (!$this->upload->do_upload('inspection_image')) { // #3
+              $error = $this->upload->display_errors();
+              $this->session->set_flashdata('error', $error);
+              admin_redirect('quality/addInspection_view');
+          }
+          $photo = $this->upload->file_name; // #4
+          $data['image'] = $photo;
+          $this->load->library('image_lib');
+          $config['image_library'] = 'gd2';
+          $config['source_image'] = $this->upload_path . $photo;
+          $config['new_image'] = $this->thumbs_path . $photo;
+          $config['maintain_ratio'] = TRUE;
+          $config['width'] = $this->Settings->twidth;
+          $config['height'] = $this->Settings->theight;
+          $this->image_lib->clear();
+          $this->image_lib->initialize($config);
+          if (!$this->image_lib->resize()) {
+              echo $this->image_lib->display_errors();
+          }
+          if ($this->Settings->watermark) {
+              $this->image_lib->clear();
+              $wm['source_image'] = $this->upload_path . $photo;
+              $wm['wm_text'] = 'Copyright ' . date('Y') . ' - ' . $this->Settings->site_name;
+              $wm['wm_type'] = 'text';
+              $wm['wm_font_path'] = 'system/fonts/texb.ttf';
+              $wm['quality'] = '100';
+              $wm['wm_font_size'] = '16';
+              $wm['wm_font_color'] = '999999';
+              $wm['wm_shadow_color'] = 'CCCCCC';
+              $wm['wm_vrt_alignment'] = 'top';
+              $wm['wm_hor_alignment'] = 'left';
+              $wm['wm_padding'] = '10';
+              $this->image_lib->initialize($wm);
+              $this->image_lib->watermark();
+          }
+          $this->image_lib->clear();
+          $config = NULL;
+      }
+
+      // ATTACHMENT UPLOAD -----------------------------------------------------
+
+      // #1 library upload must be included here in the controller
+      // #2 #3 form input name at view inout must be the same here
+      // #4 make sure to pass this $doc variable to the model when saving like:
+      // 'attachment' => $doc,
+
+      if ($_FILES['inspection_attachment']['size'] > 0) { // #3
+          $this->load->library('upload'); // #1
+          $config['upload_path'] = $this->digital_upload_path;
+          $config['allowed_types'] = $this->digital_file_types;
+          $config['max_size'] = $this->allowed_file_size;
+          $config['overwrite'] = false;
+          $config['encrypt_name'] = true;
+          $this->upload->initialize($config);
+          if (!$this->upload->do_upload('inspection_attachment')) { // #4
+              $error = $this->upload->display_errors();
+              $this->session->set_flashdata('error', $error);
+              redirect($_SERVER["HTTP_REFERER"]);
+          }
+          $doc = $this->upload->file_name; // #4
+          $data['attachment'] = $doc;
       }
 
       // ***********************************************************************
@@ -113,7 +246,7 @@ class Quality extends MY_Controller
       // ***********************************************************************
 
       $dataToInsert = array(
-          'inspection_no' => $new_no,
+          'inspection_no' => $report_no,
           'created_at' => date('Y-m-d H:i:s'),
           'warehouse_id' => $this->input->post('warehouse_id'),
           'receiving_id' => $this->input->post('receiving_id'),
@@ -127,8 +260,8 @@ class Quality extends MY_Controller
           'product_origin' => $this->input->post('product_origin'),
           'additional_issues' => $this->input->post('additional_issues'),
           'comments' => $this->input->post('notes_comments'),
-          'image' => $this->input->post('inspection_image'),
-          'attachment' => $this->input->post('inspection_attachment'),
+          'image' => $photo,
+          'attachment' => $doc,
       );
 
       $quality_report_id = $this->quality_model->addQualityReport($dataToInsert);

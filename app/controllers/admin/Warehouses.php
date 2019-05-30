@@ -119,9 +119,14 @@ class Warehouses extends MY_Controller
         IMAGE UPLOAD
       ***************************************************************** */
 
-      $this->load->library('upload');
+      // #1 library upload must be included here in the controller
+      // #2 #3 form input name at view inout must be the same here
+      // #4 make sure to pass this $photo variable to the model when saving like:
+      // 'image' => $photo,
 
-      if ($_FILES['input_pallet_image']['size'] > 0) {
+      $this->load->library('upload'); // #1
+
+      if ($_FILES['input_pallet_image']['size'] > 0) { // #2
           $config['upload_path'] = $this->upload_path;
           $config['allowed_types'] = $this->image_types;
           $config['max_size'] = $this->allowed_file_size;
@@ -131,12 +136,12 @@ class Warehouses extends MY_Controller
           $config['max_filename'] = 25;
           $config['encrypt_name'] = TRUE;
           $this->upload->initialize($config);
-          if (!$this->upload->do_upload('input_pallet_image')) {
+          if (!$this->upload->do_upload('input_pallet_image')) { // #3
               $error = $this->upload->display_errors();
               $this->session->set_flashdata('error', $error);
               admin_redirect('warehouses/addPallet_view');
           }
-          $photo = $this->upload->file_name;
+          $photo = $this->upload->file_name; // #4
           $data['image'] = $photo;
           $this->load->library('image_lib');
           $config['image_library'] = 'gd2';

@@ -51,6 +51,40 @@ class Shipping extends MY_Controller
   //
   // *************************************************************************
 
+  function getNextPickUpOrderReportNo()
+  {
+      // INCREMENTING REPORT NUMBER
+
+      $default_starter_no = 1;
+      $count_total_rows = $this->db->count_all_results('NEW_pickup_orders_count');
+      $new_no = 1;
+      $last_no = 0;
+
+      // CHECK IF TABLE 'NEW_pickup_orders_count' IS EMPTY OR HAS RESULTS
+
+      if ($count_total_rows == 0) {
+
+          // IF EMPTY, INIT REPORT NUMBER AND CREATE RECORD
+
+          $countData = array(
+              'starter_no' => $default_starter_no,
+              'last_no' => $default_starter_no,
+          );
+          $this->db->insert('NEW_pickup_orders_count', $countData);
+          $new_no = $default_starter_no;
+
+      } else {
+
+        // IF RECORD FOUND, GET LAST REPORT NUMBER SAVED AND UPDATE +1
+
+        $last_no = $this->db->get('NEW_pickup_orders_count')->row()->last_no;
+        $new_no = $last_no + 1;
+
+      }
+
+      echo json_encode($new_no);
+  }
+
   // ---------------------------------------------------------------------------
   // PICK UP ORDERS - ADD
   // ---------------------------------------------------------------------------
@@ -76,31 +110,43 @@ class Shipping extends MY_Controller
           admin_redirect('shipping/addPickUpOrder_view');
       }
 
+      // -----------------------------------------------------------------------
+
       // AUTOINCREMENT
 
-      $default_starter_no = 1;
-      $count_total_rows = $this->db->count_all_results('NEW_pickup_orders_count');
-      $new_no = 1;
-      $last_no = 0;
+      // $default_starter_no = 1;
+      // $count_total_rows = $this->db->count_all_results('NEW_pickup_orders_count');
+      // $new_no = 1;
+      // $last_no = 0;
+      //
+      // if ($count_total_rows == 0) {
+      //
+      //     $count_data = array(
+      //         'starter_no' => $default_starter_no,
+      //         'last_no' => $default_starter_no,
+      //     );
+      //     $this->db->insert('NEW_pickup_orders_count', $count_data);
+      //     $new_no = $default_starter_no;
+      //
+      // } else {
+      //
+      //   $last_no = $this->db->get('NEW_pickup_orders_count')->row()->last_no;
+      //   $new_no = $last_no + 1;
+      //   $dataForCountNo = array(
+      //       'last_no' => $new_no,
+      //   );
+      //   $this->db->update('NEW_pickup_orders_count', $dataForCountNo, array('starter_no' => $default_starter_no));
+      //
+      // }
 
-      if ($count_total_rows == 0) {
+      // IF LAST_NO FOUND ------------------------------------------------------
 
-          $count_data = array(
-              'starter_no' => $default_starter_no,
-              'last_no' => $default_starter_no,
-          );
-          $this->db->insert('NEW_pickup_orders_count', $count_data);
-          $new_no = $default_starter_no;
+      $report_no = $this->input->post('pick_up_order_no');
 
-      } else {
+      $last_no = $this->db->get('NEW_pickup_orders_count')->row()->last_no;
 
-        $last_no = $this->db->get('NEW_pickup_orders_count')->row()->last_no;
-        $new_no = $last_no + 1;
-        $dataForCountNo = array(
-            'last_no' => $new_no,
-        );
-        $this->db->update('NEW_pickup_orders_count', $dataForCountNo, array('starter_no' => $default_starter_no));
-
+      if ($last_no == NULL || $report_no > $last_no) {
+          $this->db->update('NEW_pickup_orders_count', array('last_no' => $report_no));
       }
 
       // ***********************************************************************
@@ -108,7 +154,7 @@ class Shipping extends MY_Controller
       // ***********************************************************************
 
       $dataToInsert = array(
-          'pickup_order_no' => $new_no,
+          'pickup_order_no' => $report_no,
           'created_at' => date('Y-m-d H:i:s'),
           'sale_id' => $this->input->post('sale_id'),
           'sold_to' => $this->input->post('sold_to'),
@@ -310,6 +356,44 @@ class Shipping extends MY_Controller
   // *************************************************************************
 
   // ---------------------------------------------------------------------------
+  // BOL - GENERATE NEXT REPORT NO
+  // ---------------------------------------------------------------------------
+
+  function getNextBOLReportNo()
+  {
+      // INCREMENTING REPORT NUMBER
+
+      $default_starter_no = 1;
+      $count_total_rows = $this->db->count_all_results('NEW_bills_of_lading_count');
+      $new_no = 1;
+      $last_no = 0;
+
+      // CHECK IF TABLE 'NEW_bills_of_lading_count' IS EMPTY OR HAS RESULTS
+
+      if ($count_total_rows == 0) {
+
+          // IF EMPTY, INIT REPORT NUMBER AND CREATE RECORD
+
+          $countData = array(
+              'starter_no' => $default_starter_no,
+              'last_no' => $default_starter_no,
+          );
+          $this->db->insert('NEW_bills_of_lading_count', $countData);
+          $new_no = $default_starter_no;
+
+      } else {
+
+        // IF RECORD FOUND, GET LAST REPORT NUMBER SAVED AND UPDATE +1
+
+        $last_no = $this->db->get('NEW_bills_of_lading_count')->row()->last_no;
+        $new_no = $last_no + 1;
+
+      }
+
+      echo json_encode($new_no);
+  }
+
+  // ---------------------------------------------------------------------------
   // BILLS OF LADING - ADD
   // ---------------------------------------------------------------------------
 
@@ -382,29 +466,39 @@ class Shipping extends MY_Controller
       // AUTOINCREMENT
       // ***********************************************************************
 
-      $default_starter_no = 1;
-      $count_total_rows = $this->db->count_all_results('NEW_bills_of_lading_count');
-      $new_no = 1;
-      $last_no = 0;
+      // $default_starter_no = 1;
+      // $count_total_rows = $this->db->count_all_results('NEW_bills_of_lading_count');
+      // $new_no = 1;
+      // $last_no = 0;
+      //
+      // if ($count_total_rows == 0) {
+      //
+      //     $count_data = array(
+      //         'starter_no' => $default_starter_no,
+      //         'last_no' => $default_starter_no,
+      //     );
+      //     $this->db->insert('NEW_bills_of_lading_count', $count_data);
+      //     $new_no = $default_starter_no;
+      //
+      // } else {
+      //
+      //     $last_no = $this->db->get('NEW_bills_of_lading_count')->row()->last_no;
+      //     $new_no = $last_no + 1;
+      //     $dataForCountNo = array(
+      //         'last_no' => $new_no,
+      //     );
+      //     $this->db->update('NEW_bills_of_lading_count', $dataForCountNo, array('starter_no' => $default_starter_no));
+      //
+      // }
 
-      if ($count_total_rows == 0) {
+      // IF LAST_NO FOUND ------------------------------------------------------
 
-          $count_data = array(
-              'starter_no' => $default_starter_no,
-              'last_no' => $default_starter_no,
-          );
-          $this->db->insert('NEW_bills_of_lading_count', $count_data);
-          $new_no = $default_starter_no;
+      $report_no = $this->input->post('bill_of_lading_no');
 
-      } else {
+      $last_no = $this->db->get('NEW_bills_of_lading_count')->row()->last_no;
 
-          $last_no = $this->db->get('NEW_bills_of_lading_count')->row()->last_no;
-          $new_no = $last_no + 1;
-          $dataForCountNo = array(
-              'last_no' => $new_no,
-          );
-          $this->db->update('NEW_bills_of_lading_count', $dataForCountNo, array('starter_no' => $default_starter_no));
-
+      if ($last_no == NULL || $report_no > $last_no) {
+          $this->db->update('NEW_bills_of_lading_count', array('last_no' => $report_no));
       }
 
       // ***********************************************************************
@@ -417,8 +511,212 @@ class Shipping extends MY_Controller
       // Update Warehouse ID - table 'warehouses_products'
       //  - loop through each row, and if our product item id found there, udpate qty
 
+      /* *****************************************************************
+        IMAGE UPLOAD
+      ***************************************************************** */
+
+      // #1 library upload must be included here in the controller
+      // #2 #3 form input name at view inout must be the same here
+      // #4 make sure to pass this $photo variable to the model when saving like:
+      // 'image' => $photo,
+
+      $this->load->library('upload'); // #1
+
+      if ($_FILES['driver_signature_img']['size'] > 0) { // #2
+          $config['upload_path'] = $this->upload_path;
+          $config['allowed_types'] = $this->image_types;
+          $config['max_size'] = $this->allowed_file_size;
+          $config['max_width'] = $this->Settings->iwidth;
+          $config['max_height'] = $this->Settings->iheight;
+          $config['overwrite'] = FALSE;
+          $config['max_filename'] = 25;
+          $config['encrypt_name'] = TRUE;
+          $this->upload->initialize($config);
+          if (!$this->upload->do_upload('driver_signature_img')) { // #3
+              $error = $this->upload->display_errors();
+              $this->session->set_flashdata('error', $error);
+              admin_redirect('shipping/addBillOfLading_view');
+          }
+          $photoDriverSignature = $this->upload->file_name; // #4
+          $data['image'] = $photoDriverSignature;
+          $this->load->library('image_lib');
+          $config['image_library'] = 'gd2';
+          $config['source_image'] = $this->upload_path . $photoDriverSignature;
+          $config['new_image'] = $this->thumbs_path . $photoDriverSignature;
+          $config['maintain_ratio'] = TRUE;
+          $config['width'] = $this->Settings->twidth;
+          $config['height'] = $this->Settings->theight;
+          $this->image_lib->clear();
+          $this->image_lib->initialize($config);
+          if (!$this->image_lib->resize()) {
+              echo $this->image_lib->display_errors();
+          }
+          if ($this->Settings->watermark) {
+              $this->image_lib->clear();
+              $wm['source_image'] = $this->upload_path . $photoDriverSignature;
+              $wm['wm_text'] = 'Copyright ' . date('Y') . ' - ' . $this->Settings->site_name;
+              $wm['wm_type'] = 'text';
+              $wm['wm_font_path'] = 'system/fonts/texb.ttf';
+              $wm['quality'] = '100';
+              $wm['wm_font_size'] = '16';
+              $wm['wm_font_color'] = '999999';
+              $wm['wm_shadow_color'] = 'CCCCCC';
+              $wm['wm_vrt_alignment'] = 'top';
+              $wm['wm_hor_alignment'] = 'left';
+              $wm['wm_padding'] = '10';
+              $this->image_lib->initialize($wm);
+              $this->image_lib->watermark();
+          }
+          $this->image_lib->clear();
+          $config = NULL;
+      }
+
+      /* *****************************************************************
+        IMAGE UPLOAD
+      ***************************************************************** */
+
+      // #1 library upload must be included here in the controller
+      // #2 #3 form input name at view inout must be the same here
+      // #4 make sure to pass this $photo variable to the model when saving like:
+      // 'image' => $photo,
+
+      $this->load->library('upload'); // #1
+
+      if ($_FILES['driver_license_copy']['size'] > 0) { // #2
+          $config['upload_path'] = $this->upload_path;
+          $config['allowed_types'] = $this->image_types;
+          $config['max_size'] = $this->allowed_file_size;
+          $config['max_width'] = $this->Settings->iwidth;
+          $config['max_height'] = $this->Settings->iheight;
+          $config['overwrite'] = FALSE;
+          $config['max_filename'] = 25;
+          $config['encrypt_name'] = TRUE;
+          $this->upload->initialize($config);
+          if (!$this->upload->do_upload('driver_license_copy')) { // #3
+              $error = $this->upload->display_errors();
+              $this->session->set_flashdata('error', $error);
+              admin_redirect('shipping/addBillOfLading_view');
+          }
+          $photoDriverLicense = $this->upload->file_name; // #4
+          $data['image'] = $photoDriverLicense;
+          $this->load->library('image_lib');
+          $config['image_library'] = 'gd2';
+          $config['source_image'] = $this->upload_path . $photoDriverLicense;
+          $config['new_image'] = $this->thumbs_path . $photoDriverLicense;
+          $config['maintain_ratio'] = TRUE;
+          $config['width'] = $this->Settings->twidth;
+          $config['height'] = $this->Settings->theight;
+          $this->image_lib->clear();
+          $this->image_lib->initialize($config);
+          if (!$this->image_lib->resize()) {
+              echo $this->image_lib->display_errors();
+          }
+          if ($this->Settings->watermark) {
+              $this->image_lib->clear();
+              $wm['source_image'] = $this->upload_path . $photoDriverLicense;
+              $wm['wm_text'] = 'Copyright ' . date('Y') . ' - ' . $this->Settings->site_name;
+              $wm['wm_type'] = 'text';
+              $wm['wm_font_path'] = 'system/fonts/texb.ttf';
+              $wm['quality'] = '100';
+              $wm['wm_font_size'] = '16';
+              $wm['wm_font_color'] = '999999';
+              $wm['wm_shadow_color'] = 'CCCCCC';
+              $wm['wm_vrt_alignment'] = 'top';
+              $wm['wm_hor_alignment'] = 'left';
+              $wm['wm_padding'] = '10';
+              $this->image_lib->initialize($wm);
+              $this->image_lib->watermark();
+          }
+          $this->image_lib->clear();
+          $config = NULL;
+      }
+
+      /* *****************************************************************
+        IMAGE UPLOAD
+      ***************************************************************** */
+
+      // #1 library upload must be included here in the controller
+      // #2 #3 form input name at view inout must be the same here
+      // #4 make sure to pass this $photo variable to the model when saving like:
+      // 'image' => $photo,
+
+      $this->load->library('upload'); // #1
+
+      if ($_FILES['temp_recorder_copy']['size'] > 0) { // #2
+          $config['upload_path'] = $this->upload_path;
+          $config['allowed_types'] = $this->image_types;
+          $config['max_size'] = $this->allowed_file_size;
+          $config['max_width'] = $this->Settings->iwidth;
+          $config['max_height'] = $this->Settings->iheight;
+          $config['overwrite'] = FALSE;
+          $config['max_filename'] = 25;
+          $config['encrypt_name'] = TRUE;
+          $this->upload->initialize($config);
+          if (!$this->upload->do_upload('temp_recorder_copy')) { // #3
+              $error = $this->upload->display_errors();
+              $this->session->set_flashdata('error', $error);
+              admin_redirect('shipping/addBillOfLading_view');
+          }
+          $photoTempRecorder = $this->upload->file_name; // #4
+          $data['image'] = $photoTempRecorder;
+          $this->load->library('image_lib');
+          $config['image_library'] = 'gd2';
+          $config['source_image'] = $this->upload_path . $photoTempRecorder;
+          $config['new_image'] = $this->thumbs_path . $photoTempRecorder;
+          $config['maintain_ratio'] = TRUE;
+          $config['width'] = $this->Settings->twidth;
+          $config['height'] = $this->Settings->theight;
+          $this->image_lib->clear();
+          $this->image_lib->initialize($config);
+          if (!$this->image_lib->resize()) {
+              echo $this->image_lib->display_errors();
+          }
+          if ($this->Settings->watermark) {
+              $this->image_lib->clear();
+              $wm['source_image'] = $this->upload_path . $photoTempRecorder;
+              $wm['wm_text'] = 'Copyright ' . date('Y') . ' - ' . $this->Settings->site_name;
+              $wm['wm_type'] = 'text';
+              $wm['wm_font_path'] = 'system/fonts/texb.ttf';
+              $wm['quality'] = '100';
+              $wm['wm_font_size'] = '16';
+              $wm['wm_font_color'] = '999999';
+              $wm['wm_shadow_color'] = 'CCCCCC';
+              $wm['wm_vrt_alignment'] = 'top';
+              $wm['wm_hor_alignment'] = 'left';
+              $wm['wm_padding'] = '10';
+              $this->image_lib->initialize($wm);
+              $this->image_lib->watermark();
+          }
+          $this->image_lib->clear();
+          $config = NULL;
+      }
+
+      // ATTACHMENT UPLOAD -----------------------------------------------------
+
+      // #1 library upload must be included here in the controller
+      // #2 #3 form input name at view inout must be the same here
+      // #4 make sure to pass this $doc variable to the model when saving like:
+      // 'attachment' => $doc,
+
+      if ($_FILES['document']['size'] > 0) { // #3
+          $this->load->library('upload'); // #1
+          $config['upload_path'] = $this->digital_upload_path;
+          $config['allowed_types'] = $this->digital_file_types;
+          $config['max_size'] = $this->allowed_file_size;
+          $config['overwrite'] = false;
+          $config['encrypt_name'] = true;
+          $this->upload->initialize($config);
+          if (!$this->upload->do_upload('document')) { // #4
+              $error = $this->upload->display_errors();
+              $this->session->set_flashdata('error', $error);
+              redirect($_SERVER["HTTP_REFERER"]);
+          }
+          $doc = $this->upload->file_name; // #4
+          $data['attachment'] = $doc;
+      }
+
       $dataToInsert = array(
-          'bol_no' => $new_no,
+          'bol_no' => $report_no,
           'sale_id' => $this->input->post('sale_id'),
           'biller_id' => $this->input->post('biller_id'),
           'warehouse_id' => $this->input->post('warehouse_id'),
@@ -440,10 +738,12 @@ class Shipping extends MY_Controller
           'temperature' => $this->input->post('temperature'),
           'tem_recorder_no' => $this->input->post('recorder_no'),
           'tem_seal_no' => $this->input->post('seal_no'),
-          // // 'driver_signature_img' => $this->input->post('image_of_signature'),
-          // // 'driver_license_copy' => $this->input->post('image_of_drivers_license'),
-          // // 'temp_recorder_copy' => $this->input->post('image_of_temp_recorder'),
-          // // 'attachments' => $this->input->post('attachment_of_other_doc_1'),
+
+          'image_of_signature' => $photoDriverSignature,
+          'image_of_drivers_license' => $photoDriverLicense,
+          'image_of_temp_recorder' => $photoTempRecorder,
+          'attachment_of_other_doc_1' => $doc,
+
           'created_at' => date('Y-m-d H:i:s'),
       );
 

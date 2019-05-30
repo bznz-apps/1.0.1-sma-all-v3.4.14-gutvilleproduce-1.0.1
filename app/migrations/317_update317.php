@@ -1658,6 +1658,42 @@ class Migration_Update317 extends CI_Migration {
       $this->dbforge->create_table('NEW_text_legends');
 
       // -----------------------------------------------------------------------
+      // SALE NO COUNT
+
+      $this->dbforge->add_field(array(
+          'starter_no' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+          'last_no' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+      ));
+      $this->dbforge->add_key('id', TRUE);
+      $this->dbforge->create_table('NEW_sales_count');
+
+      // -----------------------------------------------------------------------
+      // INVOICE NO COUNT
+
+      $this->dbforge->add_field(array(
+          'starter_no' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+          'last_no' => array(
+            'type' => 'INT',
+            'constraint' => 11,
+            'null' => FALSE,
+          ),
+      ));
+      $this->dbforge->add_key('id', TRUE);
+      $this->dbforge->create_table('NEW_invoice_count');
+
+      // -----------------------------------------------------------------------
       // XXXXXXX
 
       // -----------------------------------------------------------------------
@@ -1734,6 +1770,9 @@ class Migration_Update317 extends CI_Migration {
       $this->dbforge->create_table('NEW_racks');
       $this->dbforge->create_table('NEW_rack_photos');
       $this->dbforge->create_table('NEW_text_legends');
+      $this->dbforge->create_table('NEW_sales_count');
+      $this->dbforge->create_table('NEW_invoice_count');
+
     }
 
 }

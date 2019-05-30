@@ -1,5 +1,36 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        // Start inputs with empty values here
+        // $('#').val("");
+
+        // Populate text input with a single value
+        $.ajax({
+            url : '<?= admin_url() ?>' + 'quality/getNextReportNo',
+            type : 'GET',
+            data : {},
+            dataType:'json',
+            success : function(data) {
+                let nextNo = parseInt(data);
+                $('#inspection_form_input-inspection_report_no').val(nextNo);
+            },
+            error : function(request, error)
+            {
+                // alert("Request: " + JSON.stringify(request));
+                alert("Error: " + JSON.stringify(error));
+            }
+        });
+
+        // ON EVERY FORM INPUT CHANGE, SAVE NEW VALUES TO localStorage
+
+        $(document).on('change', '#inspection_form_input-inspection_report_no', function(e) {
+        });
+
+    });
+</script>
+
 <div class="box">
 
     <!-- ***********************************************************************
@@ -65,6 +96,22 @@
                   <?php /*
                   </div>
                   */ ?>
+
+                  <!-- ***************************************************
+                  *  REPORT NO
+                  **************************************************** -->
+
+                  <div class="col-md-4">
+                  <div class="form-group all">
+                      <div class="form-group">
+                          <label> <?= /* lang("reference_no", "slref"); */ "Inspection Report No *" ?> </label>
+                          <?php echo form_input('inspection_report_no', (isset($_POST['inspection_report_no']) ? $_POST['inspection_report_no'] : ""), 'class="form-control input-tip" id="inspection_form_input-inspection_report_no"'); ?>
+                      </div>
+                  </div>
+                  </div>
+
+                  <div class="row"></div>
+                  <hr>
 
                   <!-- *******************************************************
                     SELECT WAREHOUSE
@@ -216,7 +263,7 @@
                         <?php /* <?= lang("product_details", "product_details") ?> */ ?>
                         <label><?= "Additonal Issues" ?></label>
                         <br>
-                        <?= "\n(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <?= "\n(Optional) This field is not required." ?>
                         <?php /* <?= form_textarea('product_details', (isset($_POST['product_details']) ? $_POST['product_details'] : ($product ? $product->product_details : '')), 'class="form-control" id="details"'); ?> */ ?>
                         <?= form_textarea('additional_issues', (isset($_POST['additional_issues']) ? $_POST['additional_issues'] : ($product ? $product->pallet_note : '')), 'class="form-control" id="pallet_note"'); ?>
                       </div>
@@ -231,7 +278,7 @@
                         <?php /* <?= lang("product_details", "product_details") ?> */ ?>
                         <label><?= "Add a Note" ?></label>
                         <br>
-                        <?= "\n(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <?= "\n(Optional) This field is not required." ?>
                         <?php /* <?= form_textarea('product_details', (isset($_POST['product_details']) ? $_POST['product_details'] : ($product ? $product->product_details : '')), 'class="form-control" id="details"'); ?> */ ?>
                         <?= form_textarea('notes_comments', (isset($_POST['notes_comments']) ? $_POST['notes_comments'] : ($product ? $product->pallet_note : '')), 'class="form-control" id="pallet_note"'); ?>
                       </div>
@@ -246,9 +293,9 @@
                     <div class="col-md-6">
                     <div class="form-group">
                         <?php /* <?= lang("product_image", "product_image") ?> */ ?>
-                        <label><?= "Add Image" ?></label>
+                        <label><?= "Upload Image" ?></label>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <?= "(Optional) This field is not required." ?>
                         <input id="inspection_image" type="file" data-browse-label="<?= lang('browse'); ?>" name="inspection_image" data-show-upload="false"
                                data-show-preview="false" accept="image/*" class="form-control file">
                     </div>
@@ -260,9 +307,9 @@
 
                     <div class="col-md-6">
                     <div class="form-group">
-                        <label><?= /* lang("document", "document") */ "Add Attachment" ?></label>
+                        <label><?= /* lang("document", "document") */ "Attach Document" ?></label>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <?= "(Optional) This field is not required." ?>
                         <input id="inspection_attachment" type="file" data-browse-label="<?= lang('browse'); ?>" name="inspection_attachment" data-show-upload="false"
                                data-show-preview="false" class="form-control file">
                     </div>
@@ -272,12 +319,12 @@
                       IMAGE GALLERY
                     ******************************************************** -->
 
-                    <div class="col-md-12">
+                    <!-- <div class="col-md-12">
                     <div class="form-group">
                         <?php /* <?= lang("product_gallery_images", "images") ?> */ ?>
                         <label><?= "Add Image Gallery" ?></label>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <?= "(Optional) This field is not required." ?>
                         <input id="inspection_images" type="file" data-browse-label="<?= lang('browse'); ?>" name="inspection_images[]" multiple="true" data-show-upload="false"
                                data-show-preview="false" class="form-control file" accept="image/*">
                     </div>
@@ -290,6 +337,11 @@
                     <div class="row"></div>
                     <div class="row"></div>
                     <br>
+                    <br> -->
+
+                    <div class="row"></div>
+                    <hr>
+
                     <br>
 
                     <!-- *******************************************************
@@ -316,10 +368,11 @@
                         </div>
                       </div>
                     </div>
-                    <div class="clearfix"></div>
+
+                    <!-- <div class="clearfix"></div>
 
                     <div class="row"></div>
-                    <br>
+                    <br> -->
 
                     <!-- *******************************************************
                       TABLE - PALLET ITEMS
@@ -447,20 +500,27 @@
                         </div>
                     </div>
 
-                    <div class="row"></div>
+                    <!-- <div class="row"></div>
                     <div class="row"></div>
                     <br>
+                    <br> -->
+
+                    <div class="row"></div>
+                    <hr>
+
                     <br>
 
                     <!-- *******************************************************
                       BUTTON - FORM SUBMIT
                     ******************************************************** -->
 
+                    <div class="col-md-12">
                     <div class="form-group">
                         <!-- SEND SUPPLY ORDER - BUTTON -->
                         <?php /* echo form_submit('add_product', $this->lang->line("add_product"), 'class="btn btn-primary"'); */ ?>
                         <?php echo form_submit('add_product', "Reset", 'class="btn btn-danger" id="inspection_items-reset_button"'); ?>
-                        <?php echo form_submit('add_product', "Save Inspection", 'class="btn btn-primary"'); ?>
+                        <?php echo form_submit('add_product', "Add Inspection", 'class="btn btn-primary"'); ?>
+                    </div>
                     </div>
 
                 </div>

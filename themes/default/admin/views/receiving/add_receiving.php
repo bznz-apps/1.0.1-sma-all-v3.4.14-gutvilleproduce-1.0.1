@@ -2,9 +2,11 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-      
+
+        // Start inputs with empty values here
         $('#supply_order_number').val("");
 
+        // Populate text input with a single value
         $.ajax({
             url : '<?= admin_url() ?>' + 'receiving/getNextReportNo',
             type : 'GET',
@@ -71,22 +73,26 @@
                 <div class="col-md-12">
 
                   <!-- ***************************************************
-                  *  REFERENCE NO
+                  *  REPORT NO
                   **************************************************** -->
 
+                  <div class="col-md-4">
                   <div class="form-group all">
                       <div class="form-group">
                           <label> <?= /* lang("reference_no", "slref"); */ "Receiving Report No *" ?> </label>
                           <?php echo form_input('receiving_report_no', (isset($_POST['receiving_report_no']) ? $_POST['receiving_report_no'] : ""), 'class="form-control input-tip" id="receiving_form_input-receiving_report_no"'); ?>
                       </div>
                   </div>
+                  </div>
 
-                  <!-- <br> -->
+                  <div class="row"></div>
+                  <hr>
 
                   <!-- *******************************************************
                     SELECT WAREHOUSE
                   ******************************************************** -->
 
+                  <div class="col-md-4">
                   <div class="form-group all">
                       <?php /* <label for="mcode" class="col-sm-4 control-label"><?= lang('product_code') ?> *</label> */ ?>
 
@@ -105,11 +111,13 @@
                         </div>
 
                   </div>
+                  </div>
 
                     <!-- *******************************************************
                       SELECT SUPPLY ORDER NUMBER
                     ******************************************************** -->
 
+                    <div class="col-md-4">
                     <div class="form-group all">
                         <?php /* <label for="mcode" class="col-sm-4 control-label"><?= lang('product_code') ?> *</label> */ ?>
 
@@ -128,45 +136,48 @@
                           </div>
 
                     </div>
-
-                    <br>
+                    </div>
 
                     <!-- ***************************************************
-                    *  REFERENCE NO
+                    *  MANIFEST REFERENCE NO
                     **************************************************** -->
 
+                    <div class="col-md-4">
                     <div class="form-group all">
                         <div class="form-group">
                             <label> <?= /* lang("reference_no", "slref"); */ "Manifest Ref No" ?> </label>
                             <?php echo form_input('manifest_ref_no', (isset($_POST['manifest_ref_no']) ? $_POST['manifest_ref_no'] : $slnumber), 'class="form-control input-tip" id=""'); ?>
                         </div>
                     </div>
-
-                    <br>
+                    </div>
 
                     <!-- *******************************************************
                       MANIFEST - IMAGE
                     ******************************************************** -->
 
+                    <div class="col-md-6">
                     <div class="form-group all">
                         <?php /* <?= lang("product_image", "product_image") ?> */ ?>
-                        <label><?= "Add Manifest Photo/Scan" ?></label>
+                        <label><?= "Upload Image" ?></label>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="manifest_image" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
+                        <?= "(Optional) This field is not required." ?>
+                        <input id="manifest_image" type="file" data-browse-label="<?= lang('browse'); ?>" name="manifest_image" data-show-upload="false"
                                data-show-preview="false" accept="image/*" class="form-control file">
+                    </div>
                     </div>
 
                     <!-- *******************************************************
                       MANIFEST - ATTACH DOCUMENT
                     ******************************************************** -->
 
+                    <div class="col-md-6">
                     <div class="form-group all">
-                        <label><?= /* lang("document", "document") */ "Add Manifest PDF Document" ?></label>
+                        <label><?= /* lang("document", "document") */ "Attach Document" ?></label>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="manifest_document" type="file" data-browse-label="<?= lang('browse'); ?>" name="document" data-show-upload="false"
+                        <?= "(Optional) This field is not required." ?>
+                        <input id="manifest_document" type="file" data-browse-label="<?= lang('browse'); ?>" name="manifest_document" data-show-upload="false"
                                data-show-preview="false" class="form-control file">
+                    </div>
                     </div>
 
                     <br>
@@ -175,14 +186,19 @@
                       ADD RECEIVING NOTES
                     ******************************************************** -->
 
+                    <div class="col-md-12">
                     <div class="form-group all">
                         <?php /* <?= lang("product_details", "product_details") ?> */ ?>
                         <label><?= "Add Receiving Comments" ?></label>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <?= "(Optional) This field is not required." ?>
                         <?php /* <?= form_textarea('product_details', (isset($_POST['product_details']) ? $_POST['product_details'] : ($product ? $product->product_details : '')), 'class="form-control" id="details"'); ?> */ ?>
                         <?= form_textarea('receiving_comments', (isset($_POST['receiving_comments']) ? $_POST['receiving_comments'] : ($product ? $product->receiving_comments : '')), 'class="form-control" id="receiving_comments"'); ?>
                     </div>
+                    </div>
+
+                    <div class="row"></div>
+                    <hr>
 
                     <br>
 
@@ -190,11 +206,13 @@
                       BUTTON - FORM SUBMIT
                     ******************************************************** -->
 
+                    <div class="col-md-12">
                     <div class="form-group">
                         <!-- SEND SUPPLY ORDER - BUTTON -->
                         <?php /* echo form_submit('add_product', $this->lang->line("add_product"), 'class="btn btn-primary"'); */ ?>
                         <?php echo form_submit('add_product', "Reset", 'class="btn btn-danger" id="supply_order_items-reset_button"'); ?>
-                        <?php echo form_submit('add_product', "Add Receiving Report", 'class="btn btn-primary"'); ?>
+                        <?php echo form_submit('add_product', "Add Receiving", 'class="btn btn-primary"'); ?>
+                    </div>
                     </div>
 
                 </div>

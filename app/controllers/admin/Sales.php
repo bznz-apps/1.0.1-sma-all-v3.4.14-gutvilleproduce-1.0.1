@@ -400,6 +400,7 @@ class Sales extends MY_Controller
         $sale_id = $this->input->get('sale_id') ? $this->input->get('sale_id') : NULL;
 
         $this->form_validation->set_message('is_natural_no_zero', lang("no_zero_required"));
+        $this->form_validation->set_rules('sale_report_no', lang("sale_report_no"), 'required');
         $this->form_validation->set_rules('customer', lang("customer"), 'required');
         $this->form_validation->set_rules('biller', lang("biller"), 'required');
         $this->form_validation->set_rules('sale_status', lang("sale_status"), 'required');
@@ -493,7 +494,21 @@ class Sales extends MY_Controller
                     $subtotal = (($item_net_price * $item_unit_quantity) + $pr_item_tax);
                     $unit = $this->site->getUnitByID($item_unit);
 
+                    // IF LAST_NO FOUND ----------------------------------------
+
+                    $report_no = $this->input->post('sale_report_no');
+
+                    $last_no = $this->db->get('NEW_sales_count')->row()->last_no;
+
+                    if ($last_no == NULL || $report_no > $last_no) {
+                        $this->db->update('NEW_sales_count', array('last_no' => $report_no));
+                    }
+
+                    // ---------------------------------------------------------
+
                     $product = array(
+                        'sale_no' => $report_no,
+
                         'product_id' => $item_id,
                         'product_code' => $item_code,
                         'product_name' => $item_name,
@@ -2833,5 +2848,78 @@ class Sales extends MY_Controller
 
         echo json_encode($availableProdQty);
     }
+
+    // ---------------------------------------------------------------------------
+    // SALES - GENERATE NEXT REPORT NO
+    // ---------------------------------------------------------------------------
+
+    function getNextReportNo()
+    {
+        // INCREMENTING REPORT NUMBER
+
+        $default_starter_no = 1;
+        $count_total_rows = $this->db->count_all_results('NEW_sales_count');
+        $new_no = 1;
+        $last_no = 0;
+
+        // CHECK IF TABLE 'NEW_sales_count' IS EMPTY OR HAS RESULTS
+
+        if ($count_total_rows == 0) {
+
+            // IF EMPTY, INIT REPORT NUMBER AND CREATE RECORD
+
+            $countData = array(
+                'starter_no' => $default_starter_no,
+                'last_no' => $default_starter_no,
+            );
+            $this->db->insert('NEW_sales_count', $countData);
+            $new_no = $default_starter_no;
+
+        } else {
+
+          // IF RECORD FOUND, GET LAST REPORT NUMBER SAVED AND UPDATE +1
+
+          $last_no = $this->db->get('NEW_sales_count')->row()->last_no;
+          $new_no = $last_no + 1;
+
+        }
+
+        echo json_encode($new_no);
+    }
+
+    function getNextInvoiceNo()
+    {
+        // INCREMENTING REPORT NUMBER
+
+        $default_starter_no = 1;
+        $count_total_rows = $this->db->count_all_results('NEW_invoice_count');
+        $new_no = 1;
+        $last_no = 0;
+
+        // CHECK IF TABLE 'NEW_invoice_count' IS EMPTY OR HAS RESULTS
+
+        if ($count_total_rows == 0) {
+
+            // IF EMPTY, INIT REPORT NUMBER AND CREATE RECORD
+
+            $countData = array(
+                'starter_no' => $default_starter_no,
+                'last_no' => $default_starter_no,
+            );
+            $this->db->insert('NEW_invoice_count', $countData);
+            $new_no = $default_starter_no;
+
+        } else {
+
+          // IF RECORD FOUND, GET LAST REPORT NUMBER SAVED AND UPDATE +1
+
+          $last_no = $this->db->get('NEW_invoice_count')->row()->last_no;
+          $new_no = $last_no + 1;
+
+        }
+
+        echo json_encode($new_no);
+    }
+
 
 }

@@ -539,7 +539,7 @@ console.log($('#x_supply_order_id').val());
                     <?php /* <?= lang("product_image", "product_image") ?> */ ?>
                     <label><?= "Driver Signature" ?></label>
                     <br>
-                    <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                    <?= "(Optional) This field is not required." ?>
                     <input id="driver_signature_img" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
                            data-show-preview="false" accept="image/*" class="form-control file">
                 </div>
@@ -552,7 +552,7 @@ console.log($('#x_supply_order_id').val());
                     <?php /* <?= lang("product_image", "product_image") ?> */ ?>
                     <label><?= "Driver License Copy" ?></label>
                     <br>
-                    <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                    <?= "(Optional) This field is not required." ?>
                     <input id="driver_license_copy" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
                            data-show-preview="false" accept="image/*" class="form-control file">
                 </div>
@@ -565,7 +565,7 @@ console.log($('#x_supply_order_id').val());
                     <?php /* <?= lang("product_image", "product_image") ?> */ ?>
                     <label><?= "Temp Recorder Copy" ?></label>
                     <br>
-                    <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                    <?= "(Optional) This field is not required." ?>
                     <input id="temp_recorder_copy" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
                            data-show-preview="false" accept="image/*" class="form-control file">
                 </div>
@@ -578,7 +578,7 @@ console.log($('#x_supply_order_id').val());
                     <?= "" /* lang("document", "document") */ ?>
                     <label><?= "Attachments" ?></label>
                     <br>
-                    <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                    <?= "(Optional) This field is not required." ?>
                     <input id="attachments" type="file" data-browse-label="<?= lang('browse'); ?>" name="document" data-show-upload="false"
                            data-show-preview="false" class="form-control file">
                 </div>

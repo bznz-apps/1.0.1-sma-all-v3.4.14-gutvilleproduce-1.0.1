@@ -67,17 +67,13 @@ class Receiving extends MY_Controller
     //     $this->page_construct('receiving/index', $meta, $this->data);
     // }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // *************************************************************************
-    //
-    //  RECEIVING REPORT
-    //
-    // *************************************************************************
-    ////////////////////////////////////////////////////////////////////////////
+    // ---------------------------------------------------------------------------
+    // RECEIVING - GENERATE NEXT REPORT NO
+    // ---------------------------------------------------------------------------
 
     function getNextReportNo()
     {
-        // INCREMENTING: RECEIVING REPORT NUMBER
+        // INCREMENTING REPORT NUMBER
 
         $default_starter_no = 1;
         $count_total_rows = $this->db->count_all_results('NEW_receiving_reports_count');
@@ -88,26 +84,21 @@ class Receiving extends MY_Controller
 
         if ($count_total_rows == 0) {
 
-            // IF EMPTY, INIT RECEIVING REPORT NUMBER AND CREATE RECORD
+            // IF EMPTY, INIT REPORT NUMBER AND CREATE RECORD
 
-            $receiving_reports_count_data = array(
+            $countData = array(
                 'starter_no' => $default_starter_no,
                 'last_no' => $default_starter_no,
             );
-            $this->db->insert('NEW_receiving_reports_count', $receiving_reports_count_data);
+            $this->db->insert('NEW_receiving_reports_count', $countData);
             $new_no = $default_starter_no;
 
         } else {
 
-          // IF RECORD FOUND, GET LAST RECEIVING REPORT NUMBER SAVED AND UPDATE +1
+          // IF RECORD FOUND, GET LAST REPORT NUMBER SAVED AND UPDATE +1
 
           $last_no = $this->db->get('NEW_receiving_reports_count')->row()->last_no;
           $new_no = $last_no + 1;
-          // $dataForReceivingReportsCount = array(
-          //     'last_no' => $new_no,
-          // );
-          // // $this->db->update('NEW_receiving_reports_count', $dataForReceivingReportsCount, array('starter_no' => $default_starter_no));
-          // $this->db->update('NEW_receiving_reports_count', array('last_no' => $new_no));
 
         }
 
@@ -156,6 +147,92 @@ class Receiving extends MY_Controller
       //   admin_redirect('receiving/addManifest_view');
       // }
 
+      /* *****************************************************************
+        IMAGE UPLOAD
+      ***************************************************************** */
+
+      // #1 library upload must be included here in the controller
+      // #2 #3 form input name at view inout must be the same here
+      // #4 make sure to pass this $photo variable to the model when saving like:
+      // 'image' => $photo,
+
+      $this->load->library('upload'); // #1
+
+      if ($_FILES['manifest_image']['size'] > 0) { // #2
+          $config['upload_path'] = $this->upload_path;
+          $config['allowed_types'] = $this->image_types;
+          $config['max_size'] = $this->allowed_file_size;
+          $config['max_width'] = $this->Settings->iwidth;
+          $config['max_height'] = $this->Settings->iheight;
+          $config['overwrite'] = FALSE;
+          $config['max_filename'] = 25;
+          $config['encrypt_name'] = TRUE;
+          $this->upload->initialize($config);
+          if (!$this->upload->do_upload('manifest_image')) { // #3
+              $error = $this->upload->display_errors();
+              $this->session->set_flashdata('error', $error);
+              admin_redirect('receiving/addReceiving_view');
+          }
+          $photo = $this->upload->file_name; // #4
+          $data['image'] = $photo;
+          $this->load->library('image_lib');
+          $config['image_library'] = 'gd2';
+          $config['source_image'] = $this->upload_path . $photo;
+          $config['new_image'] = $this->thumbs_path . $photo;
+          $config['maintain_ratio'] = TRUE;
+          $config['width'] = $this->Settings->twidth;
+          $config['height'] = $this->Settings->theight;
+          $this->image_lib->clear();
+          $this->image_lib->initialize($config);
+          if (!$this->image_lib->resize()) {
+              echo $this->image_lib->display_errors();
+          }
+          if ($this->Settings->watermark) {
+              $this->image_lib->clear();
+              $wm['source_image'] = $this->upload_path . $photo;
+              $wm['wm_text'] = 'Copyright ' . date('Y') . ' - ' . $this->Settings->site_name;
+              $wm['wm_type'] = 'text';
+              $wm['wm_font_path'] = 'system/fonts/texb.ttf';
+              $wm['quality'] = '100';
+              $wm['wm_font_size'] = '16';
+              $wm['wm_font_color'] = '999999';
+              $wm['wm_shadow_color'] = 'CCCCCC';
+              $wm['wm_vrt_alignment'] = 'top';
+              $wm['wm_hor_alignment'] = 'left';
+              $wm['wm_padding'] = '10';
+              $this->image_lib->initialize($wm);
+              $this->image_lib->watermark();
+          }
+          $this->image_lib->clear();
+          $config = NULL;
+      }
+
+      // ATTACHMENT UPLOAD -----------------------------------------------------
+
+      // #1 library upload must be included here in the controller
+      // #2 #3 form input name at view inout must be the same here
+      // #4 make sure to pass this $doc variable to the model when saving like:
+      // 'attachment' => $doc,
+
+      if ($_FILES['manifest_document']['size'] > 0) { // #3
+          $this->load->library('upload'); // #1
+          $config['upload_path'] = $this->digital_upload_path;
+          $config['allowed_types'] = $this->digital_file_types;
+          $config['max_size'] = $this->allowed_file_size;
+          $config['overwrite'] = false;
+          $config['encrypt_name'] = true;
+          $this->upload->initialize($config);
+          if (!$this->upload->do_upload('manifest_document')) { // #4
+              $error = $this->upload->display_errors();
+              $this->session->set_flashdata('error', $error);
+              redirect($_SERVER["HTTP_REFERER"]);
+          }
+          $doc = $this->upload->file_name; // #4
+          $data['attachment'] = $doc;
+      }
+
+      // -----------------------------------------------------------------------
+
       // // INCREMENTING: RECEIVING REPORT NUMBER
       //
       // $default_starter_no = 1;
@@ -169,11 +246,11 @@ class Receiving extends MY_Controller
       //
       //     // IF EMPTY, INIT RECEIVING REPORT NUMBER AND CREATE RECORD
       //
-      //     $receiving_reports_count_data = array(
+      //     $countData = array(
       //         'starter_no' => $default_starter_no,
       //         'last_no' => $default_starter_no,
       //     );
-      //     $this->db->insert('NEW_receiving_reports_count', $receiving_reports_count_data);
+      //     $this->db->insert('NEW_receiving_reports_count', $countData);
       //     $new_no = $default_starter_no;
       //
       // } else {
@@ -205,13 +282,13 @@ class Receiving extends MY_Controller
 
       $dataToInsert = array(
           // 'receiving_report_number' => $new_no,
-          'receiving_report_number' => $this->input->post('receiving_report_no'),
+          'receiving_report_number' => $report_no,
           'warehouse_id' => $this->input->post('warehouse_id'),
           'supply_order_id' => $this->input->post('supply_order'),
           'manifest_ref_no' => $this->input->post('manifest_ref_no'),
           'comments' => $this->input->post('receiving_comments'),
-          'image' => $this->input->post('manifest_image'),
-          'attachment' => $this->input->post('manifest_document'),
+          'image' => $photo,
+          'attachment' => $doc,
           'created_at' => date('Y-m-d H:i:s'),
       );
 

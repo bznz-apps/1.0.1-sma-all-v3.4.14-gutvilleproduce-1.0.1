@@ -89,7 +89,7 @@
                         <?php /* <?= lang("product_image", "product_image") ?> */ ?>
                         <label><?= "Add Image" ?></label>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <?= "(Optional) This field is not required." ?>
                         <input id="supply_order_image" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
                                data-show-preview="false" accept="image/*" class="form-control file">
                     </div>
@@ -102,7 +102,7 @@
                         <?php /* <?= lang("product_gallery_images", "images") ?> */ ?>
                         <label><?= "Add Image Gallery" ?></label>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <?= "(Optional) This field is not required." ?>
                         <input id="supply_order_images" type="file" data-browse-label="<?= lang('browse'); ?>" name="userfile[]" multiple="true" data-show-upload="false"
                                data-show-preview="false" class="form-control file" accept="image/*">
                     </div>
@@ -115,7 +115,7 @@
                     <div class="form-group all">
                         <?= lang("document", "document") ?>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <?= "(Optional) This field is not required." ?>
                         <input id="supply_order_document" type="file" data-browse-label="<?= lang('browse'); ?>" name="document" data-show-upload="false"
                                data-show-preview="false" class="form-control file">
                     </div>

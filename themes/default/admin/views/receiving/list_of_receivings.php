@@ -36,7 +36,10 @@
 
             "aoColumns": [
                 {"bSortable": false, "mRender": checkbox},
-                null, null, null, null, null, null, null, null //, null
+                null, null, null, null,
+                {"bSortable": false,"mRender": img_hl}, // use this object to render the image
+                {"bSortable": false,"mRender": attachment2}, // use this object to download the attachment
+                null, null //, null
             ]
 
         })

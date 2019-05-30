@@ -1,5 +1,36 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        // Start inputs with empty values here
+        // $('#').val("");
+
+        // Populate text input with a single value
+        $.ajax({
+            url : '<?= admin_url() ?>' + 'suppliers/getNextReportNo',
+            type : 'GET',
+            data : {},
+            dataType:'json',
+            success : function(data) {
+                let nextNo = parseInt(data);
+                $('#supply_form_input-supply_order_no').val(nextNo);
+            },
+            error : function(request, error)
+            {
+                // alert("Request: " + JSON.stringify(request));
+                alert("Error: " + JSON.stringify(error));
+            }
+        });
+
+        // ON EVERY FORM INPUT CHANGE, SAVE NEW VALUES TO localStorage
+
+        $(document).on('change', '#supply_form_input-supply_order_no', function(e) {
+        });
+
+    });
+</script>
+
 <div class="box">
 
     <!-- ***********************************************************************
@@ -66,10 +97,27 @@
                   </div>
                   */ ?>
 
+                    <!-- ***************************************************
+                    *  REPORT NO
+                    **************************************************** -->
+
+                    <div class="col-md-4">
+                    <div class="form-group all">
+                        <div class="form-group">
+                            <label> <?= /* lang("reference_no", "slref"); */ "Supply Order No *" ?> </label>
+                            <?php echo form_input('supply_order_no', (isset($_POST['supply_order_no']) ? $_POST['supply_order_no'] : ""), 'class="form-control input-tip" id="supply_form_input-supply_order_no"'); ?>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="row"></div>
+                    <hr>
+
                     <!-- *******************************************************
                       SELECT SUPPLIER
                     ******************************************************** -->
 
+                    <div class="col-md-4">
                     <div class="form-group all">
                         <?php /* <label for="mcode" class="col-sm-4 control-label"><?= lang('product_code') ?> *</label> */ ?>
 
@@ -87,71 +135,85 @@
                           </div>
 
                     </div>
+                    </div>
+
+                    <div class="row"></div>
 
                     <!-- *******************************************************
                       SUPPLY ORDER MESSAGE TO SUPPLIER
                     ******************************************************** -->
 
+                    <div class="col-md-6">
                     <div class="form-group all">
                         <?php /* <?= lang("product_details", "product_details") ?> */ ?>
                         <label><?= "Add Message To Supplier" ?></label>
                         <br>
-                        <?= "\n(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <?= "\n(Optional) This field is not required." ?>
                         <?php /* <?= form_textarea('product_details', (isset($_POST['product_details']) ? $_POST['product_details'] : ($product ? $product->product_details : '')), 'class="form-control" id="details"'); ?> */ ?>
                         <?= form_textarea('msgToSupplier', (isset($_POST['msgToSupplier']) ? $_POST['msgToSupplier'] : ($product ? $product->msgToSupplier : '')), 'class="form-control" id="msgToSupplier"'); ?>
+                    </div>
                     </div>
 
                     <!-- *******************************************************
                       SUPPLY ORDER MESSAGE TO RECEIVING
                     ******************************************************** -->
 
+                    <div class="col-md-6">
                     <div class="form-group all">
                         <?php /* <?= lang("product_details", "product_details") ?> */ ?>
                         <label><?= "Add Message to Receiving" ?></label>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <?= "(Optional) This field is not required." ?>
                         <?php /* <?= form_textarea('product_details', (isset($_POST['product_details']) ? $_POST['product_details'] : ($product ? $product->product_details : '')), 'class="form-control" id="details"'); ?> */ ?>
                         <?= form_textarea('msgToReceiving', (isset($_POST['msgToReceiving']) ? $_POST['msgToReceiving'] : ($product ? $product->msgToReceiving : '')), 'class="form-control" id="msgToReceiving"'); ?>
+                    </div>
                     </div>
 
                     <!-- *******************************************************
                       IMAGE
                     ******************************************************** -->
 
-                    <div class="form-group all">
+                    <div class="col-md-6">
+                    <div class="form-group">
                         <?php /* <?= lang("product_image", "product_image") ?> */ ?>
-                        <label><?= "Add Image" ?></label>
+                        <label><?= "Upload Image" ?></label>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="supply_order_image" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
+                        <?= "(Optional) This field is not required." ?>
+                        <input id="supply_order_image" type="file" data-browse-label="<?= lang('browse'); ?>" name="supply_order_image" data-show-upload="false"
                                data-show-preview="false" accept="image/*" class="form-control file">
+                    </div>
                     </div>
 
                     <!-- *******************************************************
                       IMAGE GALLERY
                     ******************************************************** -->
 
-                    <div class="form-group all">
+                    <!-- <div class="form-group all">
                         <?php /* <?= lang("product_gallery_images", "images") ?> */ ?>
                         <label><?= "Add Image Gallery" ?></label>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
+                        <?= "(Optional) This field is not required." ?>
                         <input id="supply_order_images" type="file" data-browse-label="<?= lang('browse'); ?>" name="userfile[]" multiple="true" data-show-upload="false"
                                data-show-preview="false" class="form-control file" accept="image/*">
                     </div>
-                    <div id="img-details"></div>
+                    <div id="img-details"></div> -->
 
                     <!-- *******************************************************
                       ATTACH DOCUMENT
                     ******************************************************** -->
 
-                    <div class="form-group all">
+                    <div class="col-md-6">
+                    <div class="form-group">
                         <?= lang("document", "document") ?>
                         <br>
-                        <?= "(Optional) Requirements description here asdasd asdasd asdas asd." ?>
-                        <input id="supply_order_document" type="file" data-browse-label="<?= lang('browse'); ?>" name="document" data-show-upload="false"
+                        <?= "(Optional) This field is not required." ?>
+                        <input id="supply_order_document" type="file" data-browse-label="<?= lang('browse'); ?>" name="supply_order_document" data-show-upload="false"
                                data-show-preview="false" class="form-control file">
                     </div>
+                    </div>
+
+                    <div class="row"></div>
+                    <hr>
 
                     <br>
 
@@ -159,6 +221,7 @@
                       + BUTTON - ADD SUPPLY ORDER ITEM
                     ******************************************************** -->
 
+                    <div class="col-md-12">
                     <div class="form-group all">
                         <div class="input-group wide-tip">
                             <div class="input-group-addon" style="padding-left: 10px; padding-right: 10px;">
@@ -177,9 +240,11 @@
                             <?php } ?>
                         </div>
                     </div>
-                    <div class="clearfix"></div>
+                    </div>
 
-                    <br>
+                    <!-- <div class="clearfix"></div> -->
+
+                    <!-- <br> -->
 
                     <!-- *******************************************************
                       TABLE - SUPPLY ORDER ITEMS
@@ -235,17 +300,22 @@
                         </div>
                     </div>
 
+                    <div class="row"></div>
+                    <hr>
+
                     <br>
 
                     <!-- *******************************************************
                       BUTTON - FORM SUBMIT
                     ******************************************************** -->
 
+                    <div class="col-md-12">
                     <div class="form-group">
                         <!-- SEND SUPPLY ORDER - BUTTON -->
                         <?php /* echo form_submit('add_product', $this->lang->line("add_product"), 'class="btn btn-primary"'); */ ?>
                         <?php echo form_submit('add_product', "Reset", 'class="btn btn-danger" id="supply_order_items-reset_button"'); ?>
-                        <?php echo form_submit('add_product', "Send Order to Supplier", 'class="btn btn-primary"'); ?>
+                        <?php echo form_submit('add_product', "Add Order", 'class="btn btn-primary"'); ?>
+                    </div>
                     </div>
 
                 </div>

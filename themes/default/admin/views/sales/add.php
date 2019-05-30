@@ -1,4 +1,37 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        // Start inputs with empty values here
+        $('#slsale_status').val("pending");
+        $('#slpayment_status').val("pending");
+
+        // Populate text input with a single value
+        $.ajax({
+            url : '<?= admin_url() ?>' + 'sales/getNextReportNo',
+            type : 'GET',
+            data : {},
+            dataType:'json',
+            success : function(data) {
+                let nextNo = parseInt(data);
+                $('#sale_form_input-sale_no').val(nextNo);
+            },
+            error : function(request, error)
+            {
+                // alert("Request: " + JSON.stringify(request));
+                alert("Error: " + JSON.stringify(error));
+            }
+        });
+
+        // ON EVERY FORM INPUT CHANGE, SAVE NEW VALUES TO localStorage
+
+        $(document).on('change', '#sale_form_input-sale_no', function(e) {
+        });
+
+    });
+</script>
+
 <script type="text/javascript">
     var count = 1, an = 1, product_variant = 0, DT = <?= $Settings->default_tax_rate ?>,
         product_tax = 0, invoice_tax = 0, product_discount = 0, order_discount = 0, total_discount = 0, total = 0, allow_discount = <?= ($Owner || $Admin || $this->session->userdata('allow_discount')) ? 1 : 0; ?>,
@@ -265,6 +298,22 @@
                     echo form_hidden('quote_id', $quote_id);
                 }
                 ?>
+
+                <!-- ***************************************************
+                *  REPORT NO
+                **************************************************** -->
+
+                <div class="col-md-4">
+                <div class="form-group all">
+                    <div class="form-group">
+                        <label> <?= /* lang("reference_no", "slref"); */ "Sale No *" ?> </label>
+                        <?php echo form_input('sale_report_no', (isset($_POST['sale_report_no']) ? $_POST['sale_report_no'] : ""), 'class="form-control input-tip" id="sale_form_input-sale_no"'); ?>
+                    </div>
+                </div>
+                </div>
+
+                <div class="row"></div>
+                <hr>
 
                 <!-- ***********************************************************
                 *  ROW 1
@@ -1291,7 +1340,9 @@
           // so when submitting the sale we set the sale_status enabled again to send its value to the controller
           $('#slsale_status').prop('disabled', false);
           $('#slpayment_status').prop('disabled', false);
-          
+
+          $('#sale_form-sale_status').prop('disabled', false);
+
       });
 
       $(document).on('click', '#reset', function(e) {
@@ -1303,6 +1354,7 @@
       $("#quantity_1556660855776").prop("disabled", true);
       // $("#slwarehouse").attr("disabled", true);
       // $("#slwarehouse").attr("readonly", true);
+
 
         // $('#check').change(function() {
         //     $("#1556660855776").prop("hidden", true);
