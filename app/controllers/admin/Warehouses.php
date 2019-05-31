@@ -368,14 +368,14 @@ class Warehouses extends MY_Controller
     $this->page_construct('warehouses/view_pallet', $meta, $this->data);
   }
 
-  function handleGetPalletItems_logic($rack_id = null) {
+  function handleGetPalletItems_logic($palletID = null) {
       $this->sma->checkPermissions('index');
       $this->load->library('datatables');
       // Query
       $this->datatables
       ->select($this->db->dbprefix('NEW_pallet_items') . ".id as id, product_id, quantity")
       ->from("NEW_pallet_items")
-      ->where('rack_id', $rack_id)
+      ->where('pallet_id', $palletID)
       ->add_column(
           "Actions",
           "<div class=\"text-center\">
