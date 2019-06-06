@@ -33,6 +33,14 @@ console.log($('#x_supply_order_id').val());
     $(document).ready(function () {
 
         console.log("Data Passed to this View");
+
+        console.log('<?php echo $pallet_id; ?>');
+        console.log('<?php echo $pallet_data; ?>');
+        console.log('<?php echo $supply_order_data; ?>');
+        console.log('<?php echo $receiving_data; ?>');
+        console.log('<?php echo $warehouse_data; ?>');
+        console.log('<?php echo $rack_data; ?>');
+
         console.log('<?php echo $pallet; ?>');
         console.log('<?php echo $pallet_id; ?>');
         console.log('<?php echo $created_at; ?>');
@@ -45,6 +53,70 @@ console.log($('#x_supply_order_id').val());
         console.log('<?php echo $image; ?>');
         console.log('<?php echo $attachment; ?>');
 
+        // // NOT IN USE, BUT GOOD TO COPY
+        // const getDataByAjaxCall = (route, id, parseTo, elementID) => {
+        //   return $.ajax({
+        //       url : '<?= admin_url() ?>' + route + id,
+        //       type : 'GET',
+        //       data : {},
+        //       dataType:'json',
+        //       success : function(data) {
+        //         if (parseTo === "int") {
+        //           data = parseInt(data);
+        //         }
+        //         $(elementID).val(data);
+        //         return data;
+        //       },
+        //       error : function(request, error)
+        //       {
+        //           // alert("Request: " + JSON.stringify(request));
+        //           alert("Error: " + JSON.stringify(error));
+        //       }
+        //   });
+        // };
+        //
+        // // NOT IN USE, BUT GOOD TO COPY
+        // ////////////////////////////////////////
+        // var palletID = <?php echo json_encode($pallet_id); ?>;
+        // $.ajax({
+        //     url : '<?= admin_url() ?>' + 'warehouses/getPalletByID/' + palletID,
+        //     type : 'GET',
+        //     data : {},
+        //     dataType:'json',
+        //     success : function(data) {
+        //         // let nextNo = parseInt(data);
+        //         // $('#bol_form_input-bol_no').val(nextNo);
+        //         console.log("pallet data by ppalletID");
+        //         console.log(data);
+        //         // return data;
+        //
+        //         $("#view_pallet-info_table-createdAt").val(data.created_at);
+        //
+        //         $("#view_pallet-info_table-code").val(data.code);
+        //
+        //         $("#view_pallet-info_table-supply_order_number").val(data.supply_order_id);
+        //
+        //         $("#view_pallet-info_table-receiving_report_number").val(data.receiving_report_id);
+        //
+        //         $("#view_pallet-info_table-manifest_ref_no").val(data.manifest_id);
+        //
+        //         $("#view_pallet-info_table-warehouse").val(data.warehouse_id);
+        //
+        //         $("#view_pallet-info_table-rack").val(data.rack_id);
+        //
+        //         $("#view_pallet-info_table-image").val(data.image);
+        //
+        //         $("#view_pallet-info_table-attachment").val(data.attachment);
+        //
+        //     },
+        //     error : function(request, error)
+        //     {
+        //         // alert("Request: " + JSON.stringify(request));
+        //         alert("Error: " + JSON.stringify(error));
+        //     }
+        // });
+        // ////////////////////////////////////////
+
         oTable = $('#ViewPalletItemsTable').dataTable({
             "aaSorting": [[2, "asc"], [3, "asc"]],
             "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "<?= lang('all') ?>"]],
@@ -55,6 +127,8 @@ console.log($('#x_supply_order_id').val());
             */ ?>
             'sAjaxSource': '<?= admin_url('warehouses/handleGetPalletItems_logic' . ($pallet_id ? '/' . $pallet_id : ''))?>',
             'fnServerData': function (sSource, aoData, fnCallback) {
+                // console.log("aoData");
+                // console.log(aoData);
                 aoData.push({
                     "name": "<?= $this->security->get_csrf_token_name() ?>",
                     "value": "<?= $this->security->get_csrf_hash() ?>"
@@ -62,6 +136,10 @@ console.log($('#x_supply_order_id').val());
                 $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
             },
             'fnRowCallback': function (nRow, aData, iDisplayIndex) {
+                // console.log("nRow");
+                // console.log(nRow);
+                // console.log("aData");
+                // console.log(aData[1]);
                 var oSettings = oTable.fnSettings();
                 nRow.id = aData[0];
                 nRow.className = "pallet_link";
@@ -193,6 +271,13 @@ console.log($('#x_supply_order_id').val());
                             </a>
                         </li>
 
+                        <li>
+                            <a href="<?= admin_url('warehouses/editPallet_view/' . $pallet_id) ?>">
+                              <?php /*  <i class="fa fa-plus-circle"></i> <?= lang('add_product') ?> */ ?>
+                                <i class="fa fa-edit"></i> <?= "Edit Pallet" ?>
+                            </a>
+                        </li>
+
                         <?php /*
 
                         <?php if(!$warehouse_id) { ?>
@@ -264,30 +349,31 @@ console.log($('#x_supply_order_id').val());
                         <thead>
                         <tr class="primary">
 
-                          <th style="width:10%; text-align: center;">Date</th>
-                          <th style="width:10%; text-align: center;">Code</th>
-                          <th style="width:10%; text-align: center;">Supply<br>Order No</th>
-                          <th style="width:10%; text-align: center;">Receiving<br>Ref No</th>
-                          <th style="width:10%; text-align: center;">Manifest<br>Ref No</th>
-                          <th style="width:10%; text-align: center;">Warehouse</th>
-                          <th style="width:10%; text-align: center;">Rack</th>
-                          <th style="width:10%; text-align: center;">Image</th>
-                          <th style="width:10%; text-align: center;">Attachment</th>
-
+                            <th style="width:10%; text-align: center;">Date</th>
+                            <th style="width:10%; text-align: center;">Code</th>
+                            <th style="width:10%; text-align: center;">Supply<br>Order No</th>
+                            <th style="width:10%; text-align: center;">Receiving<br>Ref No</th>
+                            <th style="width:10%; text-align: center;">Manifest<br>Ref No</th>
+                            <th style="width:10%; text-align: center;">Warehouse</th>
+                            <th style="width:10%; text-align: center;">Rack</th>
+                            <th style="width:10%; text-align: center;">Image</th>
+                            <th style="width:10%; text-align: center;">Attachment</th>
 
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
-                            <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $created_at; ?></td>
-                            <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $code; ?></td>
-                            <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $supply_order_number; ?></td>
-                            <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $receiving_ref_no; ?></td>
-                            <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $manifest_ref_no; ?></td>
-                            <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $warehouse; ?></td>
-                            <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $rack; ?></td>
-                            <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $image; ?></td>
-                            <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $attachment; ?></td>
+
+                            <td style="width:10%; text-align: center;" class="dataTables_empty" id="view_pallet-info_table-createdAt"><?php echo $created_at; ?></td>
+                            <td style="width:10%; text-align: center;" class="dataTables_empty" id="view_pallet-info_table-code"><?php echo $code; ?></td>
+                            <td style="width:10%; text-align: center;" class="dataTables_empty" id="view_pallet-info_table-supply_order_number"><?php echo $supply_order_number; ?></td>
+                            <td style="width:10%; text-align: center;" class="dataTables_empty" id="view_pallet-info_table-receiving_report_number"><?php echo $receiving_ref_no; ?></td>
+                            <td style="width:10%; text-align: center;" class="dataTables_empty" id="view_pallet-info_table-manifest_ref_no"><?php echo $manifest_ref_no; ?></td>
+                            <td style="width:10%; text-align: center;" class="dataTables_empty" id="view_pallet-info_table-warehouse"><?php echo $warehouse; ?></td>
+                            <td style="width:10%; text-align: center;" class="dataTables_empty" id="view_pallet-info_table-rack"><?php echo $rack; ?></td>
+                            <td style="width:10%; text-align: center;" class="dataTables_empty" id="view_pallet-info_table-image"><?php echo $image; ?></td>
+                            <td style="width:10%; text-align: center;" class="dataTables_empty" id="view_pallet-info_table-attachment"><?php echo $attachment; ?></td>
+
                         </tr>
                         </tbody>
 

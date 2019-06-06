@@ -1208,7 +1208,6 @@ class Suppliers_model extends CI_Model
         return FALSE;
     }
 
-
     // get photos or multiple items with same ID
     // public function getProductPhotos($id)
     // {

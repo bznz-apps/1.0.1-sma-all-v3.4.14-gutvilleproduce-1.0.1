@@ -492,7 +492,7 @@ class Receiving extends MY_Controller
         $this->datatables
           ->select($this->db->dbprefix('NEW_supply_order_manifests') . ".id as id, supply_order_id, created_at")
           // THIS BELOW IS FAILING AGAIN... JUST IN SUPPLIER ORDERS
-          // ->select($this->db->dbprefix('NEW_supply_order_manifests') . ".id as id, " . $this->db->dbprefix('NEW_supply_orders') . ".supply_order as supply_order_id, " . "created_at")
+          // ->select($this->db->dbprefix('NEW_supply_order_manifests') . ".id as id, " . $this->db->dbprefix('NEW_supply_orders') . ".supply_order_number as supply_order_id, " . "created_at")
           // ->join('NEW_supply_orders', 'NEW_supply_orders.id=NEW_supply_order_manifests.supply_order_id', 'left')
           ->from("NEW_supply_order_manifests")
           // ->where('supply_order_id', $supply_order_id)

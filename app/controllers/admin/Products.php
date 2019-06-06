@@ -2531,4 +2531,10 @@ class Products extends MY_Controller
 
     }
 
+    function getProductName($productID)
+    {
+        $productData = $this->products_model->getProductByID($productID);
+        echo json_encode($productData->name);
+    }
+
 }

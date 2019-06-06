@@ -30,6 +30,64 @@
                 nRow.style = "text-align: center;";
                 // nRow.className = "product_link";
                 //if(aData[7] > aData[9]){ nRow.className = "product_link warning"; } else { nRow.className = "product_link"; }
+
+                // console.log("aData");
+                // console.log(aData);
+                //
+                //   console.log("Column 4 - Receiving");
+                //   console.log(aData[4]);
+                //   console.log("Column 6 - Warehouse");
+                //   console.log(aData[6]);
+                //   console.log("Column 7 - Rack");
+                //   console.log(aData[7]);
+                //
+                //   aData[4] = "tes";
+                //   aData[6] = "tes";
+                //   aData[7] = "tes";
+
+
+                // aData.map((row, index) => {
+                //   console.log("Row ");
+                //   console.log("Column 4 - Receiving");
+                //   console.log("Column 6 - Warehouse");
+                //   console.log("Column 7 - Rack");
+                // })
+
+                // console.log("aData[0]");
+                // console.log(aData[0]);
+
+                // HERE ACCESS ROW VALUES
+
+                // console.log("nRow");
+                // console.log(nRow);
+
+                console.log("nRow.cells");
+                console.log(nRow.cells);
+
+                // console.log(nRow.cells[4]); // receiving
+                // console.log(nRow.cells[6]); // warehouse
+                // console.log(nRow.cells[7]); // rack
+                //
+                // nRow.cells[4].value = "receiving";
+                // nRow.cells[6].value = "warehouse";
+                // nRow.cells[7].value = "rack";
+
+                // console.log("nRow.cells[4].id");
+                // console.log(nRow.cells[4]);
+
+                // var row_index = $('td').parent().index();
+                // var col_index = $('td').index();
+
+                // Add ID tag to TD element
+                $(nRow.cells[4]).attr('id', 'test');
+                // console.log(nRow.cells[4]);
+
+                // let nRows = nRow.cells;
+                // nRows.map(cell => {
+                //   console.log("cell");
+                //   console.log(cell);
+                // })
+
                 return nRow;
             },
 

@@ -165,6 +165,14 @@ class Warehouses_model extends CI_Model
         return FALSE;
     }
 
+    public function deletePalletItems($id)
+    {
+        if ($this->db->delete('NEW_pallet_items', array('id' => $id))) {
+            return true;
+        }
+        return FALSE;
+    }
+
     // *************************************************************************
     // RACKS
     // *************************************************************************
