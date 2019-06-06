@@ -8,7 +8,7 @@
  * Find your timezone here
  * http://php.net/manual/en/timezones.php
  */
-	$timezone = "America/Matamoros";
+	$timezone = "America/Mexico_City";
 	if(function_exists('date_default_timezone_set')) date_default_timezone_set($timezone);
 	define('TIMEZONE', $timezone);
 

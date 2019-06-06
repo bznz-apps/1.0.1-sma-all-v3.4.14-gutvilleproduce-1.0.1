@@ -75,7 +75,7 @@
                 <?php
                 $attrib = array('data-toggle' => 'validator', 'role' => 'form');
                 // echo admin_form_open_multipart("products/add", $attrib)
-                echo admin_form_open_multipart("warehouses/handleAddPallet_logic", $attrib)
+                echo admin_form_open_multipart("warehouses/handleEditPallet_logic/" . $palletData->id, $attrib)
                 ?>
 
                 <div class="col-md-12">
@@ -386,7 +386,7 @@
                         <!-- SEND SUPPLY ORDER - BUTTON -->
                         <?php /* echo form_submit('add_product', $this->lang->line("add_product"), 'class="btn btn-primary"'); */ ?>
                         <?php echo form_submit('add_product', "Reset", 'class="btn btn-danger" id="supply_order_items-reset_button"'); ?>
-                        <?php echo form_submit('add_product', "Add Pallet", 'class="btn btn-primary"'); ?>
+                        <?php echo form_submit('add_product', "Edit Pallet", 'class="btn btn-primary"'); ?>
                     </div>
                     </div>
 

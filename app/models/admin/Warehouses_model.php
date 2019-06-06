@@ -33,6 +33,7 @@ class Warehouses_model extends CI_Model
         $this->db->update('products');
         $result = $this->db->affected_rows();
     }
+
     public function updateWarehouseQty($warehouse_id, $product_id, $quantity)
     {
         // GET WAREHOUSE PRODUCT QTY -------------------------------------------
@@ -153,9 +154,99 @@ class Warehouses_model extends CI_Model
         return FALSE;
     }
 
-    public function editPallet($id)
+    public function updatePallet($id, $data = array())
     {
+        $this->db->where('id', $id);
+        if ($this->db->update('NEW_pallets', $data)) {
+            return true;
+        }
+        return false;
     }
+
+    public function updatePalletItems($id, $items)
+    {
+        // GET ALL PALLET ITEMS
+
+        $q = $this->db->get_where('NEW_pallet_items', array('pallet_id' => $id));
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data[] = $row;
+            }
+            $palletItems = $data;
+        }
+
+        // DELETE EVERY PALLET ITEM ASSOCIATED WITH THIS PALLET ID
+
+        if (!empty($palletItems)) {
+            foreach ($palletItems as $palletItem) {
+                // $this->db->where('pallet_id', $id);
+                $this->db->where($palletItem->pallet_id, $id);
+                $this->db->delete('NEW_pallet_items');
+            }
+        }
+
+        // ADD THE UPDATED PALLET ITEMS
+
+        if (!empty($items)) {
+            foreach ($items as $item) {
+              $this->db->insert('NEW_pallet_items', $item);
+            }
+            return true;
+        }
+        return false;
+    }
+
+
+
+
+
+    // public function editPallet($id, $data)
+    // {
+    //     // get all items
+    //     // for each item, loop and delete each one
+    //     // or find method to remove all items, multiple delete
+    //
+    //     // $q = $this->db->get_where('NEW_pallets', array('receiving_report_id' => $id));
+    //     // if ($q->num_rows() > 0) {
+    //     //     foreach (($q->result()) as $row) {
+    //     //         $data[] = $row;
+    //     //     }
+    //     //     return $data;
+    //     // }
+    //
+    //     // $ids = array($id);
+    //     // $palletID = $id;
+    //
+    //     // $this->db->where('pallet_id', $id)
+    //     // // $this->db->where_not_in('ID', $ids);
+    //     // $this->db->delete('NEW_pallet_items');
+    //
+    //     // add new updated items
+    //
+    //     // update pallet data
+    //     // $this->db->update('NEW_pallets', $data, array('id' => $id));
+    //     // return $id;
+    //
+    //     // $this->db->where('id', $id);
+    //     // $this->db->update('NEW_pallets', $data);
+    //     //
+    //     // // $this->db->where('id', $id);
+    //     // // $this->db->update($table_name, array('title' => $title));
+    //     // return true;
+    //
+    //     // $this->db->set('NEW_pallets', $data)
+    //     // ->where('id', $id)
+    //     // ->update('NEW_pallets');
+    //
+    //     // $this->db->where('id', $id);
+    //     // $this->db->update('NEW_pallets', $data);
+    //     //
+    //     // $this->db->where('id', $id);
+    //     // $this->db->update('NEW_pallets', $data);
+    //
+    //     // $this->db->update('NEW_pallets', $data, array('id' => $id))
+    //
+    // }
 
     public function deletePallet($id)
     {

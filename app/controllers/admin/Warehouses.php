@@ -524,7 +524,7 @@ class Warehouses extends MY_Controller
 
     } else {
         $this->session->set_flashdata('error', validation_errors());
-        admin_redirect('warehouses/editPallet_view');
+        admin_redirect('warehouses/editPallet_view/' . $id);
     }
 
     // IF VALIDATION ERROR, SET ERROR FLASH MESSAGE AND REDIRECT TO FORM VIEW
@@ -536,7 +536,7 @@ class Warehouses extends MY_Controller
 
     if (empty($_POST['product_id'])) {
       $this->session->set_flashdata('error', 'Please add at least 1 item to this pallet.');
-      admin_redirect('warehouses/editPallet_view');
+      admin_redirect('warehouses/editPallet_view/' . $id);
     }
 
     /* *****************************************************************
@@ -613,26 +613,44 @@ class Warehouses extends MY_Controller
     //  - loop through each row, and if our product item id found there, udpate qty
 
     $dataToInsert = array(
+        // 'id' => $id,
         'code' => $this->input->post('code'),
         'barcode_symbology' => $this->input->post('barcode_symbology'),
         'warehouse_id' => $this->input->post('warehouse_id'),
         'rack_id' => $this->input->post('rack_id'),
         'receiving_report_id' => $this->input->post('receiving_id'),
         'description' => $this->input->post('pallet_note'),
-        // 'image' => $data->image,
+        // // 'image' => $data->image,
         'image' => $photo,
         'created_at' => date('Y-m-d H:i:s'),
     );
 
-    $new_pallet_id = $this->warehouses_model->addPallet($dataToInsert);
+    // $dataToInsert = array();
 
-    if ($new_pallet_id == true) {
-      // $this->session->set_flashdata('message', 'New Supply Order Added Successfully, OID: ' . $new_pallet_id);
-      // admin_redirect('suppliers/getSupplyOrders_view');
-    } else {
-      $this->session->set_flashdata('error', 'Something went wrong, please try again later.');
-      admin_redirect('warehouses/editPallet_view');
-    }
+    // if ($this->input->post('rack_id') !== "") {
+    //     array_push($dataToInsert, 'rack_id' => $this->input->post('rack_id'));
+    // };
+    // if ($this->input->post('receiving_report_id') !== "") {
+    //     array_push($dataToInsert, 'receiving_report_id' => $this->input->post('receiving_report_id'));
+    // };
+    // if ($this->input->post('description') !== "") {
+    //     array_push($dataToInsert, 'description' => $this->input->post('description'));
+    // };
+    // if ($this->input->post('description') !== "") {
+    //     array_push($dataToInsert, 'image' => $photo,);
+    // };
+
+    // $this->warehouses_model->editPallet($id, $dataToInsert);
+
+    $this->warehouses_model->updatePallet($id, $dataToInsert);
+
+    // if ($id == true) {
+    //   // $this->session->set_flashdata('message', 'New Supply Order Added Successfully, OID: ' . $id);
+    //   // admin_redirect('suppliers/getSupplyOrders_view');
+    // } else {
+    //   $this->session->set_flashdata('error', 'Something went wrong, please try again later. - $id');
+    //   admin_redirect('warehouses/editPallet_view/' . $id);
+    // }
 
     // GRAB ITEMS
 
@@ -645,7 +663,7 @@ class Warehouses extends MY_Controller
         for ($r = 0; $r < $i; $r++) {
 
             $item = array(
-                'pallet_id' => $new_pallet_id,
+                'pallet_id' => $id,
                 'product_id' => $_POST['product_id'][$r],
                 'quantity' => $_POST['product_quantity'][$r],
                 // 'product_name' => $_POST['product_name'][$r],
@@ -670,16 +688,16 @@ class Warehouses extends MY_Controller
 
     }
 
-    $addPalletItems = $this->warehouses_model->addPalletItems($items);
+    $addPalletItems = $this->warehouses_model->updatePalletItems($id, $items);
 
     // if ($this->warehouses_model->addPalletItems($dataToInsert) == true) {
     if ($addPalletItems == true) {
         $this->session->set_flashdata('message', 'Pallet Edited Successfully');
         admin_redirect('warehouses/getPallets_view');
     } else {
-        $this->session->set_flashdata('error', 'Something went wrong, please try again later.');
+        $this->session->set_flashdata('error', 'Something went wrong, please try again later. - $addPalletItems');
         // $this->session->set_flashdata('error', 'result is ' . sizeof($items));
-        admin_redirect('warehouses/viewPallet_view' . $id);
+        admin_redirect('warehouses/viewPallet_view/' . $id);
     }
 
   }
