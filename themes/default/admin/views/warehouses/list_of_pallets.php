@@ -61,8 +61,10 @@
                 // console.log("nRow");
                 // console.log(nRow);
 
-                console.log("nRow.cells");
-                console.log(nRow.cells);
+                // console.log("nRow.cells");
+                // console.log(nRow.cells);
+
+                var cellsArr = [...nRow.cells];
 
                 // console.log(nRow.cells[4]); // receiving
                 // console.log(nRow.cells[6]); // warehouse
@@ -79,14 +81,28 @@
                 // var col_index = $('td').index();
 
                 // Add ID tag to TD element
-                $(nRow.cells[4]).attr('id', 'test');
-                // console.log(nRow.cells[4]);
+                // $(nRow.cells[4]).attr('id', 'test');
+                // console.log(nRow.cells[4].val);
+
+                // console.log(cellsArr);
+                //
+                // cellsArr.map((cell, index) => {
+                //     // console.log("Cell with Index: " + index);
+                //     // console.log(cell);
+                //     $("#PalletsDataTable > tbody > tr > td").val("test");
+                // })
 
                 // let nRows = nRow.cells;
                 // nRows.map(cell => {
                 //   console.log("cell");
                 //   console.log(cell);
                 // })
+
+                // https://stackoverflow.com/questions/31975437/searching-for-a-value-in-an-html-table-and-change-its-td-value
+                // https://stackoverflow.com/questions/4996521/jquery-selecting-each-td-in-a-tr
+
+                $('#PalletsDataTable > tbody').each(function(index) {
+                });
 
                 return nRow;
             },
@@ -114,6 +130,40 @@
         ], "footer");
     });
 </script>
+
+<script>
+    $(document).ready(function () {
+        $('#PalletsDataTable > tbody').each(function(index) {
+
+            // console.log("index");
+            // console.log(index);
+
+            // var firstTd = $(this).find('td:first');
+            // console.log("firstTd");
+            // console.log(firstTd);
+
+            // console.log("td value");
+            // console.log($(this).val());
+
+            // $(this).children('td').each (function(a) {
+            //     console.log("td value");
+            //     console.log(a);
+            // });
+
+            // $(this).find('td').each (function() {
+            //     console.log("td value");
+            //     console.log($(this).val());
+            // });
+
+            // $.each(this.cells, function(){
+            //     console.log("td value");
+            //     console.log($(this).val());
+            // });
+
+        });
+    });
+</script>
+
 <?php
 // if ($Owner || $GP['bulk_actions']) {
 //     echo admin_form_open('products/product_actions'.($warehouse_id ? '/'.$warehouse_id : ''), 'id="action-form"');
