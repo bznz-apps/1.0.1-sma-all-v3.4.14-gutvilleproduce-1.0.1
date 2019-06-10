@@ -272,50 +272,105 @@ class Warehouses extends MY_Controller
 
   function handleGetPallets_logic()
   {
-      $this->sma->checkPermissions('index');
+      // $this->sma->checkPermissions('index');
 
       // Using the datatables library instead of using models
       $this->load->library('datatables');
 
       // ID, Date (created_at) , code, supply_order_id, receiving_report_id, manifest_id, warehouse_id, rack_id, image, attachment
 
+
+      // {$this->db->dbprefix('brands')}.name as brand
+      // ->join('brands', 'products.brand=brands.id', 'left')
+      //
+      // {$this->db->dbprefix('warehouses')}.name as warehouse_id
+      // ->join('warehouses', 'NEW_pallets.warehouse_id=warehouses.id', 'left')
+
+      // $this->db->join('propinsi as p', 'p.id_propinsi = k.id_propinsi');
+      // $this->db->join('name as warehouse_id', 'NEW_pallets.warehouse_id=warehouses.id');
+
       // Query
       $this->datatables
-        ->select($this->db->dbprefix('NEW_pallets') . ".id as id, created_at, code, supply_order_id, receiving_report_id, manifest_id, warehouse_id, rack_id, image, attachment")
+        // ->select($this->db->dbprefix('NEW_pallets') . ".id as id, created_at, code, supply_order_id, receiving_report_id, manifest_id, warehouse_id, rack_id, image, attachment")
         // ->select($this->db->dbprefix('NEW_pallets') . ".id as id, " . $this->db->dbprefix('NEW_supply_orders') . ".supply_order as supply_order_id, " . "created_at")
-        // ->join('NEW_supply_orders', 'NEW_supply_orders.id=NEW_pallets.supply_order_id', 'left')
+        // ->select($this->db->dbprefix('NEW_pallets') . ".id as id, created_at, code, supply_order_id, receiving_report_id, manifest_id, {$this->db->dbprefix('warehouses')}.name as warehouse_id, rack_id, image, attachment")
+
+        // ->select($this->db->dbprefix('NEW_pallets') . ".id as id, created_at, code, supply_order_id, receiving_report_id, manifest_id")
+        // ->select("warehouse_id")
+        // ->join('name as warehouse_id', 'NEW_pallets.warehouse_id=warehouses.id')
+        // $this->datatables->join('warehouses', 'NEW_pallets.warehouse_id=warehouses.id', 'left')
+        // ->select("rack_id, image, attachment")
+
+        ->select($this->db->dbprefix('NEW_pallets') . ".id as id, created_at, code, supply_order_id, receiving_report_id, manifest_id")
+        // ->select("id, created_at, code, supply_order_id, receiving_report_id, manifest_id")
         ->from("NEW_pallets")
-          ->add_column(
-              "Actions",
-              "
-                <div class=\"text-center\">
 
-                  <a class=\"tip\" title='"
-                      // . lang("list_deposits")
-                      . "Edit Pallet"
-                      . "' href='"
-                      . admin_url('warehouses/editPallet_view/$1')
-                      . "' >
-                      <i class=\"fa fa-edit\"></i>
-                  </a>
+        ->select("{$this->db->dbprefix('NEW_pallets')}.warehouse_id as warehouse_id")
+        // ->select("{$this->db->dbprefix('warehouses')}.name as warehouse_id")
+        // ->select("warehouses.name as NEW_pallets.warehouse_id")
+        // ->select("NEW_pallets.warehouse_id as warehouses.name")
+        // ->select("warehouse_id")
+        ->from("NEW_pallets")
+        // ->join('warehouses', 'NEW_pallets.warehouse_id=warehouses.id', 'left')
 
-                  <a href='#' class='tip po' title='<b>"
-                    // . $this->lang->line("delete_supplier")
-                    . "Delete Pallet"
-                    . "</b>' data-content=\"<p>"
-                    . lang('r_u_sure')
-                    . "</p><a class='btn btn-danger po-delete' href='"
-                    . admin_url('warehouses/handleDeletePallet_logic/$1')
-                    . "'>" . lang('i_m_sure')
-                    . "</a> <button class='btn po-close'>"
-                    . lang('no')
-                    . "</button>\"  rel='popover'>
-                    <i class=\"fa fa-trash-o\"></i>
-                  </a>
 
-              </div>",
-              "id"
-            );
+        // ->select("name")
+        // ->from("warehouses")
+        // ->where('warehouse.id', 'NEW_pallets.warehouse_id');
+        // // ->where('adjustments.warehouse_id', $warehouse_id);
+
+        // ->select($this->db->dbprefix('warehoses') . ".name as warehouse_id")
+        // ->select($this->db->dbprefix('NEW_racks') . ".name as warehouse_id")
+        // ->select($this->db->dbprefix('NEW_pallets') . ".code as warehouse_id")
+        // ->select($this->db->dbprefix('warehouses') . ".id as warehouse_id")
+        ->select("rack_id, image, attachment")
+        ->from("NEW_pallets")
+
+        // ->select("warehouse_id")
+        // ->join('name as warehouse_id', 'NEW_pallets.warehouse_id=warehouses.id')
+        // ->join('warehouses', 'NEW_pallets.warehouse_id=warehouses.id', 'left')
+        // ->select("rack_id, image, attachment")
+
+        // ->join('brands', 'products.brand=brands.id', 'left')
+        // ->join('warehouses', 'NEW_pallets.warehouse_id=warehouses.id', 'left')
+
+        // $this->datatables->join('warehouses', 'NEW_pallets.warehouse_id=warehouses.id', 'left')
+        // ->join('NEW_racks', 'NEW_pallets.rack_id=NEW_racks.id', 'left')
+
+        // $this->db->join('name as warehouse_id', 'NEW_pallets.warehouse_id=warehouses.id');
+        // ->join('warehouses', 'NEW_pallets.warehouse_id=warehouses.id', 'left')
+
+        ->add_column(
+            "Actions",
+            "
+              <div class=\"text-center\">
+
+                <a class=\"tip\" title='"
+                    // . lang("list_deposits")
+                    . "Edit Pallet"
+                    . "' href='"
+                    . admin_url('warehouses/editPallet_view/$1')
+                    . "' >
+                    <i class=\"fa fa-edit\"></i>
+                </a>
+
+                <a href='#' class='tip po' title='<b>"
+                  // . $this->lang->line("delete_supplier")
+                  . "Delete Pallet"
+                  . "</b>' data-content=\"<p>"
+                  . lang('r_u_sure')
+                  . "</p><a class='btn btn-danger po-delete' href='"
+                  . admin_url('warehouses/handleDeletePallet_logic/$1')
+                  . "'>" . lang('i_m_sure')
+                  . "</a> <button class='btn po-close'>"
+                  . lang('no')
+                  . "</button>\"  rel='popover'>
+                  <i class=\"fa fa-trash-o\"></i>
+                </a>
+
+            </div>",
+            "id"
+          );
 
       echo $this->datatables->generate();
   }
@@ -823,12 +878,27 @@ class Warehouses extends MY_Controller
 
       // ID, Date (created_at) , code, supply_order_id, receiving_report_id, manifest_id, warehouse_id, rack_id, image, attachment
 
+      // $this->datatables
+      // ->select($this->db->dbprefix('products') . ".id as productid, {$this->db->dbprefix('products')}.image as image, {$this->db->dbprefix('products')}.code as code, {$this->db->dbprefix('products')}.name as name, {$this->db->dbprefix('brands')}.name as brand, {$this->db->dbprefix('categories')}.name as cname, cost as cost, price as price, COALESCE(wp.quantity, 0) as quantity, {$this->db->dbprefix('units')}.code as unit, wp.rack as rack, alert_quantity", FALSE)
+      // ->from('products');
+      // $this->datatables->join('categories', 'products.category_id=categories.id', 'left')
+      // ->join('units', 'products.unit=units.id', 'left')
+      // ->join('brands', 'products.brand=brands.id', 'left');
+
       // Query
       $this->datatables
-        ->select($this->db->dbprefix('NEW_racks') . ".id as id, warehouse_id, name, column, row, z_index, floor_level, rack_usage, status")
-        // ->select($this->db->dbprefix('NEW_racks') . ".id as id, " . $this->db->dbprefix('NEW_supply_orders') . ".supply_order as supply_order_id, " . "created_at")
-        // ->join('NEW_supply_orders', 'NEW_supply_orders.id=NEW_racks.supply_order_id', 'left')
-        ->from("NEW_racks")
+      ->select($this->db->dbprefix('NEW_racks') . ".id as id, warehouse_id, name, column, row, z_index, floor_level, rack_usage, status")
+      // ->select($this->db->dbprefix('NEW_racks') . ".id as id, " . $this->db->dbprefix('warehouses') . ".name as warehouse_id, " . "created_at")
+      // ->join('NEW_supply_orders', 'NEW_supply_orders.id=NEW_racks.supply_order_id', 'left')
+      ->from("NEW_racks")
+
+      // $this->datatables
+      // ->select($this->db->dbprefix('NEW_racks') . ".id as id, {$this->db->dbprefix('warehouses')}.name as warehouse_id, {$this->db->dbprefix('NEW_racks')}.name as name, {$this->db->dbprefix('NEW_racks')}.column as column, {$this->db->dbprefix('NEW_racks')}.row as row, {$this->db->dbprefix('NEW_racks')}.z_index as cz_index, {$this->db->dbprefix('NEW_racks')}.floor_level as floor_level, {$this->db->dbprefix('NEW_racks')}.rack_usage as rack_usage,, {$this->db->dbprefix('NEW_racks')}.status as status,", FALSE)
+      // ->from('NEW_racks')
+      // $this->datatables->join('warehouses', 'NEW_racks.warehouse_id=warehouses.id', 'left')
+      // // ->join('units', 'products.unit=units.id', 'left')
+      // // ->join('brands', 'products.brand=brands.id', 'left');
+
           ->add_column(
               "Actions",
               "<div class=\"text-center\">

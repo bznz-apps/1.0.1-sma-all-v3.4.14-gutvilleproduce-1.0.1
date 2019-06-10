@@ -4,6 +4,8 @@
 
     // Default DataTables Code, Leave as is... Starts here --->
 
+
+
     var oTable;
     $(document).ready(function () {
         oTable = $('#PalletsDataTable').dataTable({
@@ -64,7 +66,7 @@
                 // console.log("nRow.cells");
                 // console.log(nRow.cells);
 
-                var cellsArr = [...nRow.cells];
+                // var cellsArr = [...nRow.cells];
 
                 // console.log(nRow.cells[4]); // receiving
                 // console.log(nRow.cells[6]); // warehouse
@@ -101,7 +103,20 @@
                 // https://stackoverflow.com/questions/31975437/searching-for-a-value-in-an-html-table-and-change-its-td-value
                 // https://stackoverflow.com/questions/4996521/jquery-selecting-each-td-in-a-tr
 
+                // $('#PalletsDataTable > tbody').each(function(index) {
+                // });
+
                 $('#PalletsDataTable > tbody').each(function(index) {
+                    console.log("----------------------- <");
+                    console.log("tbody tr rows");
+                    console.log("$(this).children().context.children");
+                    console.log($(this).children().context.children);
+                    console.log($(this).children().context.children[0]);
+                    console.log($(this).children().context.children[1]);
+                    console.log($(this).children().context.children[2]);
+                    console.log($(this).children().context.children.cells);
+                    var trs = $(this).children().context.children;
+                    var rowsArr = [...trs];
                 });
 
                 return nRow;
@@ -133,7 +148,90 @@
 
 <script>
     $(document).ready(function () {
+
+        // function mapTable() {
+        //     var tableBody = document.getElementById("#PalletsDataTable");
+        //     console.log(tableBody);
+        //
+        //     // Reset the table
+        //     // tableBody.innerHTML = "";
+        //
+        //     // Build the new table
+        //     tableBody.forEach(function(row) {
+        //         // var newRow = document.createElement("tr");
+        //         // tableBody.appendChild(newRow);
+        //         console.log("row");
+        //         console.log(row);
+        //
+        //         if (row instanceof Array) {
+        //             row.forEach(function(cell) {
+        //                 // var newCell = document.createElement("td");
+        //                 // newCell.textContent = cell;
+        //                 // newRow.appendChild(newCell);
+        //                 console.log("cell");
+        //                 console.log(cell);
+        //             });
+        //         } else {
+        //             // newCell = document.createElement("td");
+        //             // newCell.textContent = row;
+        //             // newRow.appendChild(newCell);
+        //         }
+        //     });
+        // }
+        // mapTable();
+
+        // var test = $("#PalletsDataTable tbody tr").map(function () {
+        //     console.log("========================");
+        //     var $row = $(this);
+        //     console.log($row);
+        // }).get();
+
         $('#PalletsDataTable > tbody').each(function(index) {
+
+            // console.log("-----------------------");
+            //
+            // console.log("tBody");
+            // console.log("$(this)");
+            // console.log($(this));
+            //
+            // console.log("-----------------------");
+            //
+            // console.log("tBody children");
+            // console.log("$(this).children()");
+            // console.log($(this).children());
+
+            // console.log("----------------------- <");
+            // console.log("tbody tr rows");
+            // console.log("$(this).children().context.children");
+            // console.log($(this).children().context.children);
+            // console.log($(this).children().context.children[0]);
+            // console.log($(this).children().context.children[1]);
+            // console.log($(this).children().context.children[2]);
+            // console.log($(this).children().context.children.cells);
+            // var trs = $(this).children().context.children;
+            // var rowsArr = [...trs];
+
+            // console.log("-----------------------");
+            // $($(this).children().context.children).each(function(index) {
+            //     console.log("row index: " + index);
+            //     console.log($(this));
+            // });
+
+            // console.log("-----------------------");
+            // rowsArr.map((tr, index) => {
+            //     console.log("row index: " + index);
+            //     console.log(tr);
+            // });
+
+            // context: tbody
+            // childNodes
+            // 0
+            // cells
+            // 0, 1, 2, ...
+            // 2
+            // firstChild
+            // data
+
 
             // console.log("index");
             // console.log(index);
