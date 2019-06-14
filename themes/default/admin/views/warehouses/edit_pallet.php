@@ -3,6 +3,18 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
+        $(document).on('click', '#supply_order_items-reset_button', function(e) {
+            // event.preventDefault();
+            $('#pallet_code').val("<?php echo $palletData->code; ?>");
+            $('#pallet_barcode_symbology').val("<?php echo $palletData->barcode_symbology; ?>");
+            $('#select_warehouse_id').val("<?php echo $palletData->warehouse_id; ?>");
+            $('#select_rack_id').val("<?php echo $palletData->rack_id; ?>");
+            $('#select_receiving_report_id').val("<?php echo $palletData->receiving_report_id; ?>");
+            // $('#input_pallet_image').val("<?php echo $palletData->image; ?>");
+            $('#pallet_note').val("<?php echo $palletData->description; ?>");
+        });
+
+
         $('#pallet_code').val("<?php echo $palletData->code; ?>");
         $('#pallet_barcode_symbology').val("<?php echo $palletData->barcode_symbology; ?>");
         $('#select_warehouse_id').val("<?php echo $palletData->warehouse_id; ?>");

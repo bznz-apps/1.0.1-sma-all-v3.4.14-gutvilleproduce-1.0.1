@@ -4,6 +4,8 @@
 
     // Default DataTables Code, Leave as is... Starts here --->
 
+    var warehousesArray = <?php echo json_encode($warehouses); ?>;
+
     var oTable;
     $(document).ready(function () {
         oTable = $('#RacksDataTable').dataTable({
@@ -17,6 +19,12 @@
             */ ?>
             'sAjaxSource': '<?= admin_url('warehouses/handleGetRacks_logic')?>',
             'fnServerData': function (sSource, aoData, fnCallback) {
+                // console.log("sSource");
+                // console.log(sSource);
+                // console.log("aoData");
+                // console.log(aoData);
+                // console.log("fnCallback");
+                // console.log(fnCallback);
                 aoData.push({
                     "name": "<?= $this->security->get_csrf_token_name() ?>",
                     "value": "<?= $this->security->get_csrf_hash() ?>"
@@ -24,7 +32,67 @@
                 $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
             },
             'fnRowCallback': function (nRow, aData, iDisplayIndex) {
-                var oSettings = oTable.fnSettings();
+
+                // get each row (tr)
+                // loop through tr
+                // find desired td (to replace id for name or other field)
+                // for each row_col add unique id... id="row0_col1", id="row1_col1", id="row2_col1", etc
+                // we should receive Warehouses .ids and .names from model
+                // then just check each row column for warehouse_id and replace with name
+                // call a function and send row_col_id and pass $warehouse_id
+                // that function will use this row_col_id to change its warehouse_id val for warehouse name
+
+                console.log(">------------------------------");
+//
+                // console.log("TableID");
+                let tableID = $(this)[0].id;
+                // console.log($(this)[0].id);
+
+                // console.log("Row ID");
+                let rowID = aData[0];
+                // console.log(aData[0]);
+
+                // console.log("nRow");
+                // console.log(nRow);
+
+                $(nRow).each(function(i) {
+                    // console.log("nRow this");
+                    // console.log($(this));
+                    // console.log($(this)[0]);
+
+                    $("td", this).each(function(j) {
+                      // console.log("".concat("row: ", i, ", col: ", j, ", value: ", $(this).text()));
+
+                      // console.log("td new id name:");
+                      let tdID = tableID + "_" + "row" + rowID + "_" + "col" + j;
+                      // console.log(tdID);
+
+                      // change text here... every td text will change
+                      // $(this).text("testText");
+                      var tdCell = $(this);
+
+                      if (j === 1) {
+                        warehousesArray.map(warehouse => {
+                            if (j.toString() === warehouse.id.toString()) {
+                              tdCell.text(warehouse.name);
+                            }
+                        });
+                      }
+
+                      // // Add ID tag to TD element
+                      // $(this).attr('id', tdID);
+
+                    });
+
+                });
+
+                console.log("<------------------------------");
+
+                // console.log("aData");
+                // console.log(aData);
+                // console.log("iDisplayIndex");
+                // console.log(iDisplayIndex);
+                // var oSettings = oTable.fnSettings();
                 nRow.id = aData[0];
                 nRow.className = "rack_link";
                 nRow.style = "text-align: center;";
@@ -35,10 +103,14 @@
 
             // Default DataTables Code, Leave as is... Ends here <---
 
-            "aoColumns": [
-                {"bSortable": false, "mRender": checkbox},
-                null, null, null, null, null, null, null, null, null
-            ]
+            // "aoColumns": [
+            //     {"bSortable": false, "mRender": checkbox},
+            //     null, null, null, null, null, null, null, null, null
+            // ]
+            "aoColumns": [{
+                "bSortable": false,
+                "mRender": checkbox
+            }, null, null, null, null, null, null, null, null, null]
 
         })
         .fnSetFilteringDelay().dtFilter([
@@ -51,6 +123,7 @@
             {column_number: 7, filter_default_label: "[Usage]", filter_type: "text", data: []},
             {column_number: 8, filter_default_label: "[Status]", filter_type: "text", data: []},
         ], "footer");
+
     });
 </script>
 <?php
