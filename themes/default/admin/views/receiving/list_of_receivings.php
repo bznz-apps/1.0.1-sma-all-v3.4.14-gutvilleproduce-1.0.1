@@ -4,6 +4,9 @@
 
     // Default DataTables Code, Leave as is... Starts here --->
 
+    // convert php arrays to javascript arrays
+    var supplyOrdersArray = <?php echo json_encode($supplyOrders); ?>;
+
     var oTable;
     $(document).ready(function () {
         oTable = $('#ReceivingsDataTable').dataTable({
@@ -23,7 +26,61 @@
                 $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
             },
             'fnRowCallback': function (nRow, aData, iDisplayIndex) {
-                var oSettings = oTable.fnSettings();
+
+                console.log(">------------------------------");
+
+                // $this = table; table.id
+                let tableID = $(this)[0].id;
+
+                // console.log("Row ID");
+                let rowID = aData[0];
+                // console.log(aData[0]);
+
+                // console.log("nRow");
+                // console.log(nRow);
+
+                $(nRow).each(function(i) {
+
+                    $("td", this).each(function(j) {
+                      console.log("".concat("row: ", i, ", col: ", j, ", value: ", $(this).text()));
+
+                      // console.log("td new id name:");
+                      let tdID = tableID + "_" + "row" + rowID + "_" + "col" + j;
+                      // console.log(tdID);
+
+                      // change text here... every td text will change
+                      // $(this).text("testText");
+                      var tdCell = $(this);
+
+                      console.log("j");
+                      console.log(j);
+
+                      if (j === 3) {
+
+                        if (supplyOrdersArray !== null || supplyOrdersArray !== undefined || supplyOrdersArray !== 0) {
+
+                          supplyOrdersArray.map(supplyOrder => {
+                              console.log("supplyOrder");
+                              console.log(supplyOrder);
+                              if ($(this).text().toString() === supplyOrder.id.toString()) {
+                                tdCell.text(supplyOrder.supply_order_number);
+                              }
+                          });
+
+                        }
+
+                      }
+
+                      // add/change this element's id
+                      // $(this).attr('id', tdID);
+
+                    });
+
+                });
+
+                console.log("<------------------------------");
+
+                // var oSettings = oTable.fnSettings();
                 nRow.id = aData[0];
                 nRow.className = "supply_order_link";
                 nRow.style = "text-align: center;";

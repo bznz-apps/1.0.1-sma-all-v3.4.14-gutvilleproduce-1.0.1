@@ -39,7 +39,7 @@
                 $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
             },
             'fnRowCallback': function (nRow, aData, iDisplayIndex) {
-                var oSettings = oTable.fnSettings();
+                // var oSettings = oTable.fnSettings();
                 nRow.id = aData[0];
                 nRow.className = "supply_order_link";
                 nRow.style = "text-align: center;";

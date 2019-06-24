@@ -29,6 +29,9 @@ console.log($('#x_supply_order_id').val());
 
     // Default DataTables Code, Leave as is... Starts here --->
 
+    // convert php arrays to javascript arrays
+    var productsArray = <?php echo json_encode($products); ?>;
+
     var oTable;
     $(document).ready(function () {
 
@@ -140,7 +143,61 @@ console.log($('#x_supply_order_id').val());
                 // console.log(nRow);
                 // console.log("aData");
                 // console.log(aData[1]);
-                var oSettings = oTable.fnSettings();
+                // var oSettings = oTable.fnSettings();
+
+                console.log(">------------------------------");
+
+                // $this = table; table.id
+                let tableID = $(this)[0].id;
+
+                // console.log("Row ID");
+                let rowID = aData[0];
+                // console.log(aData[0]);
+
+                // console.log("nRow");
+                // console.log(nRow);
+
+                $(nRow).each(function(i) {
+
+                    $("td", this).each(function(j) {
+                      console.log("".concat("row: ", i, ", col: ", j, ", value: ", $(this).text()));
+
+                      // console.log("td new id name:");
+                      let tdID = tableID + "_" + "row" + rowID + "_" + "col" + j;
+                      // console.log(tdID);
+
+                      // change text here... every td text will change
+                      // $(this).text("testText");
+                      var tdCell = $(this);
+
+                      console.log("j");
+                      console.log(j);
+
+                      if (j === 1) {
+
+                        if (productsArray !== null || productsArray !== undefined || productsArray !== 0) {
+
+                          productsArray.map(product => {
+                              console.log("product");
+                              console.log(product);
+                              if ($(this).text().toString() === product.id.toString()) {
+                                tdCell.text(product.name);
+                              }
+                          });
+
+                        }
+
+                      }
+
+                      // add/change this element's id
+                      // $(this).attr('id', tdID);
+
+                    });
+
+                });
+
+                console.log("<------------------------------");
+
                 nRow.id = aData[0];
                 nRow.className = "pallet_link";
                 nRow.style = "text-align: center;";
@@ -371,7 +428,25 @@ console.log($('#x_supply_order_id').val());
                             <td style="width:10%; text-align: center;" class="dataTables_empty" id="view_pallet-info_table-manifest_ref_no"><?php echo $manifest_ref_no; ?></td>
                             <td style="width:10%; text-align: center;" class="dataTables_empty" id="view_pallet-info_table-warehouse"><?php echo $warehouse; ?></td>
                             <td style="width:10%; text-align: center;" class="dataTables_empty" id="view_pallet-info_table-rack"><?php echo $rack; ?></td>
-                            <td style="width:10%; text-align: center;" class="dataTables_empty" id="view_pallet-info_table-image"><?php echo $image; ?></td>
+
+                            <td style="width:10%; text-align: center;" class="dataTables_empty" id="view_pallet-info_table-image">
+                                <?php /* echo $image; */ ?>
+                                <!-- <img src="<?php echo $image; ?>" alt="" border="" height="" width="" /> -->
+                                <!-- <img src="" id="view-pallet-image-test"> -->
+                                    <!-- <a href="<?= admin_url('products/index') ?>" data-toggle="modal" data-target="#myModal-img"> -->
+                                    <button type="button" style="border:none;" data-toggle="modal" data-target="#myModal-img">
+                                        <!-- <i class="fa fa-file-photo-o" data-toggle="modal" data-target="#myModal-img" ></i> -->
+                                        <img src="<?php echo "/assets/uploads/" . $image ?>" alt="" border="0" height="30" width="30" />
+                                    </button>
+                                    <!-- </a> -->
+                                <!-- </img> -->
+                            </td>
+
+                            <!-- SHOW ICON -->
+                            <!-- <td style="width:10%; text-align: center;" class="dataTables_empty" id="view_pallet-info_table-image">
+                                <i class="fa fa-file-photo-o" data-toggle="modal" data-target="#myModal-img" ></i>
+                            </td> -->
+
                             <td style="width:10%; text-align: center;" class="dataTables_empty" id="view_pallet-info_table-attachment"><?php echo $attachment; ?></td>
 
                         </tr>
@@ -429,7 +504,7 @@ console.log($('#x_supply_order_id').val());
 
                           */ ?>
 
-                          <th style="min-width:30px; max-width:30px; width: 30px; text-align: center;">
+                          <th style="min-width:10px; max-width:10px; width: 10px; text-align: center;">
                               <input class="checkbox checkth" type="checkbox" name="check"/>
                           </th>
                           <th style="width:50%; text-align: center;">Product</th>
@@ -454,7 +529,7 @@ console.log($('#x_supply_order_id').val());
 
                         <tr class="active">
 
-                          <th style="min-width:30px; max-width:30px; width: 30px; text-align: center;">
+                          <th style="min-width:10px; max-width:10px; width: 10px; text-align: center;">
                               <input class="checkbox checkft" type="checkbox" name="check"/>
                           </th>
                           <th style="text-align: center;"></th>
@@ -513,8 +588,82 @@ console.log($('#x_supply_order_id').val());
     <?= form_close() ?>
 <?php } ?>
 
+<!-- IMAGE VIEW MODAL -->
+<!-- https://getbootstrap.com/docs/4.0/components/modal/ -->
+
+<!-- approach #1 -->
+<!-- CUSTOM MODAL TO SHOW IMAGE WITH HEADER AND FOOTER -->
+<!-- <div class="modal fade" id="myModal-img" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img src="<?php echo "/assets/uploads/" . $image ?>" alt="i" border=3 height=200 width=200 />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- approach #2 - raw copy -->
+<!-- DEFAULT MODAL TO SHOW IMAGE -->
+<!-- raw and a copy of the modal shown when you click an image form datatable -->
+<!-- <div id="myModal-img" class="modal-dialog" style="width: 350px;">
+  <div class="modal-content" style="width: 330px;">
+    <div class="modal-header" style="display:none">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h4 class="modal-title">null</h4>
+    </div>
+    <div class="modal-body">
+      <div class="ekko-lightbox-container">
+        <div>
+          <img src="http://localhost/assets/uploads/no_image.png" style="max-width: 100%;">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="display:none">null</div>
+  </div>
+</div> -->
+
+<!-- approach #2 - edited or trying, this will cause the same modal UI shown when you cick an image on datatable and modal shows -->
+<!-- DEFAULT MODAL TO SHOW IMAGE -->
+<div class="modal fade" id="myModal-img" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="width: 350px;">
+    <div class="modal-content" style="width: 330px;">
+      <div class="modal-header" style="display:none">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title">null</h4>
+      </div>
+      <div class="modal-body">
+        <div class="ekko-lightbox-container">
+          <div>
+            <img src="<?php echo "/assets/uploads/" . $image ?>" style="max-width: 100%;">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="display:none">null</div>
+    </div>
+  </div>
+</div>
+
 <script type="text/javascript">
     $(document).ready(function () {
+
+      $('#view-pallet-image-test').on('click', function() {
+          console.log("pallet image clicked!");
+          alert("<?php echo $image ?>");
+          // clickedColumn = $(this).parent().children().index($(this));
+          // clickedRow = $(this).parent().parent().children().index($(this).parent());
+          // // alert('Row: ' + clickedRow + ', Column: ' + clickedColumn);
+      });
 
         // // *********************************************************************
         // //

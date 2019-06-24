@@ -4,7 +4,10 @@
 
     // Default DataTables Code, Leave as is... Starts here --->
 
-
+    // convert php arrays to javascript arrays
+    var receivingsArray = <?php echo json_encode($receivings); ?>;
+    var warehousesArray = <?php echo json_encode($warehouses); ?>;
+    var racksArray = <?php echo json_encode($racks); ?>;
 
     var oTable;
     $(document).ready(function () {
@@ -26,7 +29,93 @@
                 $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
             },
             'fnRowCallback': function (nRow, aData, iDisplayIndex) {
-                var oSettings = oTable.fnSettings();
+
+
+              console.log(">------------------------------");
+
+              // $this = table; table.id
+              let tableID = $(this)[0].id;
+
+              // console.log("Row ID");
+              let rowID = aData[0];
+              // console.log(aData[0]);
+
+              // console.log("nRow");
+              // console.log(nRow);
+
+              $(nRow).each(function(i) {
+
+                  $("td", this).each(function(j) {
+                    console.log("".concat("row: ", i, ", col: ", j, ", value: ", $(this).text()));
+
+                    // console.log("td new id name:");
+                    let tdID = tableID + "_" + "row" + rowID + "_" + "col" + j;
+                    // console.log(tdID);
+
+                    // change text here... every td text will change
+                    // $(this).text("testText");
+                    var tdCell = $(this);
+
+                    console.log("j");
+                    console.log(j);
+
+                    if (j === 4) {
+
+                      if (receivingsArray !== null || receivingsArray !== undefined || receivingsArray !== 0) {
+
+                        receivingsArray.map(receiving => {
+                            console.log("receiving");
+                            console.log(receiving);
+                            if ($(this).text().toString() === receiving.id.toString()) {
+                              tdCell.text(receiving.receiving_report_number);
+                            }
+                        });
+
+                      }
+
+                    };
+                    if (j === 6) {
+
+                      if (warehousesArray !== null || warehousesArray !== undefined || warehousesArray !== 0) {
+
+                        warehousesArray.map(warehouse => {
+                            console.log("warehouse");
+                            console.log(warehouse);
+                            if ($(this).text().toString() === warehouse.id.toString()) {
+                              tdCell.text(warehouse.name);
+                            }
+                        });
+
+                      }
+
+                    };
+                    if (j === 7) {
+
+                      if (racksArray !== null || racksArray !== undefined || racksArray !== 0) {
+
+                        racksArray.map(rack => {
+                            console.log("rack");
+                            console.log(rack);
+                            if ($(this).text().toString() === rack.id.toString()) {
+                              tdCell.text(rack.name);
+                            }
+                        });
+
+                      }
+
+                    };
+
+                    // add/change this element's id
+                    // $(this).attr('id', tdID);
+
+                  });
+
+              });
+
+              console.log("<------------------------------");
+
+
+                // var oSettings = oTable.fnSettings();
                 nRow.id = aData[0];
                 nRow.className = "pallet_link";
                 nRow.style = "text-align: center;";

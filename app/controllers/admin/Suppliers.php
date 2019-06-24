@@ -1259,7 +1259,7 @@ class Suppliers extends MY_Controller
 
         echo "Preview Supply Order ID: " . $id;
 
-        // $this->data['products'] = $this->site->getAllProducts();
+        $this->data['products'] = $this->site->getAllProducts();
 
 
         // $this->data === select * from 'NEW_supply_orders' where id === $id

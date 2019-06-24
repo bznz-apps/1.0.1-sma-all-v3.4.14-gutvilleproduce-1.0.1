@@ -4,6 +4,7 @@
 
     // Default DataTables Code, Leave as is... Starts here --->
 
+    // convert php arrays to javascript arrays
     var warehousesArray = <?php echo json_encode($warehouses); ?>;
 
     var oTable;
@@ -43,7 +44,7 @@
                 // that function will use this row_col_id to change its warehouse_id val for warehouse name
 
                 console.log(">------------------------------");
-//
+
                 // console.log("TableID");
                 let tableID = $(this)[0].id;
                 // console.log($(this)[0].id);
@@ -72,14 +73,20 @@
                       var tdCell = $(this);
 
                       if (j === 1) {
-                        warehousesArray.map(warehouse => {
-                            if (j.toString() === warehouse.id.toString()) {
-                              tdCell.text(warehouse.name);
-                            }
-                        });
+
+                        if (warehousesArray !== null || warehousesArray !== undefined || warehousesArray !== 0) {
+
+                          warehousesArray.map(warehouse => {
+                              if ($(this).text().toString() === warehouse.id.toString()) {
+                                tdCell.text(warehouse.name);
+                              }
+                          });
+
+                        }
+
                       }
 
-                      // // Add ID tag to TD element
+                      // add/change this element's id
                       // $(this).attr('id', tdID);
 
                     });
@@ -253,6 +260,17 @@
 <?php } ?>
 
 <script type="text/javascript">
+
+    // setTimeout(function(){
+    //     location.reload();
+    // },5000);
+
+    // function autoRefreshPage()
+    // {
+    //     window.location = window.location.href;
+    // }
+    // setInterval('autoRefreshPage()', 5000);
+
     $(document).ready(function () {
 
         // *********************************************************************

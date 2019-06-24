@@ -309,6 +309,8 @@ class Receiving extends MY_Controller
 
     function getReceivings_view()
     {
+      $supplyOrders = $this->suppliers_model->getAllSupplyOrders();
+      $this->data['supplyOrders'] = $supplyOrders;
       $this->page_construct('receiving/list_of_receivings', $meta, $this->data);
     }
 
@@ -356,6 +358,9 @@ class Receiving extends MY_Controller
         // get receiving report
         // get all pallet ids where this receiving report id is found
         // for each pallet, load items
+
+        $this->data['products'] = $this->products_model->getAllProducts();
+        $this->data['racks'] = $this->warehouses_model->getAllRacks();
 
         $receiving_report = $this->receiving_model->getReceivingReportByID($id);
         $pallets = $this->warehouses_model->getAllPalletsByReceivingReportID($id);

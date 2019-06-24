@@ -29,6 +29,9 @@ console.log($('#x_supply_order_id').val());
 
     // Default DataTables Code, Leave as is... Starts here --->
 
+    // convert php arrays to javascript arrays
+    var productsArray = <?php echo json_encode($products); ?>;
+
     var oTable;
     $(document).ready(function () {
 
@@ -63,7 +66,60 @@ console.log($('#x_supply_order_id').val());
             'fnRowCallback': function (nRow, aData, iDisplayIndex) {
                 addRowItem(aData);
 
-                var oSettings = oTable.fnSettings();
+                console.log(">------------------------------");
+
+                // $this = table; table.id
+                let tableID = $(this)[0].id;
+
+                // console.log("Row ID");
+                let rowID = aData[0];
+                // console.log(aData[0]);
+
+                // console.log("nRow");
+                // console.log(nRow);
+
+                $(nRow).each(function(i) {
+
+                    $("td", this).each(function(j) {
+                      console.log("".concat("row: ", i, ", col: ", j, ", value: ", $(this).text()));
+
+                      // console.log("td new id name:");
+                      let tdID = tableID + "_" + "row" + rowID + "_" + "col" + j;
+                      // console.log(tdID);
+
+                      // change text here... every td text will change
+                      // $(this).text("testText");
+                      var tdCell = $(this);
+
+                      console.log("j");
+                      console.log(j);
+
+                      if (j === 1) {
+
+                        if (productsArray !== null || productsArray !== undefined || productsArray !== 0) {
+
+                          productsArray.map(product => {
+                              console.log("product");
+                              console.log(product);
+                              if ($(this).text().toString() === product.id.toString()) {
+                                tdCell.text(product.name);
+                              }
+                          });
+
+                        }
+
+                      }
+
+                      // add/change this element's id
+                      // $(this).attr('id', tdID);
+
+                    });
+
+                });
+
+                console.log("<------------------------------");
+
+                // var oSettings = oTable.fnSettings();
                 nRow.id = aData[0];
                 nRow.className = "supply_order_link";
                 nRow.style = "text-align: center;";
@@ -293,7 +349,12 @@ console.log($('#x_supply_order_id').val());
                             <td style="width:30%; text-align: center;" class="dataTables_empty"><?php echo $supply_order_number; ?></td>
                             <td style="width:30%; text-align: center;" class="dataTables_empty"><?php echo $supplier_company; ?></td>
                             <td style="width:30%; text-align: center;" class="dataTables_empty"><?php echo $created_at; ?></td>
-                            <td style="width:30%; text-align: center;" class="dataTables_empty"><?php echo $image; ?></td>
+                            <!-- <td style="width:30%; text-align: center;" class="dataTables_empty"><?php echo $image; ?></td> -->
+                            <td style="width:10%; text-align: center;" class="dataTables_empty">
+                                <button type="button" style="border:none;" data-toggle="modal" data-target="#myModal-img">
+                                    <img src="<?php echo "/assets/uploads/" . $image ?>" alt="" border="1" height="30" width="30" />
+                                </button>
+                            </td>
                             <td style="width:30%; text-align: center;" class="dataTables_empty"><?php echo $attachment; ?></td>
                         </tr>
                         </tbody>
@@ -433,6 +494,27 @@ console.log($('#x_supply_order_id').val());
     </div>
     <?= form_close() ?>
 <?php } ?>
+
+<!-- IMAGE MODAL -->
+
+<div class="modal fade" id="myModal-img" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="width: 350px;">
+    <div class="modal-content" style="width: 330px;">
+      <div class="modal-header" style="display:none">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title">null</h4>
+      </div>
+      <div class="modal-body">
+        <div class="ekko-lightbox-container">
+          <div>
+            <img src="<?php echo "/assets/uploads/" . $image ?>" style="max-width: 100%;">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="display:none">null</div>
+    </div>
+  </div>
+</div>
 
 <script type="text/javascript">
     $(document).ready(function () {

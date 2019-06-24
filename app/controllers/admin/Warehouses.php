@@ -272,6 +272,11 @@ class Warehouses extends MY_Controller
     $bc = array(array('link' => base_url() . "admin", 'page' => lang('home')), array('link' => '#', 'page' => /* lang('products') */ "Pallets" ));
     $meta = array('page_title' => /* lang('products') */ "Pallets", 'bc' => $bc);
 
+    // $this->data['products'] = $this->products_model->getAllProducts();
+    $this->data['receivings'] = $this->receiving_model->getAllReceivingReports();
+    $this->data['warehouses'] = $this->warehouses_model->getAllWarehouses();
+    $this->data['racks'] = $this->warehouses_model->getAllRacks();
+
     $this->page_construct('warehouses/list_of_pallets', $meta, $this->data);
   }
 
@@ -328,6 +333,7 @@ class Warehouses extends MY_Controller
   function viewPallet_view($id) {
 
     $pallet = $this->warehouses_model->getPalletByID($id);
+    $this->data['products'] = $this->products_model->getAllProducts();
 
     // receiving, warehoses, rack
 
@@ -625,19 +631,36 @@ class Warehouses extends MY_Controller
         'receiving_report_id' => $this->input->post('receiving_id'),
         'description' => $this->input->post('pallet_note'),
         // 'image' => $data->image,
-        'image' => $photo,
+        // 'image' => $photo,
         'created_at' => date('Y-m-d H:i:s'),
     );
 
-    $new_pallet_id = $this->warehouses_model->addPallet($dataToInsert);
+    // check if photo is null...
+    // if it is not null, then append to the $dataToInsert array the enxt:
+    // 'image' => $photo
+    // if (empty($_POST['image'])) {
+    // } else {
+    // $dataToInsert["image"] = $photo;
+    // }
 
-    if ($new_pallet_id == true) {
-      // $this->session->set_flashdata('message', 'New Supply Order Added Successfully, OID: ' . $new_pallet_id);
-      // admin_redirect('suppliers/getSupplyOrders_view');
+    if (!isset($_POST['name']))
+    {
+        // add value
     } else {
-      $this->session->set_flashdata('error', 'Something went wrong, please try again later.');
-      admin_redirect('warehouses/editPallet_view');
+        // process your results
+        $dataToInsert["image"] = $photo;
     }
+
+    // $new_pallet_id = $this->warehouses_model->addPallet($dataToInsert);
+    $this->warehouses_model->updatePallet($id, $dataToInsert);
+
+    // if ($new_pallet_id == true) {
+    //   // $this->session->set_flashdata('message', 'New Supply Order Added Successfully, OID: ' . $new_pallet_id);
+    //   // admin_redirect('suppliers/getSupplyOrders_view');
+    // } else {
+    //   $this->session->set_flashdata('error', 'Something went wrong, please try again later.');
+    //   admin_redirect('warehouses/editPallet_view');
+    // }
 
     // GRAB ITEMS
 
@@ -650,7 +673,7 @@ class Warehouses extends MY_Controller
         for ($r = 0; $r < $i; $r++) {
 
             $item = array(
-                'pallet_id' => $new_pallet_id,
+                'pallet_id' => $id,
                 'product_id' => $_POST['product_id'][$r],
                 'quantity' => $_POST['product_quantity'][$r],
                 // 'product_name' => $_POST['product_name'][$r],
@@ -675,10 +698,11 @@ class Warehouses extends MY_Controller
 
     }
 
-    $addPalletItems = $this->warehouses_model->addPalletItems($items);
+    // $addPalletItems = $this->warehouses_model->addPalletItems($items);
+    $updatePalletItems = $this->warehouses_model->updatePalletItems($id, $items);
 
     // if ($this->warehouses_model->addPalletItems($dataToInsert) == true) {
-    if ($addPalletItems == true) {
+    if ($updatePalletItems == true) {
         $this->session->set_flashdata('message', 'Pallet Edited Successfully');
         admin_redirect('warehouses/getPallets_view');
     } else {
@@ -798,8 +822,8 @@ class Warehouses extends MY_Controller
 
   function getRacks_view()
   {
-    $warehouses = $this->warehouses_model->getAllWarehouses();
-    $this->data['warehouses'] = $warehouses;
+    // $this->data['products'] = $this->products_model->getAllProducts();
+    $this->data['warehouses'] = $this->warehouses_model->getAllWarehouses();
     $this->page_construct('warehouses/list_of_racks', $meta, $this->data);
   }
 
@@ -945,6 +969,26 @@ class Warehouses extends MY_Controller
   }
 
   function getPalletByID($palletID)
+  {
+      $palletData = $this->warehouses_model->getPalletByID($palletID);
+      echo json_encode($palletData);
+  }
+
+  // API TEST
+
+  function getAllProducts_api()
+  {
+      $query = $this->db->query("select * from " . $this->db->dbprefix('products'));
+      echo json_encode($query->result());
+  }
+
+  function getAllWarehouses_api()
+  {
+      $query = $this->db->query("select * from " . $this->db->dbprefix('warehouses'));
+      echo json_encode($query->result());
+  }
+
+  function getPalletByID_api()
   {
       $palletData = $this->warehouses_model->getPalletByID($palletID);
       echo json_encode($palletData);

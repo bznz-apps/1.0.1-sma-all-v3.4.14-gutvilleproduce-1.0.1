@@ -29,6 +29,10 @@ console.log($('#x_supply_order_id').val());
 
     // Default DataTables Code, Leave as is... Starts here --->
 
+    // convert php arrays to javascript arrays
+    var productsArray = <?php echo json_encode($products); ?>;
+    var racksArray = <?php echo json_encode($racks); ?>;
+
     var oTable;
     $(document).ready(function () {
 
@@ -54,7 +58,63 @@ console.log($('#x_supply_order_id').val());
                 $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
             },
             'fnRowCallback': function (nRow, aData, iDisplayIndex) {
-                var oSettings = oTable.fnSettings();
+
+                console.log(">------------------------------");
+
+                // $this = table; table.id
+                let tableID = $(this)[0].id;
+
+                // console.log("Row ID");
+                let rowID = aData[0];
+                // console.log(aData[0]);
+
+                // console.log("nRow");
+                // console.log(nRow);
+
+                $(nRow).each(function(i) {
+
+                    $("td", this).each(function(j) {
+                      console.log("".concat("row: ", i, ", col: ", j, ", value: ", $(this).text()));
+
+                      // console.log("td new id name:");
+                      let tdID = tableID + "_" + "row" + rowID + "_" + "col" + j;
+                      // console.log(tdID);
+
+                      // change text here... every td text will change
+                      // $(this).text("testText");
+                      var tdCell = $(this);
+
+                      console.log("j");
+                      console.log(j);
+
+                      if (j === 3) {
+
+                        if (racksArray !== null || racksArray !== undefined || racksArray !== 0) {
+
+                          if (racksArray !== null || racksArray !== undefined || racksArray !== 0) {
+                            racksArray.map(rack => {
+                                console.log("rack");
+                                console.log(rack);
+                                if ($(this).text().toString() === rack.id.toString()) {
+                                  tdCell.text(rack.name);
+                                }
+                            });
+                          }
+
+                        }
+
+                      }
+
+                      // add/change this element's id
+                      // $(this).attr('id', tdID);
+
+                    });
+
+                });
+
+                console.log("<------------------------------");
+
+                // var oSettings = oTable.fnSettings();
                 nRow.id = aData[0];
                 nRow.className = "supply_order_link";
                 nRow.style = "text-align: center;";
@@ -73,8 +133,8 @@ console.log($('#x_supply_order_id').val());
                 null,
                 null,
                 null,
-                null,
-                null
+                {"bSortable": false,"mRender": img_hl}, // use this object to render the image,
+                {"bSortable": false,"mRender": attachment2}, // use this object to download the attachment
                 // UNHIDE ACTIONS COLUMN
                 // null  // actions column
             ]
@@ -197,26 +257,33 @@ console.log($('#x_supply_order_id').val());
                         <thead>
                         <tr class="primary">
 
-                            <th style="width:10%; text-align: center;">Date</th>
-                            <th style="width:10%; text-align: center;">Receiving<br>Report No</th>
-                            <th style="width:10%; text-align: center;">Supply<br>Order No</th>
-                            <th style="width:10%; text-align: center;">Manifest<br>Ref No</th>
-                            <th style="width:10%; text-align: center;">Image</th>
-                            <th style="width:10%; text-align: center;">Attachment</th>
-                            <th style="width:30%; text-align: center;">Comments</th>
+                            <th style="width:16%; text-align: center;">Date</th>
+                            <th style="width:16%; text-align: center;">Receiving<br>Report No</th>
+                            <!-- <th style="width:16%; text-align: center;">Supply<br>Order No</th> -->
+                            <th style="width:16%; text-align: center;">Manifest<br>Ref No</th>
+                            <th style="width:16%; text-align: center;">Image</th>
+                            <th style="width:16%; text-align: center;">Attachment</th>
+                            <th style="width:16%; text-align: center;">Comments</th>
 
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
 
-                            <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $receiving_report->created_at; ?></td>
-                            <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $receiving_report->receiving_report_number; ?></td>
-                            <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $receiving_report->supply_order_id; ?></td>
-                            <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $receiving_report->manifest_ref_no; ?></td>
-                            <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $receiving_report->image; ?></td>
-                            <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $receiving_report->attachment; ?></td>
-                            <td style="width:30%; text-align: center;" class="dataTables_empty"><?php echo $receiving_report->comments; ?></td>
+                            <td style="width:16%; text-align: center;" class="dataTables_empty"><?php echo $receiving_report->created_at; ?></td>
+                            <td style="width:16%; text-align: center;" class="dataTables_empty"><?php echo $receiving_report->receiving_report_number; ?></td>
+                            <!-- <td style="width:16%; text-align: center;" class="dataTables_empty"><?php echo $receiving_report->supply_order_id; ?></td> -->
+                            <td style="width:16%; text-align: center;" class="dataTables_empty"><?php echo $receiving_report->manifest_ref_no; ?></td>
+
+                            <!-- <td style="width:16%; text-align: center;" class="dataTables_empty"><?php echo $receiving_report->image; ?></td> -->
+                            <td style="width:16%; text-align: center;" class="dataTables_empty" id="<?php echo $receiving_report->image; ?>">
+                                <button type="button" style="border:none;" data-toggle="modal" data-target="#myModal-img">
+                                    <img src="<?php echo "/assets/uploads/" . $receiving_report->image ?>" alt="" border="1" height="30" width="30" />
+                                </button>
+                            </td>
+
+                            <td style="width:16%; text-align: center;" class="dataTables_empty"><?php echo $receiving_report->attachment; ?></td>
+                            <td style="width:16%; text-align: center;" class="dataTables_empty"><?php echo $receiving_report->comments; ?></td>
 
                         </tr>
                         </tbody>
@@ -353,7 +420,12 @@ console.log($('#x_supply_order_id').val());
                                     <td style="width:20%; text-align: center;" class="dataTables_empty"><?php echo $onePalletWithItem['created_at']; ?></td>
                                     <td style="width:30%; text-align: center;" class="dataTables_empty"><?php echo $onePalletWithItem['code']; ?></td>
                                     <td style="width:30%; text-align: center;" class="dataTables_empty"><?php echo $onePalletWithItem['rack_id']; ?></td>
-                                    <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $onePalletWithItem['image']; ?></td>
+                                    <!-- <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $onePalletWithItem['image']; ?></td> -->
+                                    <td style="width:16%; text-align: center;" class="dataTables_empty" id="<?php echo $onePalletWithItem['image']; ?>">
+                                        <button type="button" style="border:none;" data-toggle="modal" data-target="#myModal-img">
+                                            <img src="<?php echo "/assets/uploads/" . $onePalletWithItem['image']; ?>" alt="" border="1" height="30" width="30" />
+                                        </button>
+                                    </td>
                                     <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $onePalletWithItem['attachment']; ?></td>
 
                                 </tr>
@@ -429,7 +501,46 @@ console.log($('#x_supply_order_id').val());
     <?= form_close() ?>
 <?php } ?>
 
+<!-- approach #2 - edited or trying, this will cause the same modal UI shown when you cick an image on datatable and modal shows -->
+<!-- DEFAULT MODAL TO SHOW IMAGE -->
+<div class="modal fade" id="myModal-img" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="width: 350px;">
+    <div class="modal-content" style="width: 330px;">
+      <div class="modal-header" style="display:none">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title">null</h4>
+      </div>
+      <div class="modal-body">
+        <div class="ekko-lightbox-container">
+          <div>
+            <img id="img-in-modal" src="<?php echo "/assets/uploads/" . $image ?>" style="max-width: 100%;">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="display:none">null</div>
+    </div>
+  </div>
+</div>
+
 <script type="text/javascript">
     $(document).ready(function () {
+
+        // $('#img-button').on('click', function() {
+        //     console.log("image clicked!");
+        //     // receive clicked image name
+        //     // open modal and show that image
+        // });
+
+        $('td').click(function(e) {
+            var txt = $(e.target).text();
+            // console.log(txt);
+            // console.log($(this));
+            // console.log($(this).text());
+            console.log(this.id);
+            var image = this.id;
+
+            $("#img-in-modal").attr("src", "/assets/uploads/" + image);
+        });
+
     });
 </script>
