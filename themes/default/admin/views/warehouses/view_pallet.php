@@ -657,13 +657,13 @@ console.log($('#x_supply_order_id').val());
 <script type="text/javascript">
     $(document).ready(function () {
 
-      $('#view-pallet-image-test').on('click', function() {
-          console.log("pallet image clicked!");
-          alert("<?php echo $image ?>");
-          // clickedColumn = $(this).parent().children().index($(this));
-          // clickedRow = $(this).parent().parent().children().index($(this).parent());
-          // // alert('Row: ' + clickedRow + ', Column: ' + clickedColumn);
-      });
+        $('#view-pallet-image-test').on('click', function() {
+            console.log("pallet image clicked!");
+            alert("<?php echo $image ?>");
+            // clickedColumn = $(this).parent().children().index($(this));
+            // clickedRow = $(this).parent().parent().children().index($(this).parent());
+            // // alert('Row: ' + clickedRow + ', Column: ' + clickedColumn);
+        });
 
         // // *********************************************************************
         // //

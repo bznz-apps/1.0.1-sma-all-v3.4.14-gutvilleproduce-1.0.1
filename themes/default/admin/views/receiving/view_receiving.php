@@ -277,7 +277,8 @@ console.log($('#x_supply_order_id').val());
 
                             <!-- <td style="width:16%; text-align: center;" class="dataTables_empty"><?php echo $receiving_report->image; ?></td> -->
                             <td style="width:16%; text-align: center;" class="dataTables_empty" id="<?php echo $receiving_report->image; ?>">
-                                <button type="button" style="border:none;" data-toggle="modal" data-target="#myModal-img">
+                                <!-- <button type="button" style="border:none;" data-toggle="modal" data-target="#myModal-img"> -->
+                                <button id="record-image" type="button" style="border:none;">
                                     <img src="<?php echo "/assets/uploads/" . $receiving_report->image ?>" alt="" border="1" height="30" width="30" />
                                 </button>
                             </td>
@@ -422,7 +423,8 @@ console.log($('#x_supply_order_id').val());
                                     <td style="width:30%; text-align: center;" class="dataTables_empty"><?php echo $onePalletWithItem['rack_id']; ?></td>
                                     <!-- <td style="width:10%; text-align: center;" class="dataTables_empty"><?php echo $onePalletWithItem['image']; ?></td> -->
                                     <td style="width:16%; text-align: center;" class="dataTables_empty" id="<?php echo $onePalletWithItem['image']; ?>">
-                                        <button type="button" style="border:none;" data-toggle="modal" data-target="#myModal-img">
+                                        <!-- <button type="button" style="border:none;" data-toggle="modal" data-target="#myModal-img"> -->
+                                        <button id="record-item-image" type="button" style="border:none;">
                                             <img src="<?php echo "/assets/uploads/" . $onePalletWithItem['image']; ?>" alt="" border="1" height="30" width="30" />
                                         </button>
                                     </td>
@@ -513,7 +515,9 @@ console.log($('#x_supply_order_id').val());
       <div class="modal-body">
         <div class="ekko-lightbox-container">
           <div>
-            <img id="img-in-modal" src="<?php echo "/assets/uploads/" . $image ?>" style="max-width: 100%;">
+            <!-- <img id="img-in-modal" src="<?php echo "/assets/uploads/no_image.png" ?>" style="max-width: 100%;"> -->
+            <!-- <img id="img-in-modal" src="<?php echo "/assets/uploads/" . $image ?>" style="max-width: 100%;"> -->
+            <img id="img-in-modal" style="max-width: 100%;">
           </div>
         </div>
       </div>
@@ -539,7 +543,20 @@ console.log($('#x_supply_order_id').val());
             console.log(this.id);
             var image = this.id;
 
-            $("#img-in-modal").attr("src", "/assets/uploads/" + image);
+            // $("#img-in-modal").attr("src", "/assets/uploads/" + image);
+            var image_path = `/assets/uploads/${image}`;
+            $("#img-in-modal").attr("src", image_path);
+
+            // <button type="button" style="border:none;" data-toggle="modal" data-target="#myModal-img">
+
+            $("#record-image").attr("src", image_path);
+            $("#record-item-image").attr("src", image_path);
+
+            if (image.toString() !== "") {
+                // alert("image is: " + image);
+
+            }
+
         });
 
     });
